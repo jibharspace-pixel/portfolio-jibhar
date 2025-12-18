@@ -1,0 +1,99 @@
+Prompt pour générer un site web de portfolio :
+
+Informations personnelles :
+
+Nom : Kroman Jibhar Samuel
+
+Jeune diplômé depuis Juin 2024
+
+Travailleur indépendant / Freelance
+
+Message clé (accueil) :
+
+Logisticien & Data Analyst – Solutions digitales et applications web pour optimiser les opérations
+
+Boutons principaux :
+
+📊 Voir mes projets
+
+📩 Me contacter
+
+Texte d’introduction :
+
+Bonjour ! Je suis Kroman Jibhar Samuel, diplômé de l’INPHB en Supply Chain et passionné de technologies. Je conçois des solutions digitales basées sur l’IA, l’automatisation, et le développement d’applications web et mobiles. Je crée également des tableaux de bord personnalisés et des reportings automatisés adaptés à votre environnement technologique.
+
+Fonctionnalités :
+
+Téléchargement du CV
+
+Onglets : Mes Services, Mes Projets, À propos, Contact
+
+Affichage des projets sur des cartes : chaque carte cliquable ouvre une page détaillée avec :
+
+Titre du projet
+
+Problème résolu
+
+Technologies utilisées
+
+Résultat obtenu
+
+Images / démo / lien
+
+Onglet “Mes Services” :
+
+Analyse de données et IA – Power BI, Excel, SQL, Power Pivot
+
+Solutions basées sur l’IA et Vibe Coding sécurisé – Replit AI, ChatGPT, Lovable
+
+Création de chatbot personnalisé
+
+Maintenance et automatisation Excel VBA
+
+Compétences techniques :
+
+💻 Développement Web : HTML5, CSS3, JavaScript (ES6+), React.js, applications web modernes et responsives
+
+📊 Data, BI & Analyse : Excel avancé, Power BI (DAX, Time Intelligence), SQL, conception de tableaux de bord automatisés
+
+🤖 IA, Automatisation & Vibe Coding : intégration IA, automatisation processus métiers, prototypage rapide via Vibe Coding
+
+🚚 Supply Chain & Logistique : analyse des flux, gestion transports, gestion inventaires, suivi KPI
+
+Onglet “À propos” :
+
+Je suis diplômé de l’Institut National Polytechnique Félix Houphouët-Boigny (INPHB), titulaire d’une licence en Supply Chain. Cette formation ne m’a cependant pas empêché d’explorer et de développer ma passion pour la technologie.
+Autodidacte déterminé — certains nous appellent aussi des geeks — je conçois des solutions digitales basées sur l’IA, l’automatisation, ainsi que la création d’applications web et mobiles et de sites web professionnels.
+J’interviens également dans l’analyse de données à l’aide de Power BI, SQL, Excel, Power Pivot, avec la conception de tableaux de bord sur mesure, adaptés à la stack technologique de votre choix.
+Suis-je seul ? Non. Je travaille en équipe afin de rendre vos projets plus fluides, structurés et performants, notamment à travers Nexalion Digital Store, notre boutique digitale en ligne.
+📩 Contact : jibharkroman@gmail.com
+
+Services détaillés :
+
+📊 Analyse de données & insights métier : RH, logistique, comptabilité, finance, marketing, ventes, HSE
+
+💻 Développement applications Web & Mobile
+
+🤖 Solutions IA & Vibe Coding
+
+⚙️ Automatisation Excel & reporting
+
+📈 Tableaux de bord sur mesure (Power BI, Excel, Tableau, Python…)
+
+🚀 Pack spécial : prototypage express en 50 minutes via Vibe Coding
+
+Onglet “Contact” :
+
+Email professionnel
+
+LinkedIn
+
+WhatsApp
+
+GitHub / démo
+
+Onglet “Mes Projets” :
+
+Affichage visuel de chaque projet
+
+Possibilité de télécharger fichiers : applications VBA, rapports Power BI, applications web créées
