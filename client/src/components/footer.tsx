@@ -19,10 +19,8 @@ export function Footer() {
             </span>
           </div>
 
-          <p className="text-sm text-muted-foreground flex items-center gap-1">
-            © {currentYear} - Fait avec
-            <Heart className="w-4 h-4 text-red-500 fill-current" />
-            en Côte d'Ivoire
+          <p className="text-sm text-muted-foreground">
+            © {currentYear} Kroman Jibhar Samuel
           </p>
 
           <p className="text-sm text-muted-foreground">
