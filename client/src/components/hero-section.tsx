@@ -86,10 +86,10 @@ export function HeroSection() {
 
             {/* Name */}
             <div className="space-y-0 animate-fade-in-up delay-100">
-              <h1 className="font-serif text-[3.2rem] sm:text-[3.8rem] lg:text-[3.4rem] xl:text-[4rem] font-extrabold leading-[1.03] tracking-tight text-foreground">
+              <h1 className="font-serif text-[2.1rem] sm:text-[3.2rem] lg:text-[3.4rem] xl:text-[4rem] font-extrabold leading-[1.08] sm:leading-[1.03] tracking-tight text-foreground">
                 Kroman Jibhar
               </h1>
-              <h1 className="font-serif text-[3.2rem] sm:text-[3.8rem] lg:text-[3.4rem] xl:text-[4rem] font-extrabold leading-[1.03] tracking-tight text-gradient">
+              <h1 className="font-serif text-[2.1rem] sm:text-[3.2rem] lg:text-[3.4rem] xl:text-[4rem] font-extrabold leading-[1.08] sm:leading-[1.03] tracking-tight text-gradient">
                 Samuel
               </h1>
             </div>
@@ -162,7 +162,7 @@ export function HeroSection() {
             </div>
 
             {/* Stats */}
-            <div className="flex items-center gap-8 pt-5 border-t border-border/50 animate-fade-in-up delay-500">
+            <div className="flex items-center gap-4 sm:gap-8 pt-5 border-t border-border/50 animate-fade-in-up delay-500">
               {stats.map((stat, i) => (
                 <div key={stat.label} className="flex items-center gap-3">
                   {i > 0 && <div className="w-px h-8 bg-border/60" />}

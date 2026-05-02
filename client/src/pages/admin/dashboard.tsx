@@ -123,7 +123,7 @@ export function DashboardSection({ password }: { password: string }) {
             <p className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
               <Briefcase className="w-4 h-4 text-primary" />Projets du portfolio
             </p>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {([
                 ["dashboard",     "Dashboard",      "text-blue-600 dark:text-blue-400"],
                 ["app-web",       "App web",         "text-primary"],

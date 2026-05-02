@@ -172,12 +172,12 @@ export default function Resources() {
 
         {/* Filters */}
         <div className="max-w-7xl mx-auto px-6 lg:px-8 pb-8">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
             {categoryFilters.map(({ key, label }) => (
               <button
                 key={key}
                 onClick={() => setFilter(key)}
-                className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all border ${
+                className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all border whitespace-nowrap shrink-0 ${
                   filter === key
                     ? "bg-primary text-white border-primary shadow-sm"
                     : "border-border/60 text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-muted/50"

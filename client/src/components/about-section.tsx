@@ -62,10 +62,10 @@ export function AboutSection() {
           <div className="h-0.5 w-12 bg-primary rounded-full" />
         </ScrollReveal>
 
-        <div className="grid lg:grid-cols-5 gap-12 lg:gap-16 items-start">
+        <div className="grid lg:grid-cols-5 gap-10 lg:gap-16 items-start">
 
           {/* ── Left: Text + timeline ──────────────── */}
-          <div className="lg:col-span-3 space-y-8">
+          <div className="lg:col-span-3 space-y-8 order-2 lg:order-1">
             {/* Quote */}
             <ScrollReveal direction="left">
               <div className="relative">
@@ -135,12 +135,12 @@ export function AboutSection() {
           </div>
 
           {/* ── Right: Photo + values ──────────────── */}
-          <div className="lg:col-span-2 space-y-5">
+          <div className="lg:col-span-2 space-y-5 order-1 lg:order-2">
             <ScrollReveal direction="right">
               {/* Profile photo */}
-              <div className="relative">
+              <div className="relative max-w-xs mx-auto lg:max-w-none">
                 <div className="absolute -inset-2 rounded-2xl bg-gradient-to-br from-primary/15 to-blue-400/8 blur-xl" />
-                <div className="relative rounded-2xl overflow-hidden border border-border/60 shadow-xl aspect-[3/4]">
+                <div className="relative rounded-2xl overflow-hidden border border-border/60 shadow-xl aspect-[4/3] sm:aspect-[3/4]">
                   <img
                     src={profileImage}
                     alt="Kroman Jibhar Samuel"

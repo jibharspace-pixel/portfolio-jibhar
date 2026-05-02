@@ -386,21 +386,23 @@ export function ProjectsSection() {
         </ScrollReveal>
 
         {/* Filters */}
-        <ScrollReveal delay={80} className="flex flex-wrap gap-2 mb-10">
-          {filters.map(({ key, label }) => (
-            <button
-              key={key}
-              onClick={() => setFilter(key)}
-              className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 border ${
-                filter === key
-                  ? "bg-primary text-white border-primary shadow-sm scale-[1.02]"
-                  : "border-border/60 text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-muted/50"
-              }`}
-              data-testid={`filter-${key}`}
-            >
-              {label}
-            </button>
-          ))}
+        <ScrollReveal delay={80} className="mb-10">
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-1 px-1">
+            {filters.map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => setFilter(key)}
+                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 border whitespace-nowrap shrink-0 ${
+                  filter === key
+                    ? "bg-primary text-white border-primary shadow-sm scale-[1.02]"
+                    : "border-border/60 text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-muted/50"
+                }`}
+                data-testid={`filter-${key}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </ScrollReveal>
 
         {/* Grid */}

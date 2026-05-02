@@ -587,4 +587,13 @@
   .scroll-delay-4 { transition-delay: 320ms; }
   .scroll-delay-5 { transition-delay: 400ms; }
   .scroll-delay-6 { transition-delay: 480ms; }
+
+  /* ── Hide scrollbar (cross-browser) ──────────────────── */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
