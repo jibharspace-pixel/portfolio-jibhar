@@ -44,9 +44,11 @@ export function HeroSection() {
       data-testid="section-hero"
     >
       {/* ── Background ─────────────────────────────────────────────── */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/4 via-transparent to-blue-400/3 pointer-events-none" />
-      <div className="section-blob w-[520px] h-[520px] bg-primary/10 -top-24 -right-24 animate-glow-pulse" />
-      <div className="section-blob w-[380px] h-[380px] bg-blue-400/10 bottom-0 -left-24 animate-glow-pulse delay-500" />
+      <div className="absolute inset-0 bg-hero-aurora pointer-events-none" />
+      <div className="absolute inset-0 bg-grid opacity-[0.35] pointer-events-none" />
+      <div className="section-blob w-[680px] h-[680px] bg-primary/[0.11] -top-32 -right-32 animate-glow-pulse" />
+      <div className="section-blob w-[500px] h-[500px] bg-blue-400/[0.09] bottom-0 -left-32 animate-glow-pulse delay-500" />
+      <div className="section-blob w-[360px] h-[360px] bg-cyan-400/[0.07] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-glow-pulse delay-300" />
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20 w-full">
         <div className="grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">

@@ -154,7 +154,7 @@ export default function Blog() {
   const [featured, ...rest] = filtered ?? [];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background bg-aurora-page">
       <Navigation />
 
       <main className="pt-16">

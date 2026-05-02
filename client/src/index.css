@@ -44,7 +44,7 @@
   --chart-4: 220 85% 30%;
   --chart-5: 195 70% 60%;
   --font-sans: 'Inter', sans-serif;
-  --font-serif: 'Space Grotesk', sans-serif;
+  --font-serif: 'Plus Jakarta Sans', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --radius: .625rem;
   --shadow-2xs: 0px 1px 2px 0px hsl(216 20% 88% / 0.06);
@@ -303,6 +303,32 @@
     height: 2px;
     border-radius: inherit;
     background: linear-gradient(90deg, hsl(216,90%,40%), hsl(200,85%,55%));
+  }
+
+  /* ── Aurora page background — premium mesh gradient ────── */
+  .bg-aurora-page {
+    background-image:
+      radial-gradient(ellipse 80% 55% at 95% 5%, hsl(216 90% 55% / 0.16) 0%, transparent 55%),
+      radial-gradient(ellipse 65% 48% at 5% 95%, hsl(200 80% 60% / 0.11) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 42% at 50% 0%, hsl(216 85% 65% / 0.06) 0%, transparent 50%);
+  }
+  .dark .bg-aurora-page {
+    background-image:
+      radial-gradient(ellipse 80% 55% at 95% 5%, hsl(216 90% 38% / 0.28) 0%, transparent 55%),
+      radial-gradient(ellipse 65% 48% at 5% 95%, hsl(200 80% 30% / 0.20) 0%, transparent 55%);
+  }
+
+  /* ── Hero aurora overlay ─────────────────────────────── */
+  .bg-hero-aurora {
+    background-image:
+      radial-gradient(ellipse 90% 60% at 90% -5%, hsl(216 90% 58% / 0.22) 0%, transparent 60%),
+      radial-gradient(ellipse 70% 55% at 10% 90%, hsl(200 80% 65% / 0.15) 0%, transparent 55%),
+      radial-gradient(ellipse 55% 50% at 50% 40%, hsl(216 85% 70% / 0.06) 0%, transparent 50%);
+  }
+  .dark .bg-hero-aurora {
+    background-image:
+      radial-gradient(ellipse 90% 60% at 90% -5%, hsl(216 90% 42% / 0.32) 0%, transparent 60%),
+      radial-gradient(ellipse 70% 55% at 10% 90%, hsl(200 80% 35% / 0.24) 0%, transparent 55%);
   }
 
   /* Grid background pattern */

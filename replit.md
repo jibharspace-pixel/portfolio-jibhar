@@ -19,10 +19,11 @@ Preferred communication style: Simple, everyday language.
 - **Build Tool**: Vite
 
 **Design System**:
-- Typography: Inter (body/UI) + Space Grotesk (headings/display)
+- Typography: Inter (body/UI) + **Plus Jakarta Sans** (headings/display) — `--font-serif`
 - Color palette: Nexalion deep royal blue (`hsl(216, 90%, 40%)`) + pure white
-- Subtle grid background pattern
-- Premium aesthetic: Linear/Stripe-level polish
+- **Aurora mesh gradient backgrounds** on all pages (`.bg-aurora-page`) + `.bg-hero-aurora` on hero
+- Subtle grid background overlay (35% opacity in hero)
+- Premium aesthetic: Linear/Stripe-level polish with radial gradient mesh
 - Theme support: Light/dark mode (localStorage key: `portfolio-theme`)
 
 ### Backend Architecture — Rust (Axum)
@@ -106,11 +107,19 @@ Preferred communication style: Simple, everyday language.
 ## Admin Dashboard (Mini CMS)
 - **Route**: `/admin` — dashboard complet protégé par mot de passe
 - **Password**: `nexalion2024` (ou variable `ADMIN_PASSWORD` côté Rust)
+- **Architecture** : `admin.tsx` (shell ~150 lignes) + 6 fichiers dans `client/src/pages/admin/` :
+  - `shared.tsx` — `StatCard`, `AdminSkeleton`, `API` helper
+  - `dashboard.tsx` — statistiques globales
+  - `blog.tsx` — CRUD articles
+  - `files.tsx` — ressources téléchargeables
+  - `projects.tsx` — CRUD projets
+  - `media.tsx` — upload médias
+  - `infos.tsx` — coordonnées + textes hero + services
 - **Sections**:
   1. **Tableau de bord** — statistiques globales (visites, blog, téléchargements, projets)
   2. **Blog** — CRUD articles (créer, éditer, publier/dépublier, supprimer)
   3. **Ressources** — ajouter/supprimer fichiers téléchargeables
-  4. **Projets** *(nouveau)* — CRUD complet projets (titre, description, catégorie, problème, solution, résultat, technologies, liens démo/téléchargement)
+  4. **Projets** — CRUD complet projets (titre, description, catégorie, problème, solution, résultat, technologies, liens démo/téléchargement)
   5. **Médias** — upload photos/vidéos par projet
   6. **Informations** — édition coordonnées + textes hero + services (3 cartes éditables)
 

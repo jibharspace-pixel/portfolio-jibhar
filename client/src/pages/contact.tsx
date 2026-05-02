@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer";
 
 export default function Contact() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background bg-aurora-page text-foreground">
       <Navigation />
       <main className="pt-20">
         <ContactSection />

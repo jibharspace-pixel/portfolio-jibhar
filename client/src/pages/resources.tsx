@@ -136,7 +136,7 @@ export default function Resources() {
   const totalDownloads = files?.reduce((s, f) => s + f.download_count, 0) ?? 0;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background bg-aurora-page">
       <Navigation />
 
       <main className="pt-16">
