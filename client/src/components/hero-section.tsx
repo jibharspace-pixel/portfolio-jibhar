@@ -64,9 +64,9 @@ export function HeroSection() {
                 <div className="absolute inset-x-0 bottom-0 h-1/5 bg-gradient-to-t from-black/15 to-transparent pointer-events-none" />
               </div>
               {/* Location pill */}
-              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-sm border border-border/50 shadow-[0_4px_20px_hsl(0,0%,0%,0.10)] rounded-full px-4 py-1.5 flex items-center gap-1.5 whitespace-nowrap">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />
-                <span className="text-[11.5px] font-semibold text-foreground/80 tracking-tight">Disponible · Côte d'Ivoire</span>
+              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white/95 dark:bg-card dark:border-border/70 backdrop-blur-sm border border-border/50 shadow-[0_4px_20px_hsl(0,0%,0%,0.12)] dark:shadow-[0_4px_20px_hsl(0,0%,0%,0.40)] rounded-full px-4 py-1.5 flex items-center gap-1.5 whitespace-nowrap">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0 shadow-[0_0_6px_hsl(142,72%,45%,0.60)]" />
+                <span className="text-[11.5px] font-semibold text-foreground/80 dark:text-foreground/90 tracking-tight">Disponible · Côte d'Ivoire</span>
               </div>
               {/* Soft glow behind photo */}
               <div className="absolute inset-0 -z-10 rounded-3xl blur-2xl scale-95 opacity-30 bg-primary/20" />
