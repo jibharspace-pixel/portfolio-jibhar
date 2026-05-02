@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Loader2, ImagePlus, Eye, Image, Video,
-  BarChart3, Globe, Cog, Brain, Trash2,
+  BarChart3, Globe, Cog, Smartphone, Monitor, FileSpreadsheet, Trash2,
 } from "lucide-react";
 import { Badge }    from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,14 +10,30 @@ import { API, ConfirmDelete, SectionHeader } from "./shared";
 import type { Project } from "@shared/schema";
 import type { LucideIcon } from "lucide-react";
 
-const CAT_ICONS:  Record<string, LucideIcon> = { data: BarChart3, web: Globe, automation: Cog, ai: Brain };
-const CAT_COLORS: Record<string, string>     = {
-  data:       "bg-blue-50 text-blue-700 border-blue-200",
-  web:        "bg-primary/8 text-primary border-primary/20",
-  automation: "bg-amber-50 text-amber-700 border-amber-200",
-  ai:         "bg-purple-50 text-purple-700 border-purple-200",
+const CAT_ICONS: Record<string, LucideIcon> = {
+  dashboard:    BarChart3,
+  "app-web":    Globe,
+  "app-mobile": Smartphone,
+  "site-web":   Monitor,
+  "excel-vba":  FileSpreadsheet,
+  automatisation: Cog,
 };
-const CAT_LABELS: Record<string, string> = { data: "Data & BI", web: "Web", automation: "Auto.", ai: "IA" };
+const CAT_COLORS: Record<string, string> = {
+  dashboard:      "bg-blue-50 text-blue-700 border-blue-200",
+  "app-web":      "bg-primary/8 text-primary border-primary/20",
+  "app-mobile":   "bg-green-50 text-green-700 border-green-200",
+  "site-web":     "bg-cyan-50 text-cyan-700 border-cyan-200",
+  "excel-vba":    "bg-emerald-50 text-emerald-700 border-emerald-200",
+  automatisation: "bg-amber-50 text-amber-700 border-amber-200",
+};
+const CAT_LABELS: Record<string, string> = {
+  dashboard:      "Dashboard",
+  "app-web":      "App web",
+  "app-mobile":   "App mobile",
+  "site-web":     "Site web",
+  "excel-vba":    "Excel VBA",
+  automatisation: "Automatisation",
+};
 
 function UploadBtn({
   projectId, accept, label, icon: Icon, password, onDone,

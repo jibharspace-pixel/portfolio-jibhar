@@ -123,20 +123,20 @@ export function DashboardSection({ password }: { password: string }) {
             <p className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
               <Briefcase className="w-4 h-4 text-primary" />Projets du portfolio
             </p>
-            <div className="grid grid-cols-2 gap-2.5">
-              {(["data","web","automation","ai"] as const).map(cat => {
+            <div className="grid grid-cols-3 gap-2">
+              {([
+                ["dashboard",     "Dashboard",      "text-blue-600 dark:text-blue-400"],
+                ["app-web",       "App web",         "text-primary"],
+                ["app-mobile",    "App mobile",      "text-green-600 dark:text-green-400"],
+                ["site-web",      "Site web",        "text-cyan-600 dark:text-cyan-400"],
+                ["excel-vba",     "Excel VBA",       "text-emerald-600 dark:text-emerald-400"],
+                ["automatisation","Automatisation",  "text-amber-600 dark:text-amber-400"],
+              ] as const).map(([cat, label, color]) => {
                 const count = projects?.filter(p => p.category === cat).length ?? 0;
-                const colors: Record<string, string> = {
-                  data: "text-blue-600 dark:text-blue-400",
-                  web: "text-primary",
-                  automation: "text-amber-600 dark:text-amber-400",
-                  ai: "text-purple-600 dark:text-purple-400",
-                };
-                const labels: Record<string, string> = { data: "Data & BI", web: "Web", automation: "Auto.", ai: "IA" };
                 return (
                   <div key={cat} className="rounded-xl border border-border/60 bg-muted/20 p-3 text-center">
-                    <p className={`text-2xl font-bold font-serif ${colors[cat]}`}>{count}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{labels[cat]}</p>
+                    <p className={`text-2xl font-bold font-serif ${color}`}>{count}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5 leading-tight">{label}</p>
                   </div>
                 );
               })}

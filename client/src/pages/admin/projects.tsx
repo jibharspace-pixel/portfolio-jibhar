@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Plus, Pencil, Trash2, Loader2, X, Briefcase, Save,
-  Tag, ExternalLink, ChevronDown, ChevronUp, BarChart3, Globe, Cog, Brain,
+  Tag, ExternalLink, ChevronDown, ChevronUp,
+  BarChart3, Globe, Cog, Smartphone, Monitor, FileSpreadsheet,
 } from "lucide-react";
 import { Button }   from "@/components/ui/button";
 import { Input }    from "@/components/ui/input";
@@ -13,14 +14,30 @@ import { AdminSkeleton, API, ConfirmDelete, SectionHeader, Field } from "./share
 import type { Project } from "@shared/schema";
 import type { LucideIcon } from "lucide-react";
 
-const CAT_ICONS:  Record<string, LucideIcon> = { data: BarChart3, web: Globe, automation: Cog, ai: Brain };
-const CAT_COLORS: Record<string, string>     = {
-  data:       "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/30 dark:text-blue-300 dark:border-blue-800/40",
-  web:        "bg-primary/8 text-primary border-primary/20",
-  automation: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-300 dark:border-amber-800/40",
-  ai:         "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/30 dark:text-purple-300 dark:border-purple-800/40",
+const CAT_ICONS: Record<string, LucideIcon> = {
+  dashboard:    BarChart3,
+  "app-web":    Globe,
+  "app-mobile": Smartphone,
+  "site-web":   Monitor,
+  "excel-vba":  FileSpreadsheet,
+  automatisation: Cog,
 };
-const CAT_LABELS: Record<string, string> = { data: "Data & BI", web: "Web", automation: "Auto.", ai: "IA" };
+const CAT_COLORS: Record<string, string> = {
+  dashboard:     "bg-blue-50 text-blue-700 border-blue-200",
+  "app-web":     "bg-primary/8 text-primary border-primary/20",
+  "app-mobile":  "bg-green-50 text-green-700 border-green-200",
+  "site-web":    "bg-cyan-50 text-cyan-700 border-cyan-200",
+  "excel-vba":   "bg-emerald-50 text-emerald-700 border-emerald-200",
+  automatisation:"bg-amber-50 text-amber-700 border-amber-200",
+};
+const CAT_LABELS: Record<string, string> = {
+  dashboard:     "Dashboard",
+  "app-web":     "App web",
+  "app-mobile":  "App mobile",
+  "site-web":    "Site web",
+  "excel-vba":   "Excel VBA",
+  automatisation:"Automatisation",
+};
 
 type Form = {
   title: string; description: string; category: string;
@@ -28,7 +45,7 @@ type Form = {
   technologies: string; demo_url: string; download_url: string;
 };
 const EMPTY: Form = {
-  title: "", description: "", category: "data",
+  title: "", description: "", category: "dashboard",
   problem: "", solution: "", result: "",
   technologies: "", demo_url: "", download_url: "",
 };
@@ -117,10 +134,12 @@ export function ProjectsSection({ password }: { password: string }) {
               </div>
               <Field label="Catégorie">
                 <select value={form.category} onChange={set("category")} className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring" data-testid="select-project-category">
-                  <option value="data">Data & BI</option>
-                  <option value="web">Web</option>
-                  <option value="automation">Automatisation</option>
-                  <option value="ai">IA</option>
+                  <option value="dashboard">Dashboard</option>
+                  <option value="app-web">App web</option>
+                  <option value="app-mobile">App mobile</option>
+                  <option value="site-web">Site web</option>
+                  <option value="excel-vba">Excel VBA app</option>
+                  <option value="automatisation">Automatisation</option>
                 </select>
               </Field>
               <Field label="Technologies (virgules)">
