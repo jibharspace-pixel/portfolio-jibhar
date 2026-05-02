@@ -63,7 +63,6 @@ function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boole
         >
           {/* Cover */}
           <div className={`relative h-52 md:h-auto bg-gradient-to-br ${gradient} flex items-center justify-center overflow-hidden`}>
-            <div className="absolute inset-0 bg-grid opacity-10" />
             <BookOpen className="w-20 h-20 text-white/20" />
             <div className="absolute top-4 left-4">
               <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full border border-white/20">
@@ -111,7 +110,6 @@ function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boole
       >
         {/* Cover */}
         <div className={`h-36 bg-gradient-to-br ${gradient} flex items-center justify-center relative overflow-hidden`}>
-          <div className="absolute inset-0 bg-grid opacity-10" />
           <BookOpen className="w-12 h-12 text-white/25" />
           <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black/20 to-transparent" />
         </div>
@@ -162,7 +160,6 @@ export default function Blog() {
       <main className="pt-16">
         {/* Hero */}
         <section className="relative py-20 overflow-hidden">
-          <div className="absolute inset-0 bg-grid opacity-50 pointer-events-none" />
           <div className="absolute -top-24 right-0 w-80 h-80 bg-primary/8 rounded-full blur-[80px] pointer-events-none" />
           <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
             <Badge variant="secondary" className="mb-4 text-xs font-semibold px-3 py-1 rounded-full border border-primary/20 bg-primary/8 text-primary tracking-wide uppercase">

@@ -118,7 +118,6 @@ function CardThumbnail({ project }: { project: Project }) {
   if (!firstMedia) {
     return (
       <div className={`h-36 ${style.bg} ${style.border} border-b flex items-center justify-center relative overflow-hidden`}>
-        <div className="absolute inset-0 bg-grid opacity-40" />
         <Icon className={`w-12 h-12 ${style.icon} relative`} />
         <div className="absolute bottom-2 right-2 flex gap-1">
           {(project.media?.length ?? 0) === 0 && (
@@ -194,7 +193,6 @@ export function ProjectsSection() {
 
   return (
     <section id="projets" className="py-20 lg:py-28 relative overflow-hidden" data-testid="section-projects">
-      <div className="absolute inset-0 bg-grid opacity-50 pointer-events-none" />
       <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[80px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
@@ -334,7 +332,6 @@ export function ProjectsSection() {
                     <MediaCarousel items={media} />
                   ) : (
                     <div className={`h-36 rounded-xl ${style.bg} flex items-center justify-center border ${style.border} relative overflow-hidden`}>
-                      <div className="absolute inset-0 bg-grid opacity-30" />
                       <Icon className={`w-16 h-16 ${style.icon} relative`} />
                     </div>
                   )}

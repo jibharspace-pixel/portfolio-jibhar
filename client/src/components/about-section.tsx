@@ -38,7 +38,6 @@ const values = [
 export function AboutSection() {
   return (
     <section id="apropos" className="py-20 lg:py-28 relative overflow-hidden" data-testid="section-about">
-      <div className="absolute inset-0 bg-grid opacity-50 pointer-events-none" />
       <div className="section-blob w-96 h-96 bg-primary/6 top-0 right-0 animate-glow-pulse" />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">

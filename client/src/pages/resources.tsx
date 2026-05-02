@@ -142,7 +142,6 @@ export default function Resources() {
       <main className="pt-16">
         {/* Hero */}
         <section className="relative py-20 overflow-hidden">
-          <div className="absolute inset-0 bg-grid opacity-50 pointer-events-none" />
           <div className="absolute -top-24 left-0 w-80 h-80 bg-primary/8 rounded-full blur-[80px] pointer-events-none" />
           <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
             <Badge variant="secondary" className="mb-4 text-xs font-semibold px-3 py-1 rounded-full border border-primary/20 bg-primary/8 text-primary tracking-wide uppercase">

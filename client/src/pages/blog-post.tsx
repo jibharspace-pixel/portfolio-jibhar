@@ -92,7 +92,6 @@ export default function BlogPostPage({ slug }: { slug: string }) {
           <>
             {/* Hero cover */}
             <div className={`relative h-56 sm:h-72 bg-gradient-to-br ${gradient} overflow-hidden`}>
-              <div className="absolute inset-0 bg-grid opacity-10" />
               <BookOpen className="absolute right-16 top-1/2 -translate-y-1/2 w-32 h-32 text-white/10" />
               <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
             </div>

@@ -30,7 +30,6 @@ export function HeroSection() {
       data-testid="section-hero"
     >
       {/* ── Background layers ─────────────────────── */}
-      <div className="absolute inset-0 bg-grid opacity-55 pointer-events-none" />
       <div className="absolute inset-0 bg-gradient-to-br from-primary/4 via-transparent to-blue-400/3 pointer-events-none" />
 
       {/* Animated orbs */}

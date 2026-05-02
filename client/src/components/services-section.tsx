@@ -80,7 +80,6 @@ const skills = [
 export function ServicesSection() {
   return (
     <section id="services" className="py-20 lg:py-28 relative overflow-hidden bg-muted/25" data-testid="section-services">
-      <div className="absolute inset-0 bg-dots opacity-60 pointer-events-none" />
       <div className="section-blob w-96 h-96 bg-primary/6 -top-20 -left-20 animate-glow-pulse" />
       <div className="section-blob w-80 h-80 bg-purple-400/6 bottom-0 right-0 animate-glow-pulse delay-400" />
 
