@@ -57,37 +57,6 @@ export function HeroSection() {
                   className="w-full h-full object-cover object-top"
                   data-testid="img-profile"
                 />
-                {/* Bottom vignette */}
-                <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-black/50 to-transparent" />
-                {/* Name overlay */}
-                <div className="absolute bottom-4 left-4 right-4">
-                  <p className="text-white font-semibold text-sm leading-tight">Kroman Jibhar Samuel</p>
-                  <p className="text-white/70 text-xs">Data Analyst · Freelance</p>
-                </div>
-              </div>
-
-              {/* Availability pill */}
-              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 glass-card rounded-full px-4 py-2 shadow-lg flex items-center gap-2 whitespace-nowrap border border-white/60">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-xs font-semibold text-foreground">Disponible pour projets</span>
-              </div>
-
-              {/* Location pill */}
-              <div className="absolute -top-3 -right-3 glass-card rounded-full px-3 py-1.5 shadow-md flex items-center gap-1.5 border border-white/60">
-                <MapPin className="w-3 h-3 text-primary" />
-                <span className="text-xs font-medium text-muted-foreground">Côte d'Ivoire</span>
-              </div>
-
-              {/* Floating skill chip left */}
-              <div className="hidden sm:flex absolute -left-10 top-1/3 glass-card rounded-xl px-3 py-2 shadow-lg items-center gap-2 animate-float border border-white/60">
-                <BarChart3 className="w-3.5 h-3.5 text-primary" />
-                <span className="text-xs font-semibold text-primary whitespace-nowrap">Power BI</span>
-              </div>
-
-              {/* Floating skill chip right */}
-              <div className="hidden sm:flex absolute -right-10 top-[55%] glass-card rounded-xl px-3 py-2 shadow-lg items-center gap-2 animate-float-d border border-white/60">
-                <Cog className="w-3.5 h-3.5 text-amber-500" />
-                <span className="text-xs font-semibold text-amber-500 whitespace-nowrap">Automatisation</span>
               </div>
             </div>
           </div>
