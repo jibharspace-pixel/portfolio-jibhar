@@ -1,6 +1,8 @@
 use axum::{
     extract::{Json, Multipart, Path, State},
-    http::{HeaderMap, Method, StatusCode},
+    http::{HeaderMap, HeaderValue, Method, StatusCode},
+    middleware::{self, Next},
+    response::Response,
     routing::{delete, get, post, put},
     Router,
 };
@@ -12,6 +14,18 @@ use std::{
 };
 use tower_http::cors::{Any, CorsLayer};
 use uuid::Uuid;
+
+// ─── Security headers middleware ─────────────────────────────────────────────
+async fn security_headers(req: axum::extract::Request, next: Next) -> Response {
+    let mut res = next.run(req).await;
+    let h = res.headers_mut();
+    h.insert("x-content-type-options",  HeaderValue::from_static("nosniff"));
+    h.insert("x-frame-options",          HeaderValue::from_static("DENY"));
+    h.insert("x-xss-protection",         HeaderValue::from_static("1; mode=block"));
+    h.insert("referrer-policy",          HeaderValue::from_static("strict-origin-when-cross-origin"));
+    h.insert("x-permitted-cross-domain-policies", HeaderValue::from_static("none"));
+    res
+}
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -673,8 +687,15 @@ async fn main() {
         })),
     };
 
+    // CORS: allow the Express proxy (localhost:5000) and production domain if set
+    let allowed_origin = std::env::var("ALLOWED_ORIGIN")
+        .unwrap_or_else(|_| "http://localhost:5000".to_string());
+    let cors_origin = allowed_origin
+        .parse::<HeaderValue>()
+        .unwrap_or_else(|_| HeaderValue::from_static("http://localhost:5000"));
+
     let cors = CorsLayer::new()
-        .allow_origin(Any)
+        .allow_origin(cors_origin)
         .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE, Method::OPTIONS])
         .allow_headers(Any);
 
@@ -711,6 +732,7 @@ async fn main() {
         .route("/api/admin/services", put(update_services))
         // Health
         .route("/health", get(health))
+        .layer(middleware::from_fn(security_headers))
         .layer(cors)
         .with_state(state);
 

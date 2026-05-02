@@ -19,10 +19,10 @@ function proxyToRust(req: any, res: any) {
   };
 
   const proxy = http.request(options, (proxyRes) => {
-    res.writeHead(proxyRes.statusCode ?? 500, {
-      ...proxyRes.headers,
-      "access-control-allow-origin": "*",
-    });
+    // Forward Rust headers but let Express manage CORS at the outer layer
+    const forwardHeaders = { ...proxyRes.headers };
+    delete forwardHeaders["access-control-allow-origin"];
+    res.writeHead(proxyRes.statusCode ?? 500, forwardHeaders);
     proxyRes.pipe(res, { end: true });
   });
 
