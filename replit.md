@@ -66,13 +66,27 @@ Preferred communication style: Simple, everyday language.
 - **Rust API**: `cd rust_server && cargo run` (port 3001) — "Rust API Server" workflow
 - **Production build**: `npm run build` → `dist/`
 
-## Admin Page
-- **Route**: `/admin` — password-protected media management interface
-- **Password**: `nexalion2024` (or set `ADMIN_PASSWORD` env var in Rust)
-- **Features**: Upload photos/videos per project card, media gallery, delete media
-- **Upload API**: `POST /api/admin/projects/:id/upload` with `x-admin-password` header (multipart)
-- **Delete API**: `DELETE /api/admin/media/:mediaId` with `x-admin-password` header
-- **Uploads storage**: `rust_server/uploads/` served by Express at `/uploads`
+## Blog
+- **Public routes**: `/blog` (listing) · `/blog/:slug` (post detail)
+- **Admin**: `/admin` → section Blog — créer, éditer, publier/dépublier, supprimer
+- **API**: `GET /api/blog`, `GET /api/blog/:slug`, `POST|PUT|DELETE /api/admin/blog/*`
+- **Seed**: 2 articles publiés + 1 brouillon
+
+## Ressources Gratuites
+- **Public route**: `/ressources` — grille de fichiers téléchargeables avec filtres
+- **Admin**: `/admin` → section Ressources — ajouter, supprimer
+- **API**: `GET /api/files`, `POST /api/files/:id/download`, `POST|DELETE /api/admin/files/*`
+- **Seed**: 4 fichiers (xlsx, pbix, pdf, xlsm)
+
+## Analytics
+- Chaque page trace ses visites via `POST /api/track { event_type, path }`
+- Dashboard admin : `GET /api/admin/stats` — vues totales, vues blog, téléchargements, médias
+
+## Admin Dashboard
+- **Route**: `/admin` — dashboard complet protégé par mot de passe
+- **Password**: `nexalion2024` (ou variable `ADMIN_PASSWORD` côté Rust)
+- **Sections**: Tableau de bord, Blog, Ressources, Médias (upload photos/vidéos par projet)
+- **Media upload**: `POST /api/admin/projects/:id/upload` (multipart) · stockage `rust_server/uploads/`
 
 ## Workflows
 - **Start application**: `npm run dev` — Express + Vite on port 5000

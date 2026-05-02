@@ -9,15 +9,11 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
-});
-
+export const insertUserSchema = createInsertSchema(users).pick({ username: true, password: true });
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 
-// Media item attached to a project
+// Media item
 export const mediaItemSchema = z.object({
   id: z.string(),
   url: z.string(),
@@ -27,7 +23,7 @@ export const mediaItemSchema = z.object({
 });
 export type MediaItem = z.infer<typeof mediaItemSchema>;
 
-// Project schema for portfolio
+// Project
 export const projectSchema = z.object({
   id: z.string(),
   title: z.string(),
@@ -43,30 +39,62 @@ export const projectSchema = z.object({
 });
 export type Project = z.infer<typeof projectSchema>;
 
-// Service schema
-export const serviceSchema = z.object({
+// Blog Post
+export const blogPostSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  slug: z.string(),
+  excerpt: z.string(),
+  content: z.string(),
+  category: z.string(),
+  tags: z.array(z.string()),
+  cover_url: z.string().optional(),
+  status: z.enum(["draft", "published"]),
+  created_at: z.string(),
+  view_count: z.number().optional(),
+  read_time: z.number().optional(),
+});
+export type BlogPost = z.infer<typeof blogPostSchema>;
+
+export const createBlogPostSchema = blogPostSchema.omit({ id: true, created_at: true, view_count: true });
+export type CreateBlogPost = z.infer<typeof createBlogPostSchema>;
+
+// Free File
+export const freeFileSchema = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string(),
-  icon: z.string(),
-  features: z.array(z.string()),
+  file_url: z.string(),
+  file_type: z.string(),
+  download_count: z.number(),
+  category: z.string(),
+  tags: z.array(z.string()),
+  created_at: z.string(),
 });
+export type FreeFile = z.infer<typeof freeFileSchema>;
+
+export const createFreeFileSchema = freeFileSchema.omit({ id: true, download_count: true, created_at: true });
+export type CreateFreeFile = z.infer<typeof createFreeFileSchema>;
+
+// Admin Stats
+export const adminStatsSchema = z.object({
+  total_page_views: z.number(),
+  total_blog_views: z.number(),
+  total_downloads: z.number(),
+  blog_count: z.number(),
+  published_blog_count: z.number(),
+  file_count: z.number(),
+  media_count: z.number(),
+  page_views: z.record(z.number()),
+});
+export type AdminStats = z.infer<typeof adminStatsSchema>;
+
+// Service / Skill / Contact
+export const serviceSchema = z.object({ id: z.string(), title: z.string(), description: z.string(), icon: z.string(), features: z.array(z.string()) });
 export type Service = z.infer<typeof serviceSchema>;
 
-// Skill category schema
-export const skillCategorySchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  icon: z.string(),
-  skills: z.array(z.string()),
-});
+export const skillCategorySchema = z.object({ id: z.string(), title: z.string(), icon: z.string(), skills: z.array(z.string()) });
 export type SkillCategory = z.infer<typeof skillCategorySchema>;
 
-// Contact info schema
-export const contactInfoSchema = z.object({
-  email: z.string().email(),
-  linkedin: z.string().url().optional(),
-  whatsapp: z.string().optional(),
-  github: z.string().url().optional(),
-});
+export const contactInfoSchema = z.object({ email: z.string().email(), linkedin: z.string().url().optional(), whatsapp: z.string().optional(), github: z.string().url().optional() });
 export type ContactInfo = z.infer<typeof contactInfoSchema>;
