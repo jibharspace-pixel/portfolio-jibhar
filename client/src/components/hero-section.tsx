@@ -63,16 +63,7 @@ export function HeroSection() {
 
           {/* ── Right: Content ────────────────────── */}
           <div className="order-1 lg:order-2 space-y-6">
-            <div className="animate-fade-in-up">
-              <Badge
-                variant="secondary"
-                className="text-xs font-semibold px-3 py-1 rounded-full border border-primary/25 bg-primary/8 text-primary tracking-wide uppercase"
-              >
-                ✦ Freelance · Depuis Juin 2024
-              </Badge>
-            </div>
-
-            <div className="space-y-1 animate-fade-in-up delay-100">
+            <div className="space-y-1 animate-fade-in-up">
               <h1 className="font-serif text-5xl sm:text-6xl lg:text-[3.6rem] xl:text-[4rem] font-bold leading-[1.05] tracking-tight text-foreground">
                 Kroman Jibhar
               </h1>
