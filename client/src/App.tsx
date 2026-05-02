@@ -15,6 +15,21 @@ import Contact from "@/pages/contact";
 import Admin from "@/pages/admin";
 import NotFound from "@/pages/not-found";
 
+// ── Navigation order for direction detection ───────────────────────────────────
+const PAGE_ORDER = ['/', '/projets', '/blog', '/ressources', '/apropos', '/contact', '/admin'];
+
+function getPageBase(path: string) {
+  const segs = path.split('/').filter(Boolean);
+  return segs.length === 0 ? '/' : '/' + segs[0];
+}
+
+function getNavDir(from: string, to: string): 'forward' | 'back' {
+  const fi = PAGE_ORDER.indexOf(getPageBase(from));
+  const ti = PAGE_ORDER.indexOf(getPageBase(to));
+  if (fi === -1 || ti === -1) return 'forward';
+  return ti >= fi ? 'forward' : 'back';
+}
+
 // ── Top progress bar ──────────────────────────────────────────────────────────
 function ProgressBar({ trigger }: { trigger: number }) {
   const [phase, setPhase] = useState<"idle" | "running" | "done">("idle");
@@ -44,7 +59,10 @@ function ProgressBar({ trigger }: { trigger: number }) {
 
 // ── View Transitions interceptor ─────────────────────────────────────────────
 function ViewTransitionNavigator() {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
+  const locationRef = useRef(location);
+
+  useEffect(() => { locationRef.current = location; }, [location]);
 
   useEffect(() => {
     const supportsVT = "startViewTransition" in document;
@@ -63,6 +81,9 @@ function ViewTransitionNavigator() {
       ) return;
 
       e.preventDefault();
+      const dir = getNavDir(locationRef.current, href);
+      document.documentElement.dataset.navDir = dir;
+
       (document as any).startViewTransition(() => {
         setLocation(href);
         window.scrollTo({ top: 0, behavior: "instant" });
@@ -80,10 +101,14 @@ function ViewTransitionNavigator() {
 function AnimatedRouter() {
   const [location] = useLocation();
   const [trigger, setTrigger] = useState(0);
+  const [navDir, setNavDir] = useState<'forward' | 'back'>('forward');
   const prevLocation = useRef(location);
 
   useEffect(() => {
     if (location !== prevLocation.current) {
+      const dir = getNavDir(prevLocation.current, location);
+      setNavDir(dir);
+      document.documentElement.dataset.navDir = dir;
       prevLocation.current = location;
       setTrigger((t) => t + 1);
       window.scrollTo({ top: 0, behavior: "instant" });
@@ -93,7 +118,7 @@ function AnimatedRouter() {
   return (
     <>
       <ProgressBar trigger={trigger} />
-      <div key={location} className="page-enter">
+      <div key={location} className={`page-enter page-enter-${navDir}`}>
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/projets" component={Projects} />
