@@ -38,36 +38,49 @@ export function Navigation() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-background/80 backdrop-blur-lg border-b border-border shadow-sm"
+          ? "bg-background/80 backdrop-blur-xl border-b border-border shadow-sm"
           : "bg-transparent"
       }`}
       data-testid="navigation-header"
     >
-      <nav className="max-w-7xl mx-auto px-6 py-4">
+      <nav className="max-w-7xl mx-auto px-6 py-3.5">
         <div className="flex items-center justify-between gap-4">
           <Link
             href="/"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2.5"
             data-testid="link-logo"
           >
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary text-primary-foreground font-serif font-bold text-lg">
+            <div
+              className="flex items-center justify-center w-10 h-10 rounded-2xl font-serif font-bold text-lg text-white shadow-lg"
+              style={{
+                background: "linear-gradient(135deg, hsl(258,80%,58%), hsl(200,80%,55%))",
+                boxShadow: "0 4px 14px hsl(258,80%,58%,0.4)",
+              }}
+            >
               KJS
             </div>
-            <span className="hidden md:block font-serif font-semibold text-foreground">
+            <span className="hidden md:block font-serif font-bold text-foreground">
               Kroman Jibhar Samuel
             </span>
           </Link>
 
-          <div className="hidden lg:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-1 bg-muted/60 rounded-full px-2 py-1.5 border border-border/50 backdrop-blur-sm">
             {navItems.map((item) => (
               <Link key={item.href} href={item.href}>
-                <Button
-                  variant={isActive(item.href) ? "secondary" : "ghost"}
+                <button
+                  className={`relative px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                    isActive(item.href)
+                      ? "text-white shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                  style={isActive(item.href) ? {
+                    background: "linear-gradient(135deg, hsl(258,80%,58%), hsl(200,80%,55%))",
+                    boxShadow: "0 2px 10px hsl(258,80%,58%,0.35)",
+                  } : {}}
                   data-testid={`link-nav-${item.label.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`}
-                  className={isActive(item.href) ? "font-semibold" : ""}
                 >
                   {item.label}
-                </Button>
+                </button>
               </Link>
             ))}
           </div>
@@ -77,7 +90,8 @@ export function Navigation() {
             <Button
               variant="default"
               size="sm"
-              className="hidden sm:flex items-center gap-2"
+              className="hidden sm:flex items-center gap-2 rounded-full px-5 font-semibold shadow-md transition-all hover:scale-105"
+              style={{ boxShadow: "0 4px 14px hsl(258,80%,58%,0.35)" }}
               data-testid="button-download-cv"
             >
               <Download className="w-4 h-4" />
@@ -87,7 +101,7 @@ export function Navigation() {
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden"
+              className="lg:hidden rounded-xl"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               data-testid="button-mobile-menu"
             >
@@ -102,26 +116,31 @@ export function Navigation() {
       </nav>
 
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-background/95 backdrop-blur-lg border-b border-border">
+        <div className="lg:hidden bg-background/95 backdrop-blur-xl border-b border-border">
           <div className="max-w-7xl mx-auto px-6 py-4">
             <div className="flex flex-col gap-2">
               {navItems.map((item) => (
                 <Link key={item.href} href={item.href}>
                   <button
-                    className={`flex items-center justify-between w-full px-4 py-3 rounded-lg text-left hover-elevate active-elevate-2 ${
-                      isActive(item.href) ? "bg-secondary font-semibold" : ""
+                    className={`flex items-center justify-between w-full px-4 py-3 rounded-xl text-left transition-all ${
+                      isActive(item.href)
+                        ? "text-white font-semibold"
+                        : "hover:bg-muted"
                     }`}
+                    style={isActive(item.href) ? {
+                      background: "linear-gradient(135deg, hsl(258,80%,58%), hsl(200,80%,55%))",
+                    } : {}}
                     data-testid={`link-mobile-${item.label.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`}
                   >
                     <span className="font-medium">{item.label}</span>
-                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                    <ChevronRight className="w-4 h-4 opacity-60" />
                   </button>
                 </Link>
               ))}
               <div className="pt-2 border-t border-border mt-2">
                 <Button
                   variant="default"
-                  className="w-full flex items-center justify-center gap-2"
+                  className="w-full flex items-center justify-center gap-2 rounded-full font-semibold"
                   data-testid="button-mobile-download-cv"
                 >
                   <Download className="w-4 h-4" />

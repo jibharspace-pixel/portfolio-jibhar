@@ -6,7 +6,6 @@ import {
   Cog,
   Brain,
   ExternalLink,
-  ChevronRight,
   Sparkles,
   ArrowRight,
   Download,
@@ -38,9 +37,23 @@ const categoryLabels: Record<string, string> = {
   ai: "IA & Chatbot",
 };
 
-const categoryColors: Record<string, string> = {
+const categoryGradients: Record<string, string> = {
+  data: "from-blue-500/25 to-indigo-500/15",
+  web: "from-emerald-500/25 to-teal-500/15",
+  automation: "from-orange-500/25 to-amber-500/15",
+  ai: "from-purple-500/25 to-pink-500/15",
+};
+
+const categoryIconColors: Record<string, string> = {
+  data: "text-blue-500",
+  web: "text-emerald-500",
+  automation: "text-orange-500",
+  ai: "text-purple-500",
+};
+
+const categoryBadgeStyles: Record<string, string> = {
   data: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
-  web: "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20",
+  web: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
   automation: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20",
   ai: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
 };
@@ -49,8 +62,8 @@ function ProjectsSkeleton() {
   return (
     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {[1, 2, 3, 4, 5, 6].map((i) => (
-        <Card key={i}>
-          <Skeleton className="aspect-video rounded-t-lg" />
+        <Card key={i} className="overflow-hidden">
+          <Skeleton className="aspect-video rounded-none" />
           <CardContent className="p-5">
             <div className="flex items-start justify-between gap-3 mb-3">
               <Skeleton className="h-6 w-40" />
@@ -61,7 +74,6 @@ function ProjectsSkeleton() {
             <div className="flex gap-1.5">
               <Skeleton className="h-5 w-16 rounded-full" />
               <Skeleton className="h-5 w-14 rounded-full" />
-              <Skeleton className="h-5 w-12 rounded-full" />
             </div>
           </CardContent>
         </Card>
@@ -85,46 +97,67 @@ export function ProjectsSection() {
   return (
     <section
       id="projets"
-      className="py-16 lg:py-24"
+      className="py-16 lg:py-24 relative overflow-hidden"
       data-testid="section-projects"
     >
-      <div className="max-w-7xl mx-auto px-6">
+      {/* Fun bg blobs */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-pink-400/8 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-6 relative">
         <div className="text-center mb-12">
-          <Badge variant="secondary" className="mb-4">
-            <Sparkles className="w-3 h-3 mr-1" />
+          <Badge
+            variant="secondary"
+            className="mb-4 px-4 py-1.5 rounded-full border border-primary/20 bg-primary/10 text-primary font-semibold"
+          >
+            <Sparkles className="w-3 h-3 mr-1.5" />
             Portfolio
           </Badge>
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
-            Mes Projets
+            Mes <span className="gradient-text">Projets</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Découvrez une sélection de projets réalisés dans différents domaines
           </p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-2 mb-8">
-          <Button
-            variant={filter === "all" ? "default" : "outline"}
-            size="sm"
+        {/* Filter buttons */}
+        <div className="flex flex-wrap justify-center gap-2 mb-10">
+          <button
             onClick={() => setFilter("all")}
+            className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 border ${
+              filter === "all"
+                ? "text-white border-transparent shadow-md"
+                : "border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
+            }`}
+            style={filter === "all" ? {
+              background: "linear-gradient(135deg, hsl(258,80%,58%), hsl(200,80%,55%))",
+              boxShadow: "0 4px 14px hsl(258,80%,58%,0.35)",
+            } : {}}
             data-testid="filter-all"
           >
             Tous
-          </Button>
+          </button>
           {Object.entries(categoryLabels).map(([key, label]) => {
             const Icon = categoryIcons[key];
             return (
-              <Button
+              <button
                 key={key}
-                variant={filter === key ? "default" : "outline"}
-                size="sm"
                 onClick={() => setFilter(key)}
-                className="flex items-center gap-2"
+                className={`flex items-center gap-1.5 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 border ${
+                  filter === key
+                    ? "text-white border-transparent shadow-md"
+                    : "border-border text-muted-foreground hover:text-foreground hover:border-primary/30"
+                }`}
+                style={filter === key ? {
+                  background: "linear-gradient(135deg, hsl(258,80%,58%), hsl(200,80%,55%))",
+                  boxShadow: "0 4px 14px hsl(258,80%,58%,0.35)",
+                } : {}}
                 data-testid={`filter-${key}`}
               >
-                <Icon className="w-4 h-4" />
+                <Icon className="w-3.5 h-3.5" />
                 {label}
-              </Button>
+              </button>
             );
           })}
         </div>
@@ -142,12 +175,21 @@ export function ProjectsSection() {
               return (
                 <Card
                   key={project.id}
-                  className="group cursor-pointer overflow-visible hover-elevate active-elevate-2 transition-all duration-300"
+                  className="group cursor-pointer overflow-hidden hover-elevate active-elevate-2 transition-all duration-300 border border-border/60 hover:border-primary/30 hover:shadow-xl"
+                  style={{ transition: "transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease" }}
                   onClick={() => setSelectedProject(project)}
+                  onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-4px)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
                   data-testid={`card-project-${project.id}`}
                 >
-                  <div className="aspect-video bg-gradient-to-br from-muted to-muted/50 rounded-t-lg flex items-center justify-center">
-                    <Icon className="w-16 h-16 text-muted-foreground/30" />
+                  <div className={`aspect-video bg-gradient-to-br ${categoryGradients[project.category]} flex items-center justify-center relative overflow-hidden`}>
+                    <div className="absolute inset-0 opacity-30"
+                      style={{
+                        backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
+                        backgroundSize: "20px 20px",
+                      }}
+                    />
+                    <Icon className={`w-14 h-14 ${categoryIconColors[project.category]} opacity-70 group-hover:scale-110 transition-transform duration-300`} />
                   </div>
                   <CardContent className="p-5">
                     <div className="flex items-start justify-between gap-3 mb-3">
@@ -156,7 +198,7 @@ export function ProjectsSection() {
                       </h3>
                       <Badge
                         variant="outline"
-                        className={`shrink-0 ${categoryColors[project.category]}`}
+                        className={`shrink-0 rounded-full text-xs font-semibold ${categoryBadgeStyles[project.category]}`}
                       >
                         {categoryLabels[project.category]}
                       </Badge>
@@ -164,21 +206,21 @@ export function ProjectsSection() {
                     <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
                       {project.description}
                     </p>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-1.5 mb-4">
                       {project.technologies.slice(0, 3).map((tech) => (
-                        <Badge key={tech} variant="secondary" className="text-xs">
+                        <Badge key={tech} variant="secondary" className="text-xs rounded-full">
                           {tech}
                         </Badge>
                       ))}
                       {project.technologies.length > 3 && (
-                        <Badge variant="secondary" className="text-xs">
+                        <Badge variant="secondary" className="text-xs rounded-full">
                           +{project.technologies.length - 3}
                         </Badge>
                       )}
                     </div>
-                    <div className="flex items-center gap-1 mt-4 text-sm text-primary font-medium">
+                    <div className="flex items-center gap-1 text-sm font-semibold text-primary">
                       <span>Voir détails</span>
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1.5" />
                     </div>
                   </CardContent>
                 </Card>
@@ -195,7 +237,7 @@ export function ProjectsSection() {
                   <div className="flex items-center gap-3 mb-2">
                     <Badge
                       variant="outline"
-                      className={categoryColors[selectedProject.category]}
+                      className={`rounded-full ${categoryBadgeStyles[selectedProject.category]}`}
                     >
                       {categoryLabels[selectedProject.category]}
                     </Badge>
@@ -209,30 +251,30 @@ export function ProjectsSection() {
                 </DialogHeader>
 
                 <div className="space-y-6 mt-4">
-                  <div className="aspect-video bg-gradient-to-br from-muted to-muted/50 rounded-lg flex items-center justify-center">
+                  <div className={`aspect-video bg-gradient-to-br ${categoryGradients[selectedProject.category]} rounded-xl flex items-center justify-center`}>
                     {(() => {
                       const Icon = categoryIcons[selectedProject.category];
-                      return <Icon className="w-20 h-20 text-muted-foreground/30" />;
+                      return <Icon className={`w-20 h-20 ${categoryIconColors[selectedProject.category]} opacity-60`} />;
                     })()}
                   </div>
 
                   <div className="space-y-4">
-                    <div className="p-4 rounded-lg bg-muted/50">
+                    <div className="p-4 rounded-xl bg-muted/50">
                       <h4 className="font-semibold text-sm uppercase tracking-wide text-muted-foreground mb-2">
                         Problème
                       </h4>
                       <p className="text-foreground">{selectedProject.problem}</p>
                     </div>
 
-                    <div className="p-4 rounded-lg bg-primary/5 border border-primary/10">
+                    <div className="p-4 rounded-xl bg-primary/5 border border-primary/10">
                       <h4 className="font-semibold text-sm uppercase tracking-wide text-primary mb-2">
                         Solution
                       </h4>
                       <p className="text-foreground">{selectedProject.solution}</p>
                     </div>
 
-                    <div className="p-4 rounded-lg bg-green-500/5 border border-green-500/10">
-                      <h4 className="font-semibold text-sm uppercase tracking-wide text-green-600 dark:text-green-400 mb-2">
+                    <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/10">
+                      <h4 className="font-semibold text-sm uppercase tracking-wide text-emerald-600 dark:text-emerald-400 mb-2">
                         Résultat
                       </h4>
                       <p className="text-foreground">{selectedProject.result}</p>
@@ -245,7 +287,7 @@ export function ProjectsSection() {
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {selectedProject.technologies.map((tech) => (
-                        <Badge key={tech} variant="secondary">
+                        <Badge key={tech} variant="secondary" className="rounded-full">
                           {tech}
                         </Badge>
                       ))}
@@ -254,7 +296,7 @@ export function ProjectsSection() {
 
                   <div className="flex flex-wrap gap-3 pt-4 border-t">
                     {selectedProject.demoUrl && (
-                      <Button asChild>
+                      <Button asChild className="rounded-full">
                         <a
                           href={selectedProject.demoUrl}
                           target="_blank"
@@ -267,7 +309,7 @@ export function ProjectsSection() {
                       </Button>
                     )}
                     {selectedProject.downloadUrl && (
-                      <Button variant="outline" asChild>
+                      <Button variant="outline" asChild className="rounded-full">
                         <a
                           href={selectedProject.downloadUrl}
                           download
