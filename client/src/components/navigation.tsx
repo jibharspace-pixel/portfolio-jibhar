@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Download, ChevronRight } from "lucide-react";
+import { Menu, X, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Link, useLocation } from "wouter";
@@ -17,9 +17,7 @@ export function Navigation() {
   const [location] = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -29,124 +27,103 @@ export function Navigation() {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [location]);
 
-  const isActive = (href: string) => {
-    if (href === "/") return location === "/";
-    return location === href;
-  };
+  const isActive = (href: string) =>
+    href === "/" ? location === "/" : location === href;
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-background/80 backdrop-blur-xl border-b border-border shadow-sm"
+          ? "bg-white/90 dark:bg-background/90 backdrop-blur-xl border-b border-border/60 shadow-sm"
           : "bg-transparent"
       }`}
       data-testid="navigation-header"
     >
-      <nav className="max-w-7xl mx-auto px-6 py-3.5">
-        <div className="flex items-center justify-between gap-4">
-          <Link
-            href="/"
-            className="flex items-center gap-2.5"
-            data-testid="link-logo"
-          >
-            <div
-              className="flex items-center justify-center w-10 h-10 rounded-2xl font-serif font-bold text-lg text-white shadow-lg"
-              style={{
-                background: "linear-gradient(135deg, hsl(258,80%,58%), hsl(200,80%,55%))",
-                boxShadow: "0 4px 14px hsl(258,80%,58%,0.4)",
-              }}
-            >
+      <nav className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 gap-6">
+
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3 shrink-0" data-testid="link-logo">
+            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-nexalion text-white font-serif font-bold text-sm shadow-sm">
               KJS
             </div>
-            <span className="hidden md:block font-serif font-bold text-foreground">
+            <span className="hidden md:block font-serif font-semibold text-foreground tracking-tight">
               Kroman Jibhar Samuel
             </span>
           </Link>
 
-          <div className="hidden lg:flex items-center gap-1 bg-muted/60 rounded-full px-2 py-1.5 border border-border/50 backdrop-blur-sm">
+          {/* Desktop nav */}
+          <div className="hidden lg:flex items-center gap-0.5">
             {navItems.map((item) => (
               <Link key={item.href} href={item.href}>
                 <button
-                  className={`relative px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+                  className={`relative px-4 py-2 text-sm font-medium rounded-md transition-colors duration-150 ${
                     isActive(item.href)
-                      ? "text-white shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "text-primary bg-primary/8"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
                   }`}
-                  style={isActive(item.href) ? {
-                    background: "linear-gradient(135deg, hsl(258,80%,58%), hsl(200,80%,55%))",
-                    boxShadow: "0 2px 10px hsl(258,80%,58%,0.35)",
-                  } : {}}
                   data-testid={`link-nav-${item.label.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`}
                 >
                   {item.label}
+                  {isActive(item.href) && (
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-primary rounded-full" />
+                  )}
                 </button>
               </Link>
             ))}
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* Right actions */}
+          <div className="flex items-center gap-2 shrink-0">
             <ThemeToggle />
             <Button
-              variant="default"
               size="sm"
-              className="hidden sm:flex items-center gap-2 rounded-full px-5 font-semibold shadow-md transition-all hover:scale-105"
-              style={{ boxShadow: "0 4px 14px hsl(258,80%,58%,0.35)" }}
+              className="hidden sm:flex items-center gap-2 bg-nexalion hover:opacity-90 shadow-sm font-medium"
               data-testid="button-download-cv"
             >
-              <Download className="w-4 h-4" />
-              <span className="hidden md:inline">Télécharger CV</span>
-              <span className="md:hidden">CV</span>
+              <Download className="w-3.5 h-3.5" />
+              <span className="hidden md:inline text-sm">Télécharger CV</span>
+              <span className="md:hidden text-sm">CV</span>
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden rounded-xl"
+              className="lg:hidden w-9 h-9"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               data-testid="button-mobile-menu"
             >
-              {isMobileMenuOpen ? (
-                <X className="w-5 h-5" />
-              ) : (
-                <Menu className="w-5 h-5" />
-              )}
+              {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </Button>
           </div>
         </div>
       </nav>
 
+      {/* Mobile menu */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-background/95 backdrop-blur-xl border-b border-border">
-          <div className="max-w-7xl mx-auto px-6 py-4">
-            <div className="flex flex-col gap-2">
-              {navItems.map((item) => (
-                <Link key={item.href} href={item.href}>
-                  <button
-                    className={`flex items-center justify-between w-full px-4 py-3 rounded-xl text-left transition-all ${
-                      isActive(item.href)
-                        ? "text-white font-semibold"
-                        : "hover:bg-muted"
-                    }`}
-                    style={isActive(item.href) ? {
-                      background: "linear-gradient(135deg, hsl(258,80%,58%), hsl(200,80%,55%))",
-                    } : {}}
-                    data-testid={`link-mobile-${item.label.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`}
-                  >
-                    <span className="font-medium">{item.label}</span>
-                    <ChevronRight className="w-4 h-4 opacity-60" />
-                  </button>
-                </Link>
-              ))}
-              <div className="pt-2 border-t border-border mt-2">
-                <Button
-                  variant="default"
-                  className="w-full flex items-center justify-center gap-2 rounded-full font-semibold"
-                  data-testid="button-mobile-download-cv"
+        <div className="lg:hidden bg-white/95 dark:bg-background/95 backdrop-blur-xl border-b border-border">
+          <div className="max-w-7xl mx-auto px-6 py-3 flex flex-col gap-1">
+            {navItems.map((item) => (
+              <Link key={item.href} href={item.href}>
+                <button
+                  className={`w-full flex items-center px-4 py-2.5 rounded-md text-sm font-medium text-left transition-colors ${
+                    isActive(item.href)
+                      ? "text-primary bg-primary/8"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                  }`}
+                  data-testid={`link-mobile-${item.label.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`}
                 >
-                  <Download className="w-4 h-4" />
-                  Télécharger CV
-                </Button>
-              </div>
+                  {item.label}
+                </button>
+              </Link>
+            ))}
+            <div className="pt-2 mt-1 border-t border-border">
+              <Button
+                className="w-full bg-nexalion hover:opacity-90 font-medium text-sm"
+                data-testid="button-mobile-download-cv"
+              >
+                <Download className="w-3.5 h-3.5 mr-2" />
+                Télécharger CV
+              </Button>
             </div>
           </div>
         </div>

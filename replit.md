@@ -2,7 +2,7 @@
 
 ## Overview
 
-A professional portfolio website for Kroman Jibhar Samuel, a Logistics & Data Analyst freelancer based in Côte d'Ivoire. The site showcases digital solutions, data analysis services, AI integrations, and web/mobile application development. Built as a bilingual-ready (French primary) single-page application with modern design principles inspired by Linear, Stripe, and Awwwards-featured portfolios.
+A professional premium portfolio website for Kroman Jibhar Samuel, a Logistics & Data Analyst freelancer based in Côte d'Ivoire. Built with a blue/white Nexalion brand identity, multi-page routing, and a real Rust backend API.
 
 ## User Preferences
 
@@ -12,84 +12,60 @@ Preferred communication style: Simple, everyday language.
 
 ### Frontend Architecture
 - **Framework**: React 18 with TypeScript
-- **Routing**: Wouter (lightweight React router)
-- **State Management**: TanStack React Query for server state caching and synchronization
-- **Styling**: Tailwind CSS with custom design tokens and CSS variables for theming
-- **Component Library**: shadcn/ui (Radix UI primitives with custom styling)
-- **Build Tool**: Vite with React plugin
+- **Routing**: Wouter (multi-page — Accueil `/`, Projets `/projets`, À propos `/apropos`, Contact `/contact`)
+- **State Management**: TanStack React Query
+- **Styling**: Tailwind CSS with Nexalion blue/white design system
+- **Component Library**: shadcn/ui (Radix UI primitives)
+- **Build Tool**: Vite
 
 **Design System**:
-- Typography: Inter (body/UI) + Space Grotesk (headings/display) from Google Fonts
-- Theme support: Light/dark mode with system preference detection
-- CSS architecture: CSS variables for colors, extensive use of Tailwind utility classes
+- Typography: Inter (body/UI) + Space Grotesk (headings/display)
+- Color palette: Nexalion deep royal blue (`hsl(216, 90%, 40%)`) + pure white
+- Subtle grid background pattern
+- Premium aesthetic: Linear/Stripe-level polish
+- Theme support: Light/dark mode (localStorage key: `portfolio-theme`)
 
-### Backend Architecture
-- **Runtime**: Node.js with Express
-- **Language**: TypeScript (ESM modules)
-- **API Pattern**: RESTful endpoints under `/api/*` prefix
-- **Development**: Vite dev server with HMR for frontend, tsx for backend hot reloading
+### Backend Architecture — Rust (Axum)
+- **Runtime**: Rust with Axum web framework on port **3001**
+- **All API endpoints** are served by the Rust server
+- **Express/Node.js** runs on port 5000 (Vite dev server middleware + proxy to Rust for `/api/*`)
 
-**API Endpoints**:
-- `GET /api/projects` - Retrieve all portfolio projects
-- `GET /api/projects/:id` - Get specific project details
-- `GET /api/services` - List available services
-- `GET /api/skills` - Get skill categories
-- `GET /api/contact` - Get contact information
+**API Endpoints** (served by Rust):
+- `GET /api/projects` — All portfolio projects
+- `GET /api/projects/:id` — Single project
+- `GET /api/services` — Available services
+- `GET /api/skills` — Skill categories
+- `GET /api/contact` — Contact information
+
+**Rust Server Location**: `rust_server/` (Cargo.toml + src/main.rs using Axum + Tokio + Serde)
 
 ### Data Storage
-- **ORM**: Drizzle ORM with PostgreSQL dialect
-- **Schema Location**: `shared/schema.ts` (shared between client and server)
-- **Current State**: In-memory storage implementation (`server/storage.ts`) with static data for projects, services, skills, and contact info
-- **Database Ready**: Drizzle config points to PostgreSQL via `DATABASE_URL` environment variable
+- **Current**: Static in-memory data in Rust server (`rust_server/src/main.rs`)
+- **ORM**: Drizzle ORM configured for PostgreSQL (available via `DATABASE_URL`)
+- **Schema**: `shared/schema.ts`
 
 ### Project Structure
 ```
-├── client/           # Frontend React application
-│   ├── src/
-│   │   ├── components/   # React components (sections, UI)
-│   │   ├── hooks/        # Custom React hooks
-│   │   ├── lib/          # Utilities and query client
-│   │   └── pages/        # Page components
-├── server/           # Express backend
-│   ├── index.ts      # Server entry point
-│   ├── routes.ts     # API route definitions
-│   ├── storage.ts    # Data storage layer
-│   └── vite.ts       # Vite dev server integration
-├── shared/           # Shared types and schemas
-│   └── schema.ts     # Drizzle schemas and Zod types
-└── migrations/       # Database migrations (Drizzle Kit)
+├── client/              # React frontend
+│   └── src/
+│       ├── components/  # Navigation, Hero, Projects, About, Contact, Footer
+│       ├── pages/       # home.tsx, projects.tsx, about.tsx, contact.tsx
+│       └── lib/         # queryClient, utilities
+├── server/              # Node.js Express (Vite middleware + API proxy)
+│   ├── index.ts
+│   ├── routes.ts        # Proxies /api/* → Rust server on port 3001
+│   └── vite.ts
+├── rust_server/         # Rust Axum API server
+│   ├── Cargo.toml
+│   └── src/main.rs
+└── shared/              # Shared Drizzle schema + Zod types
 ```
 
-### Build System
-- **Development**: `npm run dev` - Runs tsx for server with Vite middleware
-- **Production Build**: `npm run build` - Vite builds frontend, esbuild bundles server
-- **Output**: `dist/` directory with `public/` (frontend) and `index.cjs` (server bundle)
+### Build & Run
+- **Frontend dev + proxy**: `npm run dev` (port 5000) — "Start application" workflow
+- **Rust API**: `cd rust_server && cargo run` (port 3001) — "Rust API Server" workflow
+- **Production build**: `npm run build` → `dist/`
 
-## External Dependencies
-
-### UI/Component Libraries
-- **Radix UI**: Full suite of accessible primitives (dialog, dropdown, tabs, etc.)
-- **shadcn/ui**: Pre-styled component collection built on Radix
-- **Lucide React**: Icon library
-- **Embla Carousel**: Carousel/slider functionality
-- **class-variance-authority**: Component variant management
-
-### Data & Forms
-- **TanStack React Query**: Server state management
-- **React Hook Form**: Form handling
-- **Zod**: Schema validation (integrated with Drizzle via drizzle-zod)
-
-### Database
-- **Drizzle ORM**: TypeScript-first ORM
-- **PostgreSQL**: Target database (requires `DATABASE_URL` environment variable)
-- **connect-pg-simple**: PostgreSQL session store (available for future auth)
-
-### Development Tools
-- **Vite**: Frontend build tool with HMR
-- **tsx**: TypeScript execution for Node.js
-- **Drizzle Kit**: Database migration tooling (`npm run db:push`)
-
-### Replit-Specific
-- **@replit/vite-plugin-runtime-error-modal**: Error overlay in development
-- **@replit/vite-plugin-cartographer**: Development tooling
-- **@replit/vite-plugin-dev-banner**: Development environment indicator
+## Workflows
+- **Start application**: `npm run dev` — Express + Vite on port 5000
+- **Rust API Server**: `cd rust_server && cargo run` — Axum on port 3001
