@@ -1,4 +1,4 @@
-import { ArrowRight, Mail, BarChart3, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Mail, BarChart3, CheckCircle2, FileText, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -135,6 +135,32 @@ export function HeroSection() {
                   <Mail className="w-4 h-4" />
                   Me contacter
                 </Button>
+              </Link>
+            </div>
+
+            {/* Devis CTA — rectangular banner button */}
+            <div className="animate-fade-in-up delay-600">
+              <Link href="/contact">
+                <div
+                  className="group relative flex items-center justify-between gap-4 rounded-xl border-2 border-primary/25 bg-gradient-to-r from-primary/5 to-blue-400/5 hover:border-primary/50 hover:from-primary/10 hover:to-blue-400/10 transition-all duration-300 px-5 py-4 cursor-pointer hover:-translate-y-0.5 hover:shadow-[0_6px_24px_hsl(216,90%,40%,0.14)]"
+                  data-testid="button-devis"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:border-primary transition-all duration-300">
+                      <FileText className="w-4 h-4 text-primary group-hover:text-white transition-colors duration-300" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-bold text-sm text-foreground group-hover:text-primary transition-colors duration-200 leading-snug">
+                        Demander un devis pour votre projet
+                      </p>
+                      <p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                        <Clock className="w-3 h-3 shrink-0" />
+                        Consultation gratuite · Réponse sous 24h
+                      </p>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-primary shrink-0 transition-transform duration-200 group-hover:translate-x-1" />
+                </div>
               </Link>
             </div>
 
