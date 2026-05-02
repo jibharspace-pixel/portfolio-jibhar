@@ -1,16 +1,10 @@
 import { ArrowRight, Mail, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "wouter";
 import profileImage from "@assets/WhatsApp_Image_2025-12-18_à_11.19.30_7d050f19_1766058148816.jpg";
 
 export function HeroSection() {
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <section
       id="accueil"
@@ -67,38 +61,40 @@ export function HeroSection() {
               </Badge>
             </div>
 
-            <p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
+            <p className="text-lg text-muted-foreground leading-relaxed max-xl">
               Solutions digitales et applications web pour optimiser les opérations.
               Je conçois des tableaux de bord personnalisés, des reportings automatisés
               et des solutions basées sur l'IA adaptés à votre environnement technologique.
             </p>
 
-            <p className="text-base text-muted-foreground leading-relaxed max-w-xl">
+            <p className="text-base text-muted-foreground leading-relaxed max-xl">
               Diplômé de l'INPHB en Supply Chain et passionné de technologies,
               je transforme vos données en insights actionnables.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Button
-                size="lg"
-                onClick={() => scrollToSection("#projets")}
-                className="flex items-center gap-2"
-                data-testid="button-view-projects"
-              >
-                <BarChart3 className="w-5 h-5" />
-                Voir mes projets
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => scrollToSection("#contact")}
-                className="flex items-center gap-2"
-                data-testid="button-contact-me"
-              >
-                <Mail className="w-5 h-5" />
-                Me contacter
-              </Button>
+              <Link href="/projets">
+                <Button
+                  size="lg"
+                  className="flex items-center gap-2 w-full sm:w-auto"
+                  data-testid="button-view-projects"
+                >
+                  <BarChart3 className="w-5 h-5" />
+                  Voir mes projets
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </Link>
+              <Link href="/contact">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="flex items-center gap-2 w-full sm:w-auto"
+                  data-testid="button-contact-me"
+                >
+                  <Mail className="w-5 h-5" />
+                  Me contacter
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

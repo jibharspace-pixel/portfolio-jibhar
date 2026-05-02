@@ -1,13 +1,13 @@
 import { Navigation } from "@/components/navigation";
-import { HeroSection } from "@/components/hero-section";
+import { ProjectsSection } from "@/components/projects-section";
 import { Footer } from "@/components/footer";
 
-export default function Home() {
+export default function Projects() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navigation />
-      <main>
-        <HeroSection />
+      <main className="pt-20">
+        <ProjectsSection />
       </main>
       <Footer />
     </div>
