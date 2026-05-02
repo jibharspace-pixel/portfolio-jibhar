@@ -1,6 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import http from "http";
+import path from "path";
+import express from "express";
 
 const RUST_API_PORT = 3001;
 
@@ -35,6 +37,12 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // Serve uploaded media files
+  const uploadsPath = path.join(process.cwd(), "rust_server", "uploads");
+  app.use("/uploads", express.static(uploadsPath));
+
+  // Proxy all /api/* to Rust server
   app.use("/api", proxyToRust);
+
   return httpServer;
 }

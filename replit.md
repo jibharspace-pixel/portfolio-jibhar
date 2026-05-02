@@ -66,6 +66,14 @@ Preferred communication style: Simple, everyday language.
 - **Rust API**: `cd rust_server && cargo run` (port 3001) — "Rust API Server" workflow
 - **Production build**: `npm run build` → `dist/`
 
+## Admin Page
+- **Route**: `/admin` — password-protected media management interface
+- **Password**: `nexalion2024` (or set `ADMIN_PASSWORD` env var in Rust)
+- **Features**: Upload photos/videos per project card, media gallery, delete media
+- **Upload API**: `POST /api/admin/projects/:id/upload` with `x-admin-password` header (multipart)
+- **Delete API**: `DELETE /api/admin/media/:mediaId` with `x-admin-password` header
+- **Uploads storage**: `rust_server/uploads/` served by Express at `/uploads`
+
 ## Workflows
 - **Start application**: `npm run dev` — Express + Vite on port 5000
 - **Rust API Server**: `cd rust_server && cargo run` — Axum on port 3001

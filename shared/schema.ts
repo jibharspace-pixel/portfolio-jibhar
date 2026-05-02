@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -17,6 +17,16 @@ export const insertUserSchema = createInsertSchema(users).pick({
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 
+// Media item attached to a project
+export const mediaItemSchema = z.object({
+  id: z.string(),
+  url: z.string(),
+  media_type: z.enum(["image", "video"]),
+  project_id: z.string(),
+  filename: z.string(),
+});
+export type MediaItem = z.infer<typeof mediaItemSchema>;
+
 // Project schema for portfolio
 export const projectSchema = z.object({
   id: z.string(),
@@ -27,11 +37,10 @@ export const projectSchema = z.object({
   result: z.string(),
   technologies: z.array(z.string()),
   category: z.enum(["data", "web", "automation", "ai"]),
-  image: z.string().optional(),
   demoUrl: z.string().optional(),
   downloadUrl: z.string().optional(),
+  media: z.array(mediaItemSchema).optional(),
 });
-
 export type Project = z.infer<typeof projectSchema>;
 
 // Service schema
@@ -42,7 +51,6 @@ export const serviceSchema = z.object({
   icon: z.string(),
   features: z.array(z.string()),
 });
-
 export type Service = z.infer<typeof serviceSchema>;
 
 // Skill category schema
@@ -52,7 +60,6 @@ export const skillCategorySchema = z.object({
   icon: z.string(),
   skills: z.array(z.string()),
 });
-
 export type SkillCategory = z.infer<typeof skillCategorySchema>;
 
 // Contact info schema
@@ -62,5 +69,4 @@ export const contactInfoSchema = z.object({
   whatsapp: z.string().optional(),
   github: z.string().url().optional(),
 });
-
 export type ContactInfo = z.infer<typeof contactInfoSchema>;

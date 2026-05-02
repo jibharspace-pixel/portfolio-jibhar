@@ -1,15 +1,31 @@
 use axum::{
-    extract::Path,
-    http::StatusCode,
+    extract::{Multipart, Path, State},
+    http::{HeaderMap, Method, StatusCode},
     response::Json,
-    routing::get,
+    routing::{delete, get, post},
     Router,
 };
 use serde::{Deserialize, Serialize};
-use std::net::SocketAddr;
+use std::{
+    collections::HashMap,
+    net::SocketAddr,
+    sync::{Arc, Mutex},
+};
 use tower_http::cors::{Any, CorsLayer};
+use uuid::Uuid;
 
-#[derive(Serialize, Deserialize, Clone)]
+// ─── Types ───────────────────────────────────────────────────────────────────
+
+#[derive(Clone, Serialize, Deserialize)]
+struct MediaItem {
+    id: String,
+    url: String,
+    media_type: String,
+    project_id: String,
+    filename: String,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
 struct Project {
     id: String,
     title: String,
@@ -23,9 +39,11 @@ struct Project {
     demo_url: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     download_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    media: Option<Vec<MediaItem>>,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 struct Service {
     id: String,
     title: String,
@@ -34,7 +52,7 @@ struct Service {
     features: Vec<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 struct SkillCategory {
     id: String,
     title: String,
@@ -42,7 +60,7 @@ struct SkillCategory {
     skills: Vec<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 struct ContactInfo {
     email: String,
     linkedin: String,
@@ -50,7 +68,16 @@ struct ContactInfo {
     github: String,
 }
 
-fn get_projects() -> Vec<Project> {
+// ─── App State ───────────────────────────────────────────────────────────────
+
+#[derive(Clone)]
+struct AppState {
+    media: Arc<Mutex<HashMap<String, Vec<MediaItem>>>>,
+}
+
+// ─── Static Data ─────────────────────────────────────────────────────────────
+
+fn base_projects() -> Vec<Project> {
     vec![
         Project {
             id: "dashboard-rh".into(),
@@ -63,6 +90,7 @@ fn get_projects() -> Vec<Project> {
             category: "data".into(),
             demo_url: Some("#".into()),
             download_url: None,
+            media: None,
         },
         Project {
             id: "inventory-app".into(),
@@ -75,6 +103,7 @@ fn get_projects() -> Vec<Project> {
             category: "web".into(),
             demo_url: None,
             download_url: None,
+            media: None,
         },
         Project {
             id: "vba-automation".into(),
@@ -87,6 +116,7 @@ fn get_projects() -> Vec<Project> {
             category: "automation".into(),
             demo_url: None,
             download_url: None,
+            media: None,
         },
         Project {
             id: "chatbot-support".into(),
@@ -99,6 +129,7 @@ fn get_projects() -> Vec<Project> {
             category: "ai".into(),
             demo_url: None,
             download_url: None,
+            media: None,
         },
         Project {
             id: "logistics-dashboard".into(),
@@ -111,6 +142,7 @@ fn get_projects() -> Vec<Project> {
             category: "data".into(),
             demo_url: None,
             download_url: None,
+            media: None,
         },
         Project {
             id: "web-portfolio".into(),
@@ -123,87 +155,45 @@ fn get_projects() -> Vec<Project> {
             category: "web".into(),
             demo_url: None,
             download_url: None,
+            media: None,
         },
     ]
 }
 
-fn get_services() -> Vec<Service> {
-    vec![
-        Service {
-            id: "data-analysis".into(),
-            title: "Analyse de données & IA".into(),
-            description: "Transformez vos données en insights actionnables avec des tableaux de bord interactifs et des analyses avancées.".into(),
-            icon: "BarChart3".into(),
-            features: vec!["Power BI".into(), "Excel avancé".into(), "SQL".into(), "Power Pivot".into(), "DAX".into()],
-        },
-        Service {
-            id: "ai-solutions".into(),
-            title: "Solutions IA & Vibe Coding".into(),
-            description: "Intégration d'intelligence artificielle et prototypage rapide pour accélérer vos projets.".into(),
-            icon: "Brain".into(),
-            features: vec!["Replit AI".into(), "ChatGPT".into(), "Lovable".into(), "Prototypage express".into()],
-        },
-        Service {
-            id: "chatbot".into(),
-            title: "Chatbot personnalisé".into(),
-            description: "Création de chatbots intelligents pour automatiser vos interactions client.".into(),
-            icon: "MessageSquare".into(),
-            features: vec!["Intégration IA".into(), "Support 24/7".into(), "Personnalisation complète".into()],
-        },
-        Service {
-            id: "excel-vba".into(),
-            title: "Automatisation Excel VBA".into(),
-            description: "Automatisez vos tâches répétitives et optimisez vos processus Excel.".into(),
-            icon: "FileSpreadsheet".into(),
-            features: vec!["Macros VBA".into(), "Automatisation".into(), "Reporting".into(), "Maintenance".into()],
-        },
-    ]
+fn projects_with_media(state: &AppState) -> Vec<Project> {
+    let store = state.media.lock().unwrap();
+    base_projects()
+        .into_iter()
+        .map(|mut p| {
+            p.media = store.get(&p.id).cloned();
+            p
+        })
+        .collect()
 }
 
-fn get_skills() -> Vec<SkillCategory> {
-    vec![
-        SkillCategory {
-            id: "web-dev".into(),
-            title: "Développement Web".into(),
-            icon: "Code2".into(),
-            skills: vec!["HTML5".into(), "CSS3".into(), "JavaScript ES6+".into(), "React.js".into(), "TypeScript".into()],
-        },
-        SkillCategory {
-            id: "data-bi".into(),
-            title: "Data, BI & Analyse".into(),
-            icon: "Database".into(),
-            skills: vec!["Excel avancé".into(), "Power BI (DAX)".into(), "SQL".into(), "Tableaux de bord".into()],
-        },
-        SkillCategory {
-            id: "ai-automation".into(),
-            title: "IA & Automatisation".into(),
-            icon: "Cpu".into(),
-            skills: vec!["Intégration IA".into(), "Automatisation processus".into(), "Vibe Coding".into()],
-        },
-        SkillCategory {
-            id: "supply-chain".into(),
-            title: "Supply Chain & Logistique".into(),
-            icon: "Truck".into(),
-            skills: vec!["Analyse des flux".into(), "Gestion transports".into(), "Suivi KPI".into()],
-        },
-    ]
+// ─── Auth Helper ─────────────────────────────────────────────────────────────
+
+fn check_admin_auth(headers: &HeaderMap) -> bool {
+    let password = std::env::var("ADMIN_PASSWORD")
+        .unwrap_or_else(|_| "nexalion2024".to_string());
+    headers
+        .get("x-admin-password")
+        .and_then(|v| v.to_str().ok())
+        .map(|v| v == password)
+        .unwrap_or(false)
 }
 
-fn get_contact() -> ContactInfo {
-    ContactInfo {
-        email: "jibharkroman@gmail.com".into(),
-        linkedin: "https://linkedin.com/in/kroman-jibhar-samuel".into(),
-        whatsapp: "+225 0700000000".into(),
-        github: "https://github.com/kromanjibhar".into(),
-    }
+// ─── Route Handlers ──────────────────────────────────────────────────────────
+
+async fn list_projects(State(state): State<AppState>) -> Json<Vec<Project>> {
+    Json(projects_with_media(&state))
 }
 
-async fn list_projects() -> Json<Vec<Project>> {
-    Json(get_projects())
-}
-
-async fn get_project(Path(id): Path<String>) -> Result<Json<Project>, StatusCode> {
-    get_projects()
+async fn get_project(
+    Path(id): Path<String>,
+    State(state): State<AppState>,
+) -> Result<Json<Project>, StatusCode> {
+    projects_with_media(&state)
         .into_iter()
         .find(|p| p.id == id)
         .map(Json)
@@ -211,26 +201,193 @@ async fn get_project(Path(id): Path<String>) -> Result<Json<Project>, StatusCode
 }
 
 async fn list_services() -> Json<Vec<Service>> {
-    Json(get_services())
+    Json(vec![
+        Service {
+            id: "data-analysis".into(),
+            title: "Analyse de données & IA".into(),
+            description: "Transformez vos données en insights actionnables avec des tableaux de bord interactifs.".into(),
+            icon: "BarChart3".into(),
+            features: vec!["Power BI".into(), "Excel avancé".into(), "SQL".into(), "DAX".into()],
+        },
+        Service {
+            id: "ai-solutions".into(),
+            title: "Solutions IA & Automatisation".into(),
+            description: "Intégration d'intelligence artificielle et automatisation de processus.".into(),
+            icon: "Brain".into(),
+            features: vec!["ChatGPT API".into(), "Automatisation".into(), "Vibe Coding".into()],
+        },
+        Service {
+            id: "web-dev".into(),
+            title: "Développement Web".into(),
+            description: "Applications web modernes et performantes avec les dernières technologies.".into(),
+            icon: "Globe".into(),
+            features: vec!["React / TypeScript".into(), "REST API".into(), "PostgreSQL".into()],
+        },
+    ])
 }
 
-async fn list_skills() -> Json<Vec<SkillCategory>> {
-    Json(get_skills())
+async fn list_skills() -> Json<Vec<serde_json::Value>> {
+    Json(vec![
+        serde_json::json!({ "id": "1", "title": "Data & BI", "icon": "BarChart3", "skills": ["Power BI", "Tableau", "SQL", "DAX", "Python (Pandas, NumPy)"] }),
+        serde_json::json!({ "id": "2", "title": "Développement", "icon": "Code2", "skills": ["React / TypeScript", "Node.js", "Rust", "PostgreSQL", "REST API"] }),
+        serde_json::json!({ "id": "3", "title": "Logistique & Supply Chain", "icon": "Package", "skills": ["Gestion des stocks", "Optimisation des flux", "ERP", "Lean Management"] }),
+        serde_json::json!({ "id": "4", "title": "IA & Machine Learning", "icon": "Brain", "skills": ["Scikit-learn", "TensorFlow", "NLP", "Prévision temporelle"] }),
+    ])
 }
 
-async fn contact_info() -> Json<ContactInfo> {
-    Json(get_contact())
+async fn get_contact() -> Json<ContactInfo> {
+    Json(ContactInfo {
+        email: "jibharkroman@gmail.com".into(),
+        linkedin: "https://linkedin.com/in/kroman-jibhar-samuel".into(),
+        whatsapp: "+225 0700000000".into(),
+        github: "https://github.com/kromanjibhar".into(),
+    })
 }
 
 async fn health() -> &'static str {
     "OK"
 }
 
+// ─── Admin: Upload Media ──────────────────────────────────────────────────────
+
+async fn upload_media(
+    Path(project_id): Path<String>,
+    State(state): State<AppState>,
+    headers: HeaderMap,
+    mut multipart: Multipart,
+) -> Result<Json<MediaItem>, (StatusCode, String)> {
+    if !check_admin_auth(&headers) {
+        return Err((StatusCode::UNAUTHORIZED, "Mot de passe invalide".to_string()));
+    }
+
+    tokio::fs::create_dir_all("uploads")
+        .await
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+
+    while let Some(field) = multipart
+        .next_field()
+        .await
+        .map_err(|e| (StatusCode::BAD_REQUEST, e.to_string()))?
+    {
+        let content_type = field
+            .content_type()
+            .unwrap_or("application/octet-stream")
+            .to_string();
+        let original_name = field.file_name().unwrap_or("upload.bin").to_string();
+
+        let media_type = if content_type.starts_with("image/")
+            || ["jpg", "jpeg", "png", "gif", "webp", "svg", "avif"]
+                .iter()
+                .any(|ext| original_name.to_lowercase().ends_with(ext))
+        {
+            "image"
+        } else if content_type.starts_with("video/")
+            || ["mp4", "webm", "mov", "avi", "mkv"]
+                .iter()
+                .any(|ext| original_name.to_lowercase().ends_with(ext))
+        {
+            "video"
+        } else {
+            return Err((
+                StatusCode::BAD_REQUEST,
+                "Type non supporté. Utilisez image (jpg/png/webp) ou vidéo (mp4/webm).".to_string(),
+            ));
+        };
+
+        let ext = original_name.split('.').last().unwrap_or("bin");
+        let id = Uuid::new_v4().to_string();
+        let filename = format!("{}.{}", id, ext);
+        let file_path = format!("uploads/{}", filename);
+
+        let bytes = field
+            .bytes()
+            .await
+            .map_err(|e| (StatusCode::BAD_REQUEST, e.to_string()))?;
+
+        tokio::fs::write(&file_path, &bytes)
+            .await
+            .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+
+        let item = MediaItem {
+            id: id.clone(),
+            url: format!("/uploads/{}", filename),
+            media_type: media_type.to_string(),
+            project_id: project_id.clone(),
+            filename,
+        };
+
+        state
+            .media
+            .lock()
+            .unwrap()
+            .entry(project_id.clone())
+            .or_default()
+            .push(item.clone());
+
+        return Ok(Json(item));
+    }
+
+    Err((StatusCode::BAD_REQUEST, "Aucun fichier reçu".to_string()))
+}
+
+// ─── Admin: Get Project Media ─────────────────────────────────────────────────
+
+async fn get_project_media(
+    Path(project_id): Path<String>,
+    State(state): State<AppState>,
+) -> Json<Vec<MediaItem>> {
+    let store = state.media.lock().unwrap();
+    Json(store.get(&project_id).cloned().unwrap_or_default())
+}
+
+// ─── Admin: Delete Media Item ─────────────────────────────────────────────────
+
+async fn delete_media_item(
+    Path(media_id): Path<String>,
+    State(state): State<AppState>,
+    headers: HeaderMap,
+) -> Result<StatusCode, StatusCode> {
+    if !check_admin_auth(&headers) {
+        return Err(StatusCode::UNAUTHORIZED);
+    }
+
+    let mut store = state.media.lock().unwrap();
+    let mut found_filename: Option<String> = None;
+
+    for items in store.values_mut() {
+        if let Some(pos) = items.iter().position(|m| m.id == media_id) {
+            found_filename = Some(items[pos].filename.clone());
+            items.remove(pos);
+            break;
+        }
+    }
+
+    if let Some(filename) = found_filename {
+        let _ = std::fs::remove_file(format!("uploads/{}", filename));
+        Ok(StatusCode::NO_CONTENT)
+    } else {
+        Err(StatusCode::NOT_FOUND)
+    }
+}
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
+
 #[tokio::main]
 async fn main() {
+    tokio::fs::create_dir_all("uploads").await.ok();
+
+    let state = AppState {
+        media: Arc::new(Mutex::new(HashMap::new())),
+    };
+
     let cors = CorsLayer::new()
         .allow_origin(Any)
-        .allow_methods(Any)
+        .allow_methods([
+            Method::GET,
+            Method::POST,
+            Method::DELETE,
+            Method::OPTIONS,
+        ])
         .allow_headers(Any);
 
     let app = Router::new()
@@ -238,9 +395,13 @@ async fn main() {
         .route("/api/projects/:id", get(get_project))
         .route("/api/services", get(list_services))
         .route("/api/skills", get(list_skills))
-        .route("/api/contact", get(contact_info))
+        .route("/api/contact", get(get_contact))
+        .route("/api/admin/projects/:id/upload", post(upload_media))
+        .route("/api/admin/projects/:id/media", get(get_project_media))
+        .route("/api/admin/media/:media_id", delete(delete_media_item))
         .route("/health", get(health))
-        .layer(cors);
+        .layer(cors)
+        .with_state(state);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 3001));
     println!("🦀 Rust API server running on http://0.0.0.0:3001");
