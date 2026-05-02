@@ -1,4 +1,4 @@
-import { ArrowRight, Mail, BarChart3, MapPin, CheckCircle2, Sparkles } from "lucide-react";
+import { ArrowRight, Mail, BarChart3, MapPin, CheckCircle2, Cog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
@@ -12,8 +12,8 @@ const stats = [
 
 const techItems = [
   "Power BI", "React.js", "TypeScript", "Rust", "SQL", "Excel VBA",
-  "Python", "Node.js", "Tailwind CSS", "ChatGPT API", "Supply Chain",
-  "DAX", "PostgreSQL", "Automatisation",
+  "Python", "Node.js", "Tailwind CSS", "Supply Chain",
+  "DAX", "PostgreSQL", "Automatisation", "Power Query",
 ];
 
 const highlights = [
@@ -86,8 +86,8 @@ export function HeroSection() {
 
               {/* Floating skill chip right */}
               <div className="hidden sm:flex absolute -right-10 top-[55%] glass-card rounded-xl px-3 py-2 shadow-lg items-center gap-2 animate-float-d border border-white/60">
-                <Sparkles className="w-3.5 h-3.5 text-purple-500" />
-                <span className="text-xs font-semibold text-purple-500 whitespace-nowrap">IA & Auto.</span>
+                <Cog className="w-3.5 h-3.5 text-amber-500" />
+                <span className="text-xs font-semibold text-amber-500 whitespace-nowrap">Automatisation</span>
               </div>
             </div>
           </div>

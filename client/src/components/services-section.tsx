@@ -1,5 +1,5 @@
 import {
-  BarChart3, Brain, Code2, Cog, Truck, Sparkles,
+  BarChart3, Code2, Cog,
   CheckCircle2, Search, Pencil, Zap, PackageCheck,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -42,21 +42,21 @@ const services = [
     ],
   },
   {
-    id: "ai",
-    icon: Sparkles,
-    accent: "from-purple-500 to-violet-600",
-    iconBg: "bg-purple-50 dark:bg-purple-950/40",
-    iconColor: "text-purple-600 dark:text-purple-400",
-    glow: "card-hover-glow-purple",
-    borderHover: "hover:border-purple-300/60",
-    title: "IA & Automatisation",
+    id: "automation",
+    icon: Cog,
+    accent: "from-amber-500 to-orange-500",
+    iconBg: "bg-amber-50 dark:bg-amber-950/40",
+    iconColor: "text-amber-600 dark:text-amber-400",
+    glow: "card-hover-glow-amber",
+    borderHover: "hover:border-amber-300/60",
+    title: "Automatisation & Supply Chain",
     description:
-      "Intégrez l'intelligence artificielle et automatisez vos processus répétitifs pour gagner en efficacité chaque semaine.",
+      "Automatisez vos tâches répétitives et optimisez vos flux logistiques pour gagner en efficacité et réduire les erreurs.",
     features: [
-      "ChatGPT & LLM APIs",
-      "VBA & Macros Excel",
-      "Scripts Python / ML",
-      "Workflows automatisés",
+      "Macros VBA & Power Automate",
+      "Scripts Python & Power Query",
+      "Gestion des stocks & KPIs",
+      "Optimisation des flux logistiques",
     ],
   },
 ];
