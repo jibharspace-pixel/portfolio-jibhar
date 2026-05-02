@@ -6,6 +6,7 @@ import {
   AlertCircle, Loader2, X, BarChart3, Users, Globe, Cog, Brain,
   FileSpreadsheet, FileText, Database, Package, ArrowDownToLine,
   TrendingUp, Image, Video, ImagePlus, ChevronDown, ChevronUp, Save,
+  Settings, Mail, Phone, Link2, AlignLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -627,15 +628,190 @@ function MediaSection({ password }: { password: string }) {
   );
 }
 
+// ─── Infos Section ────────────────────────────────────────────────────────────
+
+interface ContactInfo { email: string; linkedin: string; whatsapp: string; github: string; }
+interface SiteContent { hero_description: string; hero_highlights: string[]; about_quote: string; }
+
+function InfosSection({ password }: { password: string }) {
+  const qc = useQueryClient();
+
+  const { data: contact, isLoading: loadingContact } = useQuery<ContactInfo>({
+    queryKey: ["/api/contact"],
+  });
+  const { data: content, isLoading: loadingContent } = useQuery<SiteContent>({
+    queryKey: ["/api/site-content"],
+  });
+
+  const [contactForm, setContactForm] = useState<ContactInfo | null>(null);
+  const [contentForm, setContentForm] = useState<SiteContent | null>(null);
+  const [savingContact, setSavingContact] = useState(false);
+  const [savedContact, setSavedContact] = useState(false);
+  const [savingContent, setSavingContent] = useState(false);
+  const [savedContent, setSavedContent] = useState(false);
+
+  const cf = contactForm ?? contact ?? { email: "", linkedin: "", whatsapp: "", github: "" };
+  const sf = contentForm ?? content ?? { hero_description: "", hero_highlights: ["", "", ""], about_quote: "" };
+
+  const saveContact = async () => {
+    setSavingContact(true);
+    await fetch("/api/admin/contact", { method: "PUT", headers: { "Content-Type": "application/json", "x-admin-password": password }, body: JSON.stringify(cf) });
+    qc.invalidateQueries({ queryKey: ["/api/contact"] });
+    setSavingContact(false); setSavedContact(true);
+    setTimeout(() => setSavedContact(false), 2500);
+  };
+
+  const saveContent = async () => {
+    setSavingContent(true);
+    const payload = { ...sf, hero_highlights: sf.hero_highlights.filter(h => h.trim()) };
+    await fetch("/api/admin/site-content", { method: "PUT", headers: { "Content-Type": "application/json", "x-admin-password": password }, body: JSON.stringify(payload) });
+    qc.invalidateQueries({ queryKey: ["/api/site-content"] });
+    setSavingContent(false); setSavedContent(true);
+    setTimeout(() => setSavedContent(false), 2500);
+  };
+
+  const updateHighlight = (i: number, val: string) => {
+    const highlights = [...(sf.hero_highlights ?? ["", "", ""])];
+    highlights[i] = val;
+    setContentForm(prev => ({ ...(prev ?? sf), hero_highlights: highlights }));
+  };
+
+  return (
+    <div className="space-y-7">
+      <div>
+        <h2 className="font-serif text-xl font-bold text-foreground mb-1">Informations du site</h2>
+        <p className="text-sm text-muted-foreground">Modifiez les coordonnées et les textes affichés sur votre portfolio.</p>
+      </div>
+
+      {/* Contact info */}
+      <Card className="border border-border/60">
+        <div className="flex items-center gap-2.5 px-5 py-4 border-b border-border/60 bg-muted/20">
+          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+            <Mail className="w-4 h-4 text-primary" />
+          </div>
+          <div>
+            <p className="font-semibold text-sm text-foreground">Coordonnées de contact</p>
+            <p className="text-xs text-muted-foreground">Affichées dans la page Contact et le pied de page</p>
+          </div>
+        </div>
+        <CardContent className="p-5 space-y-4">
+          {loadingContact ? (
+            <div className="space-y-3">{[1,2,3,4].map(i => <div key={i} className="h-9 bg-muted/40 rounded-md animate-pulse" />)}</div>
+          ) : (
+            <>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block flex items-center gap-1.5">
+                    <Mail className="w-3 h-3" />Email
+                  </label>
+                  <Input value={cf.email} onChange={e => setContactForm(p => ({ ...(p ?? cf), email: e.target.value }))} placeholder="votre@email.com" className="h-9 text-sm" data-testid="input-contact-email" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block flex items-center gap-1.5">
+                    <Phone className="w-3 h-3" />WhatsApp
+                  </label>
+                  <Input value={cf.whatsapp} onChange={e => setContactForm(p => ({ ...(p ?? cf), whatsapp: e.target.value }))} placeholder="+225 07 00 00 00 00" className="h-9 text-sm" data-testid="input-contact-whatsapp" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block flex items-center gap-1.5">
+                    <Link2 className="w-3 h-3" />LinkedIn (URL)
+                  </label>
+                  <Input value={cf.linkedin} onChange={e => setContactForm(p => ({ ...(p ?? cf), linkedin: e.target.value }))} placeholder="https://linkedin.com/in/..." className="h-9 text-sm" data-testid="input-contact-linkedin" />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block flex items-center gap-1.5">
+                    <Link2 className="w-3 h-3" />GitHub (URL)
+                  </label>
+                  <Input value={cf.github} onChange={e => setContactForm(p => ({ ...(p ?? cf), github: e.target.value }))} placeholder="https://github.com/..." className="h-9 text-sm" data-testid="input-contact-github" />
+                </div>
+              </div>
+              <div className="flex justify-end pt-1 border-t border-border/60">
+                <Button onClick={saveContact} disabled={savingContact} size="sm" className="bg-nexalion hover:opacity-90 font-medium" data-testid="button-save-contact">
+                  {savingContact ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" /> : savedContact ? <CheckCircle className="w-3.5 h-3.5 mr-1.5 text-green-400" /> : <Save className="w-3.5 h-3.5 mr-1.5" />}
+                  {savedContact ? "Sauvegardé !" : "Enregistrer"}
+                </Button>
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Site texts */}
+      <Card className="border border-border/60">
+        <div className="flex items-center gap-2.5 px-5 py-4 border-b border-border/60 bg-muted/20">
+          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+            <AlignLeft className="w-4 h-4 text-primary" />
+          </div>
+          <div>
+            <p className="font-semibold text-sm text-foreground">Textes de la page d'accueil</p>
+            <p className="text-xs text-muted-foreground">Description principale et points forts affichés dans le hero</p>
+          </div>
+        </div>
+        <CardContent className="p-5 space-y-4">
+          {loadingContent ? (
+            <div className="space-y-3">{[1,2,3].map(i => <div key={i} className="h-9 bg-muted/40 rounded-md animate-pulse" />)}</div>
+          ) : (
+            <>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">Description principale</label>
+                <textarea
+                  value={sf.hero_description}
+                  onChange={e => setContentForm(p => ({ ...(p ?? sf), hero_description: e.target.value }))}
+                  rows={3}
+                  placeholder="Je conçois des solutions digitales..."
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+                  data-testid="input-hero-description"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">Points forts (3 lignes sous la description)</label>
+                <div className="space-y-2">
+                  {[0, 1, 2].map(i => (
+                    <Input
+                      key={i}
+                      value={sf.hero_highlights?.[i] ?? ""}
+                      onChange={e => updateHighlight(i, e.target.value)}
+                      placeholder={`Point fort ${i + 1}`}
+                      className="h-9 text-sm"
+                      data-testid={`input-highlight-${i}`}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">Citation (page À propos)</label>
+                <Input
+                  value={sf.about_quote}
+                  onChange={e => setContentForm(p => ({ ...(p ?? sf), about_quote: e.target.value }))}
+                  placeholder="Autodidacte déterminé..."
+                  className="h-9 text-sm"
+                  data-testid="input-about-quote"
+                />
+              </div>
+              <div className="flex justify-end pt-1 border-t border-border/60">
+                <Button onClick={saveContent} disabled={savingContent} size="sm" className="bg-nexalion hover:opacity-90 font-medium" data-testid="button-save-content">
+                  {savingContent ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" /> : savedContent ? <CheckCircle className="w-3.5 h-3.5 mr-1.5 text-green-400" /> : <Save className="w-3.5 h-3.5 mr-1.5" />}
+                  {savedContent ? "Sauvegardé !" : "Enregistrer"}
+                </Button>
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 // ─── Admin Layout ─────────────────────────────────────────────────────────────
 
-type Section = "dashboard" | "blog" | "files" | "media";
+type Section = "dashboard" | "blog" | "files" | "media" | "infos";
 
 const sidebarItems: { id: Section; label: string; icon: typeof LayoutDashboard }[] = [
   { id: "dashboard", label: "Tableau de bord", icon: LayoutDashboard },
   { id: "blog", label: "Blog", icon: BookOpen },
   { id: "files", label: "Ressources", icon: FolderOpen },
   { id: "media", label: "Médias", icon: ImageIcon },
+  { id: "infos", label: "Informations", icon: Settings },
 ];
 
 function AdminLayout({ password, onLogout }: { password: string; onLogout: () => void }) {
@@ -709,6 +885,7 @@ function AdminLayout({ password, onLogout }: { password: string; onLogout: () =>
           {section === "blog" && <BlogSection password={password} />}
           {section === "files" && <FilesSection password={password} />}
           {section === "media" && <MediaSection password={password} />}
+          {section === "infos" && <InfosSection password={password} />}
         </div>
       </main>
     </div>

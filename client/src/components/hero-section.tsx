@@ -1,7 +1,7 @@
-import { ArrowRight, Mail, BarChart3, MapPin, CheckCircle2, Cog } from "lucide-react";
+import { ArrowRight, Mail, BarChart3, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import profileImage from "@assets/WhatsApp_Image_2025-12-18_à_11.19.30_7d050f19_1766058148816.jpg";
 
 const stats = [
@@ -16,61 +16,80 @@ const techItems = [
   "DAX", "PostgreSQL", "Automatisation", "Power Query",
 ];
 
-const highlights = [
+const defaultHighlights = [
   "Tableaux de bord Power BI",
   "Applications React / TypeScript",
   "Automatisation VBA & Python",
 ];
 
+const defaultDescription =
+  "Je conçois des solutions digitales et des tableaux de bord sur mesure qui transforment vos données en décisions. Données, automatisation, web — adaptés à votre contexte métier.";
+
+interface SiteContent {
+  hero_description: string;
+  hero_highlights: string[];
+  about_quote: string;
+}
+
 export function HeroSection() {
+  const { data: content } = useQuery<SiteContent>({ queryKey: ["/api/site-content"] });
+
+  const description = content?.hero_description ?? defaultDescription;
+  const highlights = content?.hero_highlights ?? defaultHighlights;
+
   return (
     <section
       id="accueil"
       className="relative min-h-screen flex flex-col justify-center pt-16 overflow-hidden"
       data-testid="section-hero"
     >
-      {/* ── Background layers ─────────────────────── */}
+      {/* ── Background ─────────────────────────────────────────────── */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/4 via-transparent to-blue-400/3 pointer-events-none" />
-
-      {/* Animated orbs */}
       <div className="section-blob w-[520px] h-[520px] bg-primary/10 -top-24 -right-24 animate-glow-pulse" />
       <div className="section-blob w-[380px] h-[380px] bg-blue-400/10 bottom-0 -left-24 animate-glow-pulse delay-500" />
-      <div className="section-blob w-[260px] h-[260px] bg-primary/8 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-glow-pulse delay-300" />
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20 w-full">
         <div className="grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
 
-          {/* ── Left: Profile photo ────────────────── */}
+          {/* ── Left: Profile photo ────────────────────────────────── */}
           <div className="order-2 lg:order-1 flex justify-center lg:justify-start animate-fade-in delay-200">
             <div className="relative">
-              {/* Outer spinning ring */}
-              <div className="absolute -inset-5 rounded-[28px] border border-primary/20 animate-spin-slow opacity-50 pointer-events-none" />
-              {/* Glow halo */}
-              <div className="absolute -inset-3 rounded-[24px] bg-gradient-to-br from-primary/20 via-blue-400/10 to-transparent blur-2xl pointer-events-none" />
-
+              {/* Accent offset block — bottom-right */}
+              <div className="absolute -bottom-4 -right-4 w-full h-full rounded-[22px] bg-gradient-to-br from-primary/15 to-blue-400/8 border border-primary/15" />
+              {/* Corner accent — top-left */}
+              <div className="absolute -top-3 -left-3 w-10 h-10 border-t-2 border-l-2 border-primary/40 rounded-tl-xl pointer-events-none" />
               {/* Photo frame */}
-              <div className="relative w-[260px] h-[340px] sm:w-[296px] sm:h-[380px] lg:w-[310px] lg:h-[400px] rounded-[20px] overflow-hidden shadow-2xl border border-white/20">
+              <div className="relative w-[260px] h-[340px] sm:w-[295px] sm:h-[384px] lg:w-[310px] lg:h-[404px] rounded-[20px] overflow-hidden shadow-2xl border-2 border-white/60">
                 <img
                   src={profileImage}
                   alt="Kroman Jibhar Samuel"
                   className="w-full h-full object-cover object-top"
                   data-testid="img-profile"
                 />
+                {/* Bottom gradient overlay for depth */}
+                <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+              </div>
+              {/* Location pill — bottom of photo */}
+              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white border border-border/60 shadow-md rounded-full px-3 py-1 flex items-center gap-1.5 whitespace-nowrap">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />
+                <span className="text-[11px] font-semibold text-foreground/80">Disponible · Côte d'Ivoire</span>
               </div>
             </div>
           </div>
 
-          {/* ── Right: Content ────────────────────── */}
+          {/* ── Right: Content ────────────────────────────────────── */}
           <div className="order-1 lg:order-2 space-y-6">
-            <div className="space-y-1 animate-fade-in-up">
-              <h1 className="font-serif text-5xl sm:text-6xl lg:text-[3.6rem] xl:text-[4rem] font-bold leading-[1.05] tracking-tight text-foreground">
+            {/* Name */}
+            <div className="space-y-0.5 animate-fade-in-up">
+              <h1 className="font-serif text-5xl sm:text-6xl lg:text-[3.7rem] xl:text-[4.1rem] font-bold leading-[1.04] tracking-tight text-foreground">
                 Kroman Jibhar
               </h1>
-              <h1 className="font-serif text-5xl sm:text-6xl lg:text-[3.6rem] xl:text-[4rem] font-bold leading-[1.05] tracking-tight text-gradient">
+              <h1 className="font-serif text-5xl sm:text-6xl lg:text-[3.7rem] xl:text-[4.1rem] font-bold leading-[1.04] tracking-tight text-gradient">
                 Samuel
               </h1>
             </div>
 
+            {/* Role label */}
             <div className="flex items-center gap-3 animate-fade-in-up delay-200">
               <div className="h-px w-8 bg-primary/40 shrink-0" />
               <p className="text-sm font-bold text-primary tracking-widest uppercase">
@@ -78,10 +97,9 @@ export function HeroSection() {
               </p>
             </div>
 
+            {/* Description */}
             <p className="text-[0.95rem] text-muted-foreground leading-relaxed max-w-lg animate-fade-in-up delay-300">
-              Je conçois des solutions digitales et des tableaux de bord sur mesure
-              qui transforment vos données en décisions. IA, automatisation, web —
-              adaptés à votre environnement technologique.
+              {description}
             </p>
 
             {/* Highlights */}
@@ -135,7 +153,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* ── Tech marquee strip ─────────────────── */}
+        {/* ── Tech marquee strip ─────────────────────────────────── */}
         <div className="mt-16 pt-8 border-t border-border/60 animate-fade-in-up delay-700">
           <p className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest text-center mb-5">
             Technologies maîtrisées

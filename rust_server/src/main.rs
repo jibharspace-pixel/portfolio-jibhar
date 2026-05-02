@@ -101,6 +101,13 @@ struct ContactInfo {
     github: String,
 }
 
+#[derive(Clone, Serialize, Deserialize)]
+struct SiteContent {
+    hero_description: String,
+    hero_highlights: Vec<String>,
+    about_quote: String,
+}
+
 // ─── Input Types ─────────────────────────────────────────────────────────────
 
 #[derive(Deserialize)]
@@ -143,6 +150,21 @@ struct TrackEvent {
     path: String,
 }
 
+#[derive(Deserialize)]
+struct UpdateContact {
+    email: String,
+    linkedin: String,
+    whatsapp: String,
+    github: String,
+}
+
+#[derive(Deserialize)]
+struct UpdateSiteContent {
+    hero_description: String,
+    hero_highlights: Vec<String>,
+    about_quote: String,
+}
+
 // ─── App State ───────────────────────────────────────────────────────────────
 
 #[derive(Clone)]
@@ -152,6 +174,8 @@ struct AppState {
     files: Arc<Mutex<Vec<FreeFile>>>,
     page_views: Arc<Mutex<HashMap<String, u64>>>,
     blog_views: Arc<Mutex<HashMap<String, u64>>>,
+    contact: Arc<Mutex<ContactInfo>>,
+    site_content: Arc<Mutex<SiteContent>>,
 }
 
 // ─── Seed Data ────────────────────────────────────────────────────────────────
@@ -304,8 +328,31 @@ async fn list_skills() -> Json<Vec<serde_json::Value>> {
     ])
 }
 
-async fn get_contact() -> Json<ContactInfo> {
-    Json(ContactInfo { email: "jibharkroman@gmail.com".into(), linkedin: "https://linkedin.com/in/kroman-jibhar-samuel".into(), whatsapp: "+225 0700000000".into(), github: "https://github.com/kromanjibhar".into() })
+async fn get_contact(State(state): State<AppState>) -> Json<ContactInfo> {
+    Json(state.contact.lock().unwrap().clone())
+}
+
+async fn update_contact(State(state): State<AppState>, headers: HeaderMap, Json(payload): Json<UpdateContact>) -> Result<Json<ContactInfo>, StatusCode> {
+    if !check_admin_auth(&headers) { return Err(StatusCode::UNAUTHORIZED); }
+    let mut contact = state.contact.lock().unwrap();
+    contact.email = payload.email;
+    contact.linkedin = payload.linkedin;
+    contact.whatsapp = payload.whatsapp;
+    contact.github = payload.github;
+    Ok(Json(contact.clone()))
+}
+
+async fn get_site_content(State(state): State<AppState>) -> Json<SiteContent> {
+    Json(state.site_content.lock().unwrap().clone())
+}
+
+async fn update_site_content(State(state): State<AppState>, headers: HeaderMap, Json(payload): Json<UpdateSiteContent>) -> Result<Json<SiteContent>, StatusCode> {
+    if !check_admin_auth(&headers) { return Err(StatusCode::UNAUTHORIZED); }
+    let mut content = state.site_content.lock().unwrap();
+    content.hero_description = payload.hero_description;
+    content.hero_highlights = payload.hero_highlights;
+    content.about_quote = payload.about_quote;
+    Ok(Json(content.clone()))
 }
 
 async fn health() -> &'static str { "OK" }
@@ -509,6 +556,21 @@ async fn main() {
         files: Arc::new(Mutex::new(seed_files())),
         page_views: Arc::new(Mutex::new(HashMap::new())),
         blog_views: Arc::new(Mutex::new(HashMap::new())),
+        contact: Arc::new(Mutex::new(ContactInfo {
+            email: "jibharkroman@gmail.com".into(),
+            linkedin: "https://linkedin.com/in/kroman-jibhar-samuel".into(),
+            whatsapp: "+225 0700000000".into(),
+            github: "https://github.com/kromanjibhar".into(),
+        })),
+        site_content: Arc::new(Mutex::new(SiteContent {
+            hero_description: "Je conçois des solutions digitales et des tableaux de bord sur mesure qui transforment vos données en décisions. Données, automatisation, web — adaptés à votre contexte métier.".into(),
+            hero_highlights: vec![
+                "Tableaux de bord Power BI".into(),
+                "Applications React / TypeScript".into(),
+                "Automatisation VBA & Python".into(),
+            ],
+            about_quote: "Autodidacte déterminé, je transforme la complexité en solutions simples et efficaces.".into(),
+        })),
     };
 
     let cors = CorsLayer::new()
@@ -522,6 +584,7 @@ async fn main() {
         .route("/api/services", get(list_services))
         .route("/api/skills", get(list_skills))
         .route("/api/contact", get(get_contact))
+        .route("/api/site-content", get(get_site_content))
         .route("/api/blog", get(list_blog))
         .route("/api/blog/:slug", get(get_blog_post))
         .route("/api/files", get(list_files))
@@ -535,6 +598,8 @@ async fn main() {
         .route("/api/admin/projects/:id/upload", post(upload_media))
         .route("/api/admin/projects/:id/media", get(get_project_media))
         .route("/api/admin/media/:media_id", delete(delete_media_item))
+        .route("/api/admin/contact", put(update_contact))
+        .route("/api/admin/site-content", put(update_site_content))
         .route("/health", get(health))
         .layer(cors)
         .with_state(state);

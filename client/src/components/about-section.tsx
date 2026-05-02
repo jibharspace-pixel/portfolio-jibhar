@@ -2,7 +2,12 @@ import { GraduationCap, Quote, ExternalLink, MapPin, Calendar, Award, ArrowRight
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
 import profileImage from "@assets/WhatsApp_Image_2025-12-18_à_11.19.30_7d050f19_1766058148816.jpg";
+
+interface SiteContent { hero_description: string; hero_highlights: string[]; about_quote: string; }
+
+const DEFAULT_QUOTE = "Autodidacte déterminé, je transforme la complexité en solutions simples et efficaces.";
 
 const timeline = [
   {
@@ -36,6 +41,9 @@ const values = [
 ];
 
 export function AboutSection() {
+  const { data: siteContent } = useQuery<SiteContent>({ queryKey: ["/api/site-content"] });
+  const quote = siteContent?.about_quote || DEFAULT_QUOTE;
+
   return (
     <section id="apropos" className="py-20 lg:py-28 relative overflow-hidden" data-testid="section-about">
       <div className="section-blob w-96 h-96 bg-primary/6 top-0 right-0 animate-glow-pulse" />
@@ -62,7 +70,7 @@ export function AboutSection() {
               <div className="absolute -left-2 -top-2 text-6xl text-primary/10 font-serif leading-none select-none">"</div>
               <blockquote className="relative pl-6 border-l-2 border-primary/40">
                 <p className="text-lg font-medium text-foreground leading-relaxed italic">
-                  Autodidacte déterminé, je transforme la complexité en solutions simples et efficaces.
+                  {quote}
                 </p>
               </blockquote>
             </div>

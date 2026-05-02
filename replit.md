@@ -85,8 +85,15 @@ Preferred communication style: Simple, everyday language.
 ## Admin Dashboard
 - **Route**: `/admin` — dashboard complet protégé par mot de passe
 - **Password**: `nexalion2024` (ou variable `ADMIN_PASSWORD` côté Rust)
-- **Sections**: Tableau de bord, Blog, Ressources, Médias (upload photos/vidéos par projet)
+- **Sections**: Tableau de bord, Blog, Ressources, Médias, **Informations**
 - **Media upload**: `POST /api/admin/projects/:id/upload` (multipart) · stockage `rust_server/uploads/`
+- **Informations section**: édition coordonnées contact + textes du site (hero description, highlights, about quote)
+
+## Site Content API
+- `GET /api/site-content` — textes dynamiques (hero_description, hero_highlights, about_quote)
+- `PUT /api/admin/site-content` — mise à jour des textes (auth requise)
+- `PUT /api/admin/contact` — mise à jour des coordonnées (auth requise)
+- Données stockées en mémoire dans le state Rust (`AppState.site_content`, `AppState.contact`)
 
 ## Workflows
 - **Start application**: `npm run dev` — Express + Vite on port 5000
