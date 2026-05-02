@@ -2,17 +2,17 @@ import { useState, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Lock, LogOut, LayoutDashboard, BookOpen, FolderOpen, Image as ImageIcon,
-  Plus, Pencil, Trash2, Eye, EyeOff, Upload, Download, CheckCircle,
-  AlertCircle, Loader2, X, BarChart3, Users, Globe, Cog, Brain,
+  Plus, Pencil, Trash2, Eye, EyeOff, Loader2, X, BarChart3, Globe, Cog, Brain,
   FileSpreadsheet, FileText, Database, Package, ArrowDownToLine,
-  TrendingUp, Image, Video, ImagePlus, ChevronDown, ChevronUp, Save,
-  Settings, Mail, Phone, Link2, AlignLeft,
+  TrendingUp, Image, Video, ImagePlus, Save,
+  Settings, Mail, Phone, Link2, AlignLeft, Briefcase, CheckCircle,
+  AlertCircle, ChevronDown, ChevronUp, Tag, ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import type { Project, BlogPost, FreeFile, AdminStats, MediaItem } from "@shared/schema";
+import type { Project, BlogPost, FreeFile, AdminStats, Service } from "@shared/schema";
 
 const ADMIN_KEY = "kjs_admin_password";
 
@@ -58,7 +58,7 @@ function LoginScreen({ onLogin }: { onLogin: (pw: string) => void }) {
             </form>
           </CardContent>
         </Card>
-        <p className="text-center text-xs text-muted-foreground mt-5">Accès réservé à l'administrateur · Mot de passe : nexalion2024</p>
+        <p className="text-center text-xs text-muted-foreground mt-5">Accès réservé à l'administrateur</p>
       </div>
     </div>
   );
@@ -76,7 +76,7 @@ function StatCard({ label, value, icon: Icon, color = "text-primary", sub }: { l
             <p className={`text-3xl font-bold font-serif ${color}`}>{value}</p>
             {sub && <p className="text-xs text-muted-foreground mt-1">{sub}</p>}
           </div>
-          <div className={`w-10 h-10 rounded-xl bg-muted/60 border border-border/60 flex items-center justify-center`}>
+          <div className="w-10 h-10 rounded-xl bg-muted/60 border border-border/60 flex items-center justify-center">
             <Icon className={`w-5 h-5 ${color}`} />
           </div>
         </div>
@@ -98,6 +98,7 @@ function DashboardSection({ password }: { password: string }) {
     queryFn: () => fetch("/api/admin/blog", { headers: { "x-admin-password": password } }).then(r => r.json()),
   });
   const { data: files } = useQuery<FreeFile[]>({ queryKey: ["/api/files"] });
+  const { data: projects } = useQuery<Project[]>({ queryKey: ["/api/projects"] });
 
   const topPages = Object.entries(stats?.page_views ?? {}).sort((a, b) => b[1] - a[1]).slice(0, 5);
 
@@ -108,7 +109,6 @@ function DashboardSection({ password }: { password: string }) {
         <p className="text-sm text-muted-foreground">Vue d'ensemble des performances du portfolio.</p>
       </div>
 
-      {/* Stat cards */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
         <StatCard label="Visites totales" value={isLoading ? "—" : stats?.total_page_views ?? 0} icon={TrendingUp} />
         <StatCard label="Vues blog" value={isLoading ? "—" : stats?.total_blog_views ?? 0} icon={BookOpen} color="text-purple-600" />
@@ -117,7 +117,6 @@ function DashboardSection({ password }: { password: string }) {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-5">
-        {/* Recent blog posts */}
         <Card className="border border-border/60">
           <CardContent className="p-5">
             <p className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
@@ -143,7 +142,6 @@ function DashboardSection({ password }: { password: string }) {
           </CardContent>
         </Card>
 
-        {/* Top pages */}
         <Card className="border border-border/60">
           <CardContent className="p-5">
             <p className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
@@ -172,24 +170,45 @@ function DashboardSection({ password }: { password: string }) {
         </Card>
       </div>
 
-      {/* Resources summary */}
-      <Card className="border border-border/60">
-        <CardContent className="p-5">
-          <p className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
-            <Package className="w-4 h-4 text-primary" />Ressources gratuites
-          </p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {files?.slice(0, 4).map(f => (
-              <div key={f.id} className="rounded-xl border border-border/60 bg-muted/20 p-3">
-                <p className="text-xs font-semibold text-foreground truncate mb-1">{f.title}</p>
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <ArrowDownToLine className="w-3 h-3" />{f.download_count} téléchargements
-                </p>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid sm:grid-cols-2 gap-5">
+        <Card className="border border-border/60">
+          <CardContent className="p-5">
+            <p className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+              <Briefcase className="w-4 h-4 text-primary" />Projets du portfolio
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {(["data","web","automation","ai"] as const).map(cat => {
+                const count = projects?.filter(p => p.category === cat).length ?? 0;
+                const labels: Record<string, string> = { data: "Data & BI", web: "Web", automation: "Auto.", ai: "IA" };
+                return (
+                  <div key={cat} className="rounded-lg border border-border/60 bg-muted/20 p-3 text-center">
+                    <p className="text-2xl font-bold font-serif text-primary">{count}</p>
+                    <p className="text-xs text-muted-foreground">{labels[cat]}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border border-border/60">
+          <CardContent className="p-5">
+            <p className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+              <Package className="w-4 h-4 text-primary" />Ressources gratuites
+            </p>
+            <div className="space-y-2">
+              {files?.slice(0, 4).map(f => (
+                <div key={f.id} className="flex items-center justify-between py-1.5 border-b border-border/40 last:border-0">
+                  <p className="text-xs font-medium text-foreground truncate flex-1">{f.title}</p>
+                  <p className="text-xs text-muted-foreground ml-2 shrink-0 flex items-center gap-1">
+                    <ArrowDownToLine className="w-3 h-3" />{f.download_count}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
@@ -271,7 +290,6 @@ function BlogSection({ password }: { password: string }) {
         )}
       </div>
 
-      {/* Create/Edit Form */}
       {creating && (
         <Card className="border border-primary/20 bg-primary/5">
           <CardContent className="p-5 space-y-4">
@@ -317,7 +335,7 @@ function BlogSection({ password }: { password: string }) {
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase mb-1 block">Contenu (## pour titres)</label>
               <textarea value={form.content} onChange={e => setForm(f => ({ ...f, content: e.target.value }))}
-                placeholder="Rédigez votre article ici... Utilisez ## pour les titres de section." rows={10}
+                placeholder="Rédigez votre article ici… Utilisez ## pour les titres de section." rows={10}
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-y font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-ring"
                 data-testid="input-post-content" />
             </div>
@@ -332,7 +350,6 @@ function BlogSection({ password }: { password: string }) {
         </Card>
       )}
 
-      {/* Filter tabs */}
       <div className="flex gap-2">
         {(["all","published","draft"] as const).map(f => (
           <button key={f} onClick={() => setFilter(f)}
@@ -343,7 +360,6 @@ function BlogSection({ password }: { password: string }) {
         ))}
       </div>
 
-      {/* Posts list */}
       {isLoading ? <div className="space-y-3">{[1,2,3].map(i => <Skeleton key={i} />)}</div> :
         !filtered?.length ? (
           <div className="text-center py-14 border-2 border-dashed border-border/60 rounded-2xl">
@@ -562,7 +578,7 @@ function MediaSection({ password }: { password: string }) {
       <>
         <input ref={inputRef} type="file" accept={accept} className="hidden" onChange={e => e.target.files?.[0] && handleFile(e.target.files[0])} />
         <button onClick={() => inputRef.current?.click()} disabled={uploading}
-          className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md border border-border/60 text-muted-foreground font-medium transition-all hover:border-primary/40 hover:text-primary hover:bg-primary/5 disabled:opacity-50`}>
+          className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md border border-border/60 text-muted-foreground font-medium transition-all hover:border-primary/40 hover:text-primary hover:bg-primary/5 disabled:opacity-50">
           {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Icon className="w-3.5 h-3.5" />}
           {uploading ? "Upload…" : label}
         </button>
@@ -628,6 +644,236 @@ function MediaSection({ password }: { password: string }) {
   );
 }
 
+// ─── Projects Section (CMS) ───────────────────────────────────────────────────
+
+type ProjectForm = {
+  title: string;
+  description: string;
+  category: string;
+  problem: string;
+  solution: string;
+  result: string;
+  technologies: string;
+  demo_url: string;
+  download_url: string;
+};
+
+const emptyProjectForm: ProjectForm = {
+  title: "", description: "", category: "data",
+  problem: "", solution: "", result: "",
+  technologies: "", demo_url: "", download_url: "",
+};
+
+function ProjectsSection({ password }: { password: string }) {
+  const qc = useQueryClient();
+  const [creating, setCreating] = useState(false);
+  const [editing, setEditing] = useState<Project | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const [form, setForm] = useState<ProjectForm>(emptyProjectForm);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  const { data: projects, isLoading } = useQuery<Project[]>({ queryKey: ["/api/projects"] });
+
+  const startCreate = () => { setForm(emptyProjectForm); setEditing(null); setCreating(true); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  const startEdit = (p: Project) => {
+    setForm({
+      title: p.title, description: p.description, category: p.category,
+      problem: p.problem, solution: p.solution, result: p.result,
+      technologies: p.technologies.join(", "),
+      demo_url: (p as any).demo_url ?? "", download_url: (p as any).download_url ?? "",
+    });
+    setEditing(p); setCreating(true); window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const cancelForm = () => { setCreating(false); setEditing(null); setForm(emptyProjectForm); };
+
+  const saveProject = async () => {
+    if (!form.title.trim() || !form.description.trim()) return;
+    setSaving(true);
+    const payload = {
+      title: form.title.trim(),
+      description: form.description.trim(),
+      category: form.category,
+      problem: form.problem.trim(),
+      solution: form.solution.trim(),
+      result: form.result.trim(),
+      technologies: form.technologies.split(",").map(t => t.trim()).filter(Boolean),
+      demo_url: form.demo_url.trim() || null,
+      download_url: form.download_url.trim() || null,
+    };
+    try {
+      if (editing) {
+        await fetch(`/api/admin/projects/${editing.id}`, { method: "PUT", headers: { "Content-Type": "application/json", "x-admin-password": password }, body: JSON.stringify(payload) });
+      } else {
+        await fetch("/api/admin/projects", { method: "POST", headers: { "Content-Type": "application/json", "x-admin-password": password }, body: JSON.stringify(payload) });
+      }
+      qc.invalidateQueries({ queryKey: ["/api/projects"] });
+      cancelForm();
+    } catch (_) {}
+    setSaving(false);
+  };
+
+  const deleteProject = async (id: string) => {
+    if (!confirm("Supprimer ce projet ? Cette action est irréversible.")) return;
+    setDeleting(id);
+    await fetch(`/api/admin/projects/${id}`, { method: "DELETE", headers: { "x-admin-password": password } });
+    qc.invalidateQueries({ queryKey: ["/api/projects"] });
+    setDeleting(null);
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h2 className="font-serif text-xl font-bold">Projets du portfolio</h2>
+          <p className="text-sm text-muted-foreground">Gérez le contenu de vos projets — titres, descriptions, résultats.</p>
+        </div>
+        {!creating && (
+          <Button onClick={startCreate} className="bg-nexalion hover:opacity-90 font-medium text-sm" data-testid="button-new-project">
+            <Plus className="w-4 h-4 mr-1.5" />Nouveau projet
+          </Button>
+        )}
+      </div>
+
+      {/* Create / Edit form */}
+      {creating && (
+        <Card className="border border-primary/20 bg-primary/5">
+          <CardContent className="p-5 space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="font-semibold text-sm">{editing ? "Modifier le projet" : "Nouveau projet"}</p>
+              <button onClick={cancelForm}><X className="w-4 h-4 text-muted-foreground hover:text-foreground" /></button>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div className="sm:col-span-2">
+                <label className="text-xs font-semibold text-muted-foreground uppercase mb-1 block">Titre du projet *</label>
+                <Input value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="Dashboard RH Analytics" className="h-9 text-sm" data-testid="input-project-title" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase mb-1 block">Catégorie</label>
+                <select value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))} className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm" data-testid="select-project-category">
+                  <option value="data">Data & BI</option>
+                  <option value="web">Web</option>
+                  <option value="automation">Automatisation</option>
+                  <option value="ai">IA</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase mb-1 block">Technologies (virgules)</label>
+                <Input value={form.technologies} onChange={e => setForm(f => ({ ...f, technologies: e.target.value }))} placeholder="Power BI, DAX, SQL" className="h-9 text-sm" data-testid="input-project-technologies" />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="text-xs font-semibold text-muted-foreground uppercase mb-1 block">Description courte *</label>
+                <Input value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Tableau de bord interactif pour le suivi des indicateurs RH" className="h-9 text-sm" data-testid="input-project-description" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase mb-1 block">Problème</label>
+                <textarea value={form.problem} onChange={e => setForm(f => ({ ...f, problem: e.target.value }))} placeholder="Décrivez le problème initial…" rows={3}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring" data-testid="input-project-problem" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase mb-1 block">Solution</label>
+                <textarea value={form.solution} onChange={e => setForm(f => ({ ...f, solution: e.target.value }))} placeholder="Décrivez la solution apportée…" rows={3}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring" data-testid="input-project-solution" />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="text-xs font-semibold text-muted-foreground uppercase mb-1 block">Résultat obtenu</label>
+                <Input value={form.result} onChange={e => setForm(f => ({ ...f, result: e.target.value }))} placeholder="Réduction de 60% du temps de reporting…" className="h-9 text-sm" data-testid="input-project-result" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase mb-1 block flex items-center gap-1"><ExternalLink className="w-3 h-3" />URL démo (optionnel)</label>
+                <Input value={form.demo_url} onChange={e => setForm(f => ({ ...f, demo_url: e.target.value }))} placeholder="https://..." className="h-9 text-sm" data-testid="input-project-demo-url" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase mb-1 block flex items-center gap-1"><ExternalLink className="w-3 h-3" />URL téléchargement (optionnel)</label>
+                <Input value={form.download_url} onChange={e => setForm(f => ({ ...f, download_url: e.target.value }))} placeholder="https://..." className="h-9 text-sm" data-testid="input-project-download-url" />
+              </div>
+            </div>
+            <div className="flex gap-3 justify-end pt-2 border-t border-border/60">
+              <Button variant="outline" onClick={cancelForm} size="sm" className="border-border/60">Annuler</Button>
+              <Button onClick={saveProject} disabled={!form.title || !form.description || saving} size="sm" className="bg-nexalion hover:opacity-90 font-medium" data-testid="button-save-project">
+                {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <Save className="w-3.5 h-3.5 mr-1.5" />}
+                {editing ? "Sauvegarder" : "Créer le projet"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Projects list */}
+      {isLoading ? <div className="space-y-3">{[1,2,3,4].map(i => <Skeleton key={i} />)}</div> :
+        !projects?.length ? (
+          <div className="text-center py-14 border-2 border-dashed border-border/60 rounded-2xl">
+            <Briefcase className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+            <p className="text-sm text-muted-foreground">Aucun projet. Créez votre premier projet !</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {projects.map(p => {
+              const Icon = projectCategoryIcons[p.category] ?? BarChart3;
+              const colorCls = projectCategoryColors[p.category] ?? "";
+              const isExpanded = expandedId === p.id;
+              return (
+                <Card key={p.id} className="border border-border/60" data-testid={`card-admin-project-${p.id}`}>
+                  <div className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-muted/30 transition-colors" onClick={() => setExpandedId(isExpanded ? null : p.id)}>
+                    <div className="w-8 h-8 rounded-lg bg-muted/60 border border-border/60 flex items-center justify-center shrink-0">
+                      <Icon className="w-4 h-4 text-muted-foreground" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-sm text-foreground truncate">{p.title}</p>
+                      <p className="text-xs text-muted-foreground truncate">{p.description}</p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <Badge variant="outline" className={`text-xs font-medium rounded-md border ${colorCls}`}>{projectCategoryLabels[p.category]}</Badge>
+                      <div className="flex items-center gap-1">
+                        <button onClick={e => { e.stopPropagation(); startEdit(p); }}
+                          className="p-1.5 rounded-md text-muted-foreground hover:text-blue-600 hover:bg-blue-50 transition-colors" data-testid={`button-edit-project-${p.id}`}>
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                        <button onClick={e => { e.stopPropagation(); deleteProject(p.id); }} disabled={deleting === p.id}
+                          className="p-1.5 rounded-md text-muted-foreground hover:text-red-600 hover:bg-red-50 transition-colors" data-testid={`button-delete-project-${p.id}`}>
+                          {deleting === p.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
+                      {isExpanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+                    </div>
+                  </div>
+                  {isExpanded && (
+                    <CardContent className="px-4 pb-4 pt-0 border-t border-border/60">
+                      <div className="grid sm:grid-cols-3 gap-3 mt-3">
+                        <div>
+                          <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Problème</p>
+                          <p className="text-xs text-foreground leading-relaxed">{p.problem || "—"}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Solution</p>
+                          <p className="text-xs text-foreground leading-relaxed">{p.solution || "—"}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Résultat</p>
+                          <p className="text-xs text-foreground leading-relaxed">{p.result || "—"}</p>
+                        </div>
+                      </div>
+                      {p.technologies?.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-1.5">
+                          {p.technologies.map(t => (
+                            <span key={t} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-primary/8 text-primary border border-primary/20">
+                              <Tag className="w-2.5 h-2.5" />{t}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  )}
+                </Card>
+              );
+            })}
+          </div>
+        )
+      }
+    </div>
+  );
+}
+
 // ─── Infos Section ────────────────────────────────────────────────────────────
 
 interface ContactInfo { email: string; linkedin: string; whatsapp: string; github: string; }
@@ -636,22 +882,24 @@ interface SiteContent { hero_description: string; hero_highlights: string[]; abo
 function InfosSection({ password }: { password: string }) {
   const qc = useQueryClient();
 
-  const { data: contact, isLoading: loadingContact } = useQuery<ContactInfo>({
-    queryKey: ["/api/contact"],
-  });
-  const { data: content, isLoading: loadingContent } = useQuery<SiteContent>({
-    queryKey: ["/api/site-content"],
-  });
+  const { data: contact, isLoading: loadingContact } = useQuery<ContactInfo>({ queryKey: ["/api/contact"] });
+  const { data: content, isLoading: loadingContent } = useQuery<SiteContent>({ queryKey: ["/api/site-content"] });
+  const { data: services, isLoading: loadingServices } = useQuery<Service[]>({ queryKey: ["/api/services"] });
 
   const [contactForm, setContactForm] = useState<ContactInfo | null>(null);
   const [contentForm, setContentForm] = useState<SiteContent | null>(null);
+  const [servicesForm, setServicesForm] = useState<Service[] | null>(null);
+
   const [savingContact, setSavingContact] = useState(false);
   const [savedContact, setSavedContact] = useState(false);
   const [savingContent, setSavingContent] = useState(false);
   const [savedContent, setSavedContent] = useState(false);
+  const [savingServices, setSavingServices] = useState(false);
+  const [savedServices, setSavedServices] = useState(false);
 
   const cf = contactForm ?? contact ?? { email: "", linkedin: "", whatsapp: "", github: "" };
   const sf = contentForm ?? content ?? { hero_description: "", hero_highlights: ["", "", ""], about_quote: "" };
+  const svf = servicesForm ?? services ?? [];
 
   const saveContact = async () => {
     setSavingContact(true);
@@ -670,17 +918,40 @@ function InfosSection({ password }: { password: string }) {
     setTimeout(() => setSavedContent(false), 2500);
   };
 
+  const saveServices = async () => {
+    setSavingServices(true);
+    await fetch("/api/admin/services", { method: "PUT", headers: { "Content-Type": "application/json", "x-admin-password": password }, body: JSON.stringify({ services: svf }) });
+    qc.invalidateQueries({ queryKey: ["/api/services"] });
+    setSavingServices(false); setSavedServices(true);
+    setTimeout(() => setSavedServices(false), 2500);
+  };
+
   const updateHighlight = (i: number, val: string) => {
     const highlights = [...(sf.hero_highlights ?? ["", "", ""])];
     highlights[i] = val;
     setContentForm(prev => ({ ...(prev ?? sf), hero_highlights: highlights }));
   };
 
+  const updateService = (idx: number, field: keyof Service, value: string) => {
+    const updated = svf.map((s, i) => i === idx ? { ...s, [field]: value } : s);
+    setServicesForm(updated);
+  };
+
+  const updateServiceFeature = (svcIdx: number, featIdx: number, value: string) => {
+    const updated = svf.map((s, i) => {
+      if (i !== svcIdx) return s;
+      const features = [...s.features];
+      features[featIdx] = value;
+      return { ...s, features };
+    });
+    setServicesForm(updated);
+  };
+
   return (
     <div className="space-y-7">
       <div>
         <h2 className="font-serif text-xl font-bold text-foreground mb-1">Informations du site</h2>
-        <p className="text-sm text-muted-foreground">Modifiez les coordonnées et les textes affichés sur votre portfolio.</p>
+        <p className="text-sm text-muted-foreground">Modifiez les coordonnées, textes et services affichés sur votre portfolio.</p>
       </div>
 
       {/* Contact info */}
@@ -798,18 +1069,71 @@ function InfosSection({ password }: { password: string }) {
           )}
         </CardContent>
       </Card>
+
+      {/* Services editor */}
+      <Card className="border border-border/60">
+        <div className="flex items-center gap-2.5 px-5 py-4 border-b border-border/60 bg-muted/20">
+          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+            <Briefcase className="w-4 h-4 text-primary" />
+          </div>
+          <div>
+            <p className="font-semibold text-sm text-foreground">Services proposés</p>
+            <p className="text-xs text-muted-foreground">Cartes de services affichées sur la page d'accueil</p>
+          </div>
+        </div>
+        <CardContent className="p-5 space-y-5">
+          {loadingServices ? (
+            <div className="space-y-4">{[1,2,3].map(i => <div key={i} className="h-28 bg-muted/40 rounded-xl animate-pulse" />)}</div>
+          ) : (
+            <>
+              {svf.map((svc, idx) => (
+                <div key={svc.id} className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-3">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-bold text-primary uppercase tracking-wider">Service {idx + 1}</span>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground uppercase mb-1 block">Titre</label>
+                      <Input value={svc.title} onChange={e => updateService(idx, "title", e.target.value)} className="h-8 text-sm" data-testid={`input-service-title-${idx}`} />
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground uppercase mb-1 block">Description</label>
+                      <Input value={svc.description} onChange={e => updateService(idx, "description", e.target.value)} className="h-8 text-sm" data-testid={`input-service-desc-${idx}`} />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">Fonctionnalités / outils (3 éléments)</label>
+                    <div className="flex gap-2">
+                      {[0, 1, 2].map(fi => (
+                        <Input key={fi} value={svc.features[fi] ?? ""} onChange={e => updateServiceFeature(idx, fi, e.target.value)} className="h-8 text-sm" placeholder={`Outil ${fi + 1}`} data-testid={`input-service-feature-${idx}-${fi}`} />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <div className="flex justify-end pt-1 border-t border-border/60">
+                <Button onClick={saveServices} disabled={savingServices} size="sm" className="bg-nexalion hover:opacity-90 font-medium" data-testid="button-save-services">
+                  {savingServices ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" /> : savedServices ? <CheckCircle className="w-3.5 h-3.5 mr-1.5 text-green-400" /> : <Save className="w-3.5 h-3.5 mr-1.5" />}
+                  {savedServices ? "Sauvegardé !" : "Enregistrer les services"}
+                </Button>
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
 
 // ─── Admin Layout ─────────────────────────────────────────────────────────────
 
-type Section = "dashboard" | "blog" | "files" | "media" | "infos";
+type Section = "dashboard" | "blog" | "files" | "projects" | "media" | "infos";
 
 const sidebarItems: { id: Section; label: string; icon: typeof LayoutDashboard }[] = [
   { id: "dashboard", label: "Tableau de bord", icon: LayoutDashboard },
   { id: "blog", label: "Blog", icon: BookOpen },
   { id: "files", label: "Ressources", icon: FolderOpen },
+  { id: "projects", label: "Projets", icon: Briefcase },
   { id: "media", label: "Médias", icon: ImageIcon },
   { id: "infos", label: "Informations", icon: Settings },
 ];
@@ -884,6 +1208,7 @@ function AdminLayout({ password, onLogout }: { password: string; onLogout: () =>
           {section === "dashboard" && <DashboardSection password={password} />}
           {section === "blog" && <BlogSection password={password} />}
           {section === "files" && <FilesSection password={password} />}
+          {section === "projects" && <ProjectsSection password={password} />}
           {section === "media" && <MediaSection password={password} />}
           {section === "infos" && <InfosSection password={password} />}
         </div>

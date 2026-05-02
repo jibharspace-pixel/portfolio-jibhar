@@ -165,10 +165,43 @@ struct UpdateSiteContent {
     about_quote: String,
 }
 
+#[derive(Deserialize)]
+struct CreateProject {
+    title: String,
+    description: String,
+    problem: String,
+    solution: String,
+    result: String,
+    technologies: Vec<String>,
+    category: String,
+    demo_url: Option<String>,
+    download_url: Option<String>,
+}
+
+#[derive(Deserialize)]
+struct UpdateProject {
+    title: String,
+    description: String,
+    problem: String,
+    solution: String,
+    result: String,
+    technologies: Vec<String>,
+    category: String,
+    demo_url: Option<String>,
+    download_url: Option<String>,
+}
+
+#[derive(Deserialize)]
+struct UpdateServices {
+    services: Vec<Service>,
+}
+
 // ─── App State ───────────────────────────────────────────────────────────────
 
 #[derive(Clone)]
 struct AppState {
+    projects: Arc<Mutex<Vec<Project>>>,
+    services: Arc<Mutex<Vec<Service>>>,
     media: Arc<Mutex<HashMap<String, Vec<MediaItem>>>>,
     blog: Arc<Mutex<Vec<BlogPost>>>,
     files: Arc<Mutex<Vec<FreeFile>>>,
@@ -276,9 +309,7 @@ fn seed_files() -> Vec<FreeFile> {
     ]
 }
 
-// ─── Static Data ─────────────────────────────────────────────────────────────
-
-fn base_projects() -> Vec<Project> {
+fn seed_projects() -> Vec<Project> {
     vec![
         Project { id: "dashboard-rh".into(), title: "Dashboard RH Analytics".into(), description: "Tableau de bord interactif pour le suivi des indicateurs RH".into(), problem: "Difficulté à suivre les KPI RH et à prendre des décisions basées sur les données".into(), solution: "Création d'un dashboard Power BI avec des visualisations dynamiques et des filtres interactifs".into(), result: "Réduction de 60% du temps de reporting et amélioration de la prise de décision".into(), technologies: vec!["Power BI".into(), "DAX".into(), "SQL Server".into(), "Excel".into()], category: "data".into(), demo_url: Some("#".into()), download_url: None, media: None },
         Project { id: "inventory-app".into(), title: "Application Gestion Inventaire".into(), description: "Application web pour la gestion optimisée des stocks".into(), problem: "Suivi manuel des stocks causant des erreurs et des ruptures".into(), solution: "Développement d'une application React avec base de données temps réel".into(), result: "Diminution de 80% des erreurs d'inventaire et optimisation des commandes".into(), technologies: vec!["React.js".into(), "Node.js".into(), "PostgreSQL".into(), "REST API".into()], category: "web".into(), demo_url: None, download_url: None, media: None },
@@ -289,16 +320,38 @@ fn base_projects() -> Vec<Project> {
     ]
 }
 
-fn projects_with_media(state: &AppState) -> Vec<Project> {
-    let store = state.media.lock().unwrap();
-    base_projects().into_iter().map(|mut p| { p.media = store.get(&p.id).cloned(); p }).collect()
+fn seed_services() -> Vec<Service> {
+    vec![
+        Service { id: "data".into(), title: "Analyse de données & BI".into(), description: "Tableaux de bord interactifs, KPIs et visualisations avancées pour piloter votre activité.".into(), icon: "BarChart3".into(), features: vec!["Power BI".into(), "Excel / DAX".into(), "SQL".into()] },
+        Service { id: "ai".into(), title: "Solutions IA & Automatisation".into(), description: "Intégration IA et automatisation de vos processus métier pour gagner en productivité.".into(), icon: "Brain".into(), features: vec!["ChatGPT API".into(), "Python ML".into(), "VBA".into()] },
+        Service { id: "web".into(), title: "Développement Web".into(), description: "Applications web modernes, performantes et adaptées à vos besoins métier.".into(), icon: "Globe".into(), features: vec!["React / TypeScript".into(), "REST API".into(), "PostgreSQL".into()] },
+    ]
 }
 
-// ─── Auth Helper ─────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+fn projects_with_media(state: &AppState) -> Vec<Project> {
+    let store = state.media.lock().unwrap();
+    let projects = state.projects.lock().unwrap();
+    projects.iter().map(|p| {
+        let mut proj = p.clone();
+        proj.media = store.get(&p.id).cloned();
+        proj
+    }).collect()
+}
 
 fn check_admin_auth(headers: &HeaderMap) -> bool {
     let password = std::env::var("ADMIN_PASSWORD").unwrap_or_else(|_| "nexalion2024".to_string());
     headers.get("x-admin-password").and_then(|v| v.to_str().ok()).map(|v| v == password).unwrap_or(false)
+}
+
+fn chrono_date() -> String {
+    let now = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap_or_default().as_secs();
+    let days = now / 86400;
+    let year = 1970 + days / 365;
+    let month = (days % 365 / 30) + 1;
+    let day = (days % 30) + 1;
+    format!("{:04}-{:02}-{:02}", year, month.min(12), day.min(31))
 }
 
 // ─── Project Handlers ─────────────────────────────────────────────────────────
@@ -311,13 +364,67 @@ async fn get_project(Path(id): Path<String>, State(state): State<AppState>) -> R
     projects_with_media(&state).into_iter().find(|p| p.id == id).map(Json).ok_or(StatusCode::NOT_FOUND)
 }
 
-async fn list_services() -> Json<Vec<Service>> {
-    Json(vec![
-        Service { id: "data".into(), title: "Analyse de données & BI".into(), description: "Tableaux de bord interactifs, KPIs et visualisations avancées.".into(), icon: "BarChart3".into(), features: vec!["Power BI".into(), "Excel / DAX".into(), "SQL".into()] },
-        Service { id: "ai".into(), title: "Solutions IA & Automatisation".into(), description: "Intégration IA et automatisation de vos processus métier.".into(), icon: "Brain".into(), features: vec!["ChatGPT API".into(), "Python ML".into(), "VBA".into()] },
-        Service { id: "web".into(), title: "Développement Web".into(), description: "Applications web modernes et performantes.".into(), icon: "Globe".into(), features: vec!["React / TypeScript".into(), "REST API".into(), "PostgreSQL".into()] },
-    ])
+async fn create_project(State(state): State<AppState>, headers: HeaderMap, Json(payload): Json<CreateProject>) -> Result<Json<Project>, StatusCode> {
+    if !check_admin_auth(&headers) { return Err(StatusCode::UNAUTHORIZED); }
+    let project = Project {
+        id: Uuid::new_v4().to_string(),
+        title: payload.title,
+        description: payload.description,
+        problem: payload.problem,
+        solution: payload.solution,
+        result: payload.result,
+        technologies: payload.technologies,
+        category: payload.category,
+        demo_url: payload.demo_url.filter(|s| !s.is_empty()),
+        download_url: payload.download_url.filter(|s| !s.is_empty()),
+        media: None,
+    };
+    let result = project.clone();
+    state.projects.lock().unwrap().insert(0, project);
+    Ok(Json(result))
 }
+
+async fn update_project(Path(id): Path<String>, State(state): State<AppState>, headers: HeaderMap, Json(payload): Json<UpdateProject>) -> Result<Json<Project>, StatusCode> {
+    if !check_admin_auth(&headers) { return Err(StatusCode::UNAUTHORIZED); }
+    let mut projects = state.projects.lock().unwrap();
+    if let Some(p) = projects.iter_mut().find(|p| p.id == id) {
+        p.title = payload.title;
+        p.description = payload.description;
+        p.problem = payload.problem;
+        p.solution = payload.solution;
+        p.result = payload.result;
+        p.technologies = payload.technologies;
+        p.category = payload.category;
+        p.demo_url = payload.demo_url.filter(|s| !s.is_empty());
+        p.download_url = payload.download_url.filter(|s| !s.is_empty());
+        Ok(Json(p.clone()))
+    } else {
+        Err(StatusCode::NOT_FOUND)
+    }
+}
+
+async fn delete_project(Path(id): Path<String>, State(state): State<AppState>, headers: HeaderMap) -> Result<StatusCode, StatusCode> {
+    if !check_admin_auth(&headers) { return Err(StatusCode::UNAUTHORIZED); }
+    let mut projects = state.projects.lock().unwrap();
+    let len_before = projects.len();
+    projects.retain(|p| p.id != id);
+    if projects.len() < len_before { Ok(StatusCode::NO_CONTENT) } else { Err(StatusCode::NOT_FOUND) }
+}
+
+// ─── Services Handlers ────────────────────────────────────────────────────────
+
+async fn list_services(State(state): State<AppState>) -> Json<Vec<Service>> {
+    Json(state.services.lock().unwrap().clone())
+}
+
+async fn update_services(State(state): State<AppState>, headers: HeaderMap, Json(payload): Json<UpdateServices>) -> Result<Json<Vec<Service>>, StatusCode> {
+    if !check_admin_auth(&headers) { return Err(StatusCode::UNAUTHORIZED); }
+    let mut services = state.services.lock().unwrap();
+    *services = payload.services;
+    Ok(Json(services.clone()))
+}
+
+// ─── Skills Handler ───────────────────────────────────────────────────────────
 
 async fn list_skills() -> Json<Vec<serde_json::Value>> {
     Json(vec![
@@ -327,6 +434,8 @@ async fn list_skills() -> Json<Vec<serde_json::Value>> {
         serde_json::json!({ "id": "4", "title": "IA & ML", "icon": "Brain", "skills": ["Scikit-learn", "TensorFlow", "NLP", "Prévision temporelle"] }),
     ])
 }
+
+// ─── Contact & Site Content Handlers ─────────────────────────────────────────
 
 async fn get_contact(State(state): State<AppState>) -> Json<ContactInfo> {
     Json(state.contact.lock().unwrap().clone())
@@ -533,17 +642,6 @@ async fn delete_media_item(Path(media_id): Path<String>, State(state): State<App
     Err(StatusCode::NOT_FOUND)
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-fn chrono_date() -> String {
-    let now = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap_or_default().as_secs();
-    let days = now / 86400;
-    let year = 1970 + days / 365;
-    let month = (days % 365 / 30) + 1;
-    let day = (days % 30) + 1;
-    format!("{:04}-{:02}-{:02}", year, month.min(12), day.min(31))
-}
-
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 #[tokio::main]
@@ -551,6 +649,8 @@ async fn main() {
     tokio::fs::create_dir_all("uploads").await.ok();
 
     let state = AppState {
+        projects: Arc::new(Mutex::new(seed_projects())),
+        services: Arc::new(Mutex::new(seed_services())),
         media: Arc::new(Mutex::new(HashMap::new())),
         blog: Arc::new(Mutex::new(seed_blog())),
         files: Arc::new(Mutex::new(seed_files())),
@@ -579,6 +679,7 @@ async fn main() {
         .allow_headers(Any);
 
     let app = Router::new()
+        // Public
         .route("/api/projects", get(list_projects))
         .route("/api/projects/:id", get(get_project))
         .route("/api/services", get(list_services))
@@ -590,16 +691,25 @@ async fn main() {
         .route("/api/files", get(list_files))
         .route("/api/files/:id/download", post(track_download))
         .route("/api/track", post(track_event))
+        // Admin — stats & blog
         .route("/api/admin/stats", get(get_admin_stats))
         .route("/api/admin/blog", get(list_all_blog).post(create_blog_post))
         .route("/api/admin/blog/:id", put(update_blog_post).delete(delete_blog_post))
+        // Admin — files
         .route("/api/admin/files", post(create_file))
         .route("/api/admin/files/:id", delete(delete_file))
+        // Admin — projects CRUD
+        .route("/api/admin/projects", post(create_project))
+        .route("/api/admin/projects/:id", put(update_project).delete(delete_project))
+        // Admin — media
         .route("/api/admin/projects/:id/upload", post(upload_media))
         .route("/api/admin/projects/:id/media", get(get_project_media))
         .route("/api/admin/media/:media_id", delete(delete_media_item))
+        // Admin — contact, site content, services
         .route("/api/admin/contact", put(update_contact))
         .route("/api/admin/site-content", put(update_site_content))
+        .route("/api/admin/services", put(update_services))
+        // Health
         .route("/health", get(health))
         .layer(cors)
         .with_state(state);

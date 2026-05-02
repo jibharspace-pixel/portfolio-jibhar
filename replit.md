@@ -36,11 +36,32 @@ Preferred communication style: Simple, everyday language.
 - `GET /api/services` — Available services
 - `GET /api/skills` — Skill categories
 - `GET /api/contact` — Contact information
+- `GET /api/site-content` — Dynamic site texts
+- `GET /api/blog` — Published blog posts
+- `GET /api/blog/:slug` — Single post
+- `GET /api/files` — Free resources
+- `POST /api/track` — Analytics tracking
+
+**Admin API Endpoints** (require `x-admin-password` header):
+- `GET /api/admin/stats` — Analytics dashboard
+- `GET|POST /api/admin/blog` — Blog CRUD
+- `PUT|DELETE /api/admin/blog/:id` — Blog update/delete
+- `POST /api/admin/files` — Add resource
+- `DELETE /api/admin/files/:id` — Delete resource
+- `POST /api/admin/projects` — Create project *(new)*
+- `PUT /api/admin/projects/:id` — Update project content *(new)*
+- `DELETE /api/admin/projects/:id` — Delete project *(new)*
+- `POST /api/admin/projects/:id/upload` — Upload project media
+- `GET /api/admin/projects/:id/media` — List project media
+- `DELETE /api/admin/media/:media_id` — Delete media item
+- `PUT /api/admin/contact` — Update contact info
+- `PUT /api/admin/site-content` — Update site texts
+- `PUT /api/admin/services` — Update services *(new)*
 
 **Rust Server Location**: `rust_server/` (Cargo.toml + src/main.rs using Axum + Tokio + Serde)
 
 ### Data Storage
-- **Current**: Static in-memory data in Rust server (`rust_server/src/main.rs`)
+- **Current**: In-memory state in Rust AppState (projects, services, blog, files, media, contact, site_content)
 - **ORM**: Drizzle ORM configured for PostgreSQL (available via `DATABASE_URL`)
 - **Schema**: `shared/schema.ts`
 
@@ -49,7 +70,7 @@ Preferred communication style: Simple, everyday language.
 ├── client/              # React frontend
 │   └── src/
 │       ├── components/  # Navigation, Hero, Projects, About, Contact, Footer
-│       ├── pages/       # home.tsx, projects.tsx, about.tsx, contact.tsx
+│       ├── pages/       # home.tsx, projects.tsx, about.tsx, contact.tsx, admin.tsx
 │       └── lib/         # queryClient, utilities
 ├── server/              # Node.js Express (Vite middleware + API proxy)
 │   ├── index.ts
@@ -82,18 +103,28 @@ Preferred communication style: Simple, everyday language.
 - Chaque page trace ses visites via `POST /api/track { event_type, path }`
 - Dashboard admin : `GET /api/admin/stats` — vues totales, vues blog, téléchargements, médias
 
-## Admin Dashboard
+## Admin Dashboard (Mini CMS)
 - **Route**: `/admin` — dashboard complet protégé par mot de passe
 - **Password**: `nexalion2024` (ou variable `ADMIN_PASSWORD` côté Rust)
-- **Sections**: Tableau de bord, Blog, Ressources, Médias, **Informations**
-- **Media upload**: `POST /api/admin/projects/:id/upload` (multipart) · stockage `rust_server/uploads/`
-- **Informations section**: édition coordonnées contact + textes du site (hero description, highlights, about quote)
+- **Sections**:
+  1. **Tableau de bord** — statistiques globales (visites, blog, téléchargements, projets)
+  2. **Blog** — CRUD articles (créer, éditer, publier/dépublier, supprimer)
+  3. **Ressources** — ajouter/supprimer fichiers téléchargeables
+  4. **Projets** *(nouveau)* — CRUD complet projets (titre, description, catégorie, problème, solution, résultat, technologies, liens démo/téléchargement)
+  5. **Médias** — upload photos/vidéos par projet
+  6. **Informations** — édition coordonnées + textes hero + services (3 cartes éditables)
 
 ## Site Content API
 - `GET /api/site-content` — textes dynamiques (hero_description, hero_highlights, about_quote)
 - `PUT /api/admin/site-content` — mise à jour des textes (auth requise)
 - `PUT /api/admin/contact` — mise à jour des coordonnées (auth requise)
-- Données stockées en mémoire dans le state Rust (`AppState.site_content`, `AppState.contact`)
+- `PUT /api/admin/services` — mise à jour des 3 cartes services (auth requise) *(nouveau)*
+- Données stockées en mémoire dans le state Rust (`AppState`)
+
+## Deployment
+- **Target**: VM (deux processus — Rust API + Node.js)
+- **Build**: `npm run build && cd rust_server && cargo build --release`
+- **Run**: `cd rust_server && ./target/release/portfolio-api & node ./dist/index.cjs`
 
 ## Workflows
 - **Start application**: `npm run dev` — Express + Vite on port 5000

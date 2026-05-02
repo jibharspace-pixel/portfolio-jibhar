@@ -17,9 +17,9 @@ externalPort = 80
 PORT = "5000"
 
 [deployment]
-deploymentTarget = "autoscale"
-run = ["node", "./dist/index.cjs"]
-build = ["npm", "run", "build"]
+deploymentTarget = "vm"
+run = ["bash", "-c", "cd rust_server && ./target/release/portfolio-api & node ./dist/index.cjs"]
+build = ["bash", "-c", "npm run build && cd rust_server && cargo build --release"]
 
 [workflows]
 runButton = "Project"
