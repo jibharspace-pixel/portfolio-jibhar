@@ -305,37 +305,35 @@
     background: linear-gradient(90deg, hsl(216,90%,40%), hsl(200,85%,55%));
   }
 
-  /* ── Aurora page background — premium mesh gradient ────── */
+  /* ── Premium page background — one clean radial wash ────── */
   .bg-aurora-page {
     background-image:
-      radial-gradient(ellipse 80% 55% at 95% 5%, hsl(216 90% 55% / 0.16) 0%, transparent 55%),
-      radial-gradient(ellipse 65% 48% at 5% 95%, hsl(200 80% 60% / 0.11) 0%, transparent 55%),
-      radial-gradient(ellipse 50% 42% at 50% 0%, hsl(216 85% 65% / 0.06) 0%, transparent 50%);
+      radial-gradient(ellipse 130% 90% at 105% -5%, hsl(216 75% 60% / 0.08) 0%, transparent 58%),
+      radial-gradient(ellipse 90% 70% at -5% 105%, hsl(210 65% 62% / 0.05) 0%, transparent 55%);
   }
   .dark .bg-aurora-page {
     background-image:
-      radial-gradient(ellipse 80% 55% at 95% 5%, hsl(216 90% 38% / 0.28) 0%, transparent 55%),
-      radial-gradient(ellipse 65% 48% at 5% 95%, hsl(200 80% 30% / 0.20) 0%, transparent 55%);
+      radial-gradient(ellipse 130% 90% at 105% -5%, hsl(216 70% 40% / 0.20) 0%, transparent 58%),
+      radial-gradient(ellipse 90% 70% at -5% 105%, hsl(210 60% 35% / 0.14) 0%, transparent 55%);
   }
 
-  /* ── Hero aurora overlay ─────────────────────────────── */
+  /* ── Hero — same clean radial, slightly stronger ───────── */
   .bg-hero-aurora {
     background-image:
-      radial-gradient(ellipse 90% 60% at 90% -5%, hsl(216 90% 58% / 0.22) 0%, transparent 60%),
-      radial-gradient(ellipse 70% 55% at 10% 90%, hsl(200 80% 65% / 0.15) 0%, transparent 55%),
-      radial-gradient(ellipse 55% 50% at 50% 40%, hsl(216 85% 70% / 0.06) 0%, transparent 50%);
+      radial-gradient(ellipse 120% 85% at 108% -8%, hsl(216 75% 58% / 0.11) 0%, transparent 60%),
+      radial-gradient(ellipse 80% 65% at -3% 108%, hsl(210 65% 62% / 0.07) 0%, transparent 55%);
   }
   .dark .bg-hero-aurora {
     background-image:
-      radial-gradient(ellipse 90% 60% at 90% -5%, hsl(216 90% 42% / 0.32) 0%, transparent 60%),
-      radial-gradient(ellipse 70% 55% at 10% 90%, hsl(200 80% 35% / 0.24) 0%, transparent 55%);
+      radial-gradient(ellipse 120% 85% at 108% -8%, hsl(216 70% 42% / 0.26) 0%, transparent 60%),
+      radial-gradient(ellipse 80% 65% at -3% 108%, hsl(210 60% 35% / 0.18) 0%, transparent 55%);
   }
 
-  /* Grid background pattern */
+  /* Grid pattern — kept for optional use, invisible by default */
   .bg-grid {
     background-image:
-      linear-gradient(hsl(216 20% 90%) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(216 20% 90%) 1px, transparent 1px);
+      linear-gradient(hsl(216 20% 92%) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(216 20% 92%) 1px, transparent 1px);
     background-size: 40px 40px;
   }
   .dark .bg-grid {

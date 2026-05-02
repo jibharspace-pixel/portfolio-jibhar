@@ -43,71 +43,66 @@ export function HeroSection() {
       className="relative min-h-screen flex flex-col justify-center pt-16 overflow-hidden"
       data-testid="section-hero"
     >
-      {/* ── Background ─────────────────────────────────────────────── */}
+      {/* ── Background — clean single gradient wash ──────────── */}
       <div className="absolute inset-0 bg-hero-aurora pointer-events-none" />
-      <div className="absolute inset-0 bg-grid opacity-[0.35] pointer-events-none" />
-      <div className="section-blob w-[680px] h-[680px] bg-primary/[0.11] -top-32 -right-32 animate-glow-pulse" />
-      <div className="section-blob w-[500px] h-[500px] bg-blue-400/[0.09] bottom-0 -left-32 animate-glow-pulse delay-500" />
-      <div className="section-blob w-[360px] h-[360px] bg-cyan-400/[0.07] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-glow-pulse delay-300" />
 
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20 w-full">
-        <div className="grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-8 py-20 lg:py-24 w-full">
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
 
-          {/* ── Left: Profile photo ────────────────────────────────── */}
+          {/* ── Left: Profile photo ────────────────────────────── */}
           <div className="order-2 lg:order-1 flex justify-center lg:justify-start animate-fade-in delay-200">
             <div className="relative">
-              {/* Accent offset block — bottom-right */}
-              <div className="absolute -bottom-4 -right-4 w-full h-full rounded-[22px] bg-gradient-to-br from-primary/15 to-blue-400/8 border border-primary/15" />
-              {/* Corner accent — top-left */}
-              <div className="absolute -top-3 -left-3 w-10 h-10 border-t-2 border-l-2 border-primary/40 rounded-tl-xl pointer-events-none" />
               {/* Photo frame */}
-              <div className="relative w-[260px] h-[340px] sm:w-[295px] sm:h-[384px] lg:w-[310px] lg:h-[404px] rounded-[20px] overflow-hidden shadow-2xl border-2 border-white/60">
+              <div className="relative w-[268px] h-[348px] sm:w-[300px] sm:h-[390px] lg:w-[318px] lg:h-[413px] rounded-3xl overflow-hidden shadow-[0_32px_80px_hsl(216,40%,30%,0.18)] border border-white/70">
                 <img
                   src={profileImage}
                   alt="Kroman Jibhar Samuel"
                   className="w-full h-full object-cover object-top"
                   data-testid="img-profile"
                 />
-                {/* Bottom gradient overlay for depth */}
-                <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+                {/* Subtle inner shadow at bottom */}
+                <div className="absolute inset-x-0 bottom-0 h-1/5 bg-gradient-to-t from-black/15 to-transparent pointer-events-none" />
               </div>
-              {/* Location pill — bottom of photo */}
-              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-white border border-border/60 shadow-md rounded-full px-3 py-1 flex items-center gap-1.5 whitespace-nowrap">
+              {/* Location pill */}
+              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-sm border border-border/50 shadow-[0_4px_20px_hsl(0,0%,0%,0.10)] rounded-full px-4 py-1.5 flex items-center gap-1.5 whitespace-nowrap">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" />
-                <span className="text-[11px] font-semibold text-foreground/80">Disponible · Côte d'Ivoire</span>
+                <span className="text-[11.5px] font-semibold text-foreground/80 tracking-tight">Disponible · Côte d'Ivoire</span>
               </div>
+              {/* Soft glow behind photo */}
+              <div className="absolute inset-0 -z-10 rounded-3xl blur-2xl scale-95 opacity-30 bg-primary/20" />
             </div>
           </div>
 
-          {/* ── Right: Content ────────────────────────────────────── */}
-          <div className="order-1 lg:order-2 space-y-6">
+          {/* ── Right: Content ────────────────────────────────── */}
+          <div className="order-1 lg:order-2 space-y-7">
+
+            {/* Role label */}
+            <div className="animate-fade-in-up">
+              <span className="inline-flex items-center gap-2 text-xs font-bold text-primary tracking-[0.18em] uppercase">
+                <span className="w-6 h-px bg-primary/60" />
+                Logisticien & Data Analyst
+              </span>
+            </div>
+
             {/* Name */}
-            <div className="space-y-0.5 animate-fade-in-up">
-              <h1 className="font-serif text-5xl sm:text-6xl lg:text-[3.7rem] xl:text-[4.1rem] font-bold leading-[1.04] tracking-tight text-foreground">
+            <div className="space-y-0 animate-fade-in-up delay-100">
+              <h1 className="font-serif text-[3.2rem] sm:text-[3.8rem] lg:text-[3.4rem] xl:text-[4rem] font-extrabold leading-[1.03] tracking-tight text-foreground">
                 Kroman Jibhar
               </h1>
-              <h1 className="font-serif text-5xl sm:text-6xl lg:text-[3.7rem] xl:text-[4.1rem] font-bold leading-[1.04] tracking-tight text-gradient">
+              <h1 className="font-serif text-[3.2rem] sm:text-[3.8rem] lg:text-[3.4rem] xl:text-[4rem] font-extrabold leading-[1.03] tracking-tight text-gradient">
                 Samuel
               </h1>
             </div>
 
-            {/* Role label */}
-            <div className="flex items-center gap-3 animate-fade-in-up delay-200">
-              <div className="h-px w-8 bg-primary/40 shrink-0" />
-              <p className="text-sm font-bold text-primary tracking-widest uppercase">
-                Logisticien & Data Analyst
-              </p>
-            </div>
-
             {/* Description */}
-            <p className="text-[0.95rem] text-muted-foreground leading-relaxed max-w-lg animate-fade-in-up delay-300">
+            <p className="text-[0.96rem] text-muted-foreground leading-[1.75] max-w-md animate-fade-in-up delay-200">
               {description}
             </p>
 
             {/* Highlights */}
-            <ul className="space-y-2 animate-fade-in-up delay-400">
+            <ul className="space-y-2.5 animate-fade-in-up delay-300">
               {highlights.map(h => (
-                <li key={h} className="flex items-center gap-2.5 text-sm text-foreground/80">
+                <li key={h} className="flex items-center gap-2.5 text-sm text-foreground/80 font-medium">
                   <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
                   {h}
                 </li>
@@ -115,11 +110,11 @@ export function HeroSection() {
             </ul>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-1 animate-fade-in-up delay-500">
+            <div className="flex flex-col sm:flex-row gap-3 pt-1 animate-fade-in-up delay-400">
               <Link href="/projets">
                 <Button
                   size="lg"
-                  className="flex items-center gap-2 bg-nexalion hover:opacity-90 shadow-[0_4px_20px_hsl(216,90%,40%,0.35)] font-semibold text-sm px-6 w-full sm:w-auto transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_28px_hsl(216,90%,40%,0.40)]"
+                  className="flex items-center gap-2 bg-nexalion hover:opacity-90 shadow-[0_4px_24px_hsl(216,90%,40%,0.30)] font-semibold text-sm px-7 w-full sm:w-auto transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_32px_hsl(216,90%,40%,0.38)]"
                   data-testid="button-view-projects"
                 >
                   <BarChart3 className="w-4 h-4" />
@@ -131,7 +126,7 @@ export function HeroSection() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="flex items-center gap-2 font-semibold text-sm px-6 w-full sm:w-auto border-border hover:border-primary/50 hover:bg-primary/5 hover:text-primary transition-all duration-200 hover:-translate-y-0.5"
+                  className="flex items-center gap-2 font-semibold text-sm px-7 w-full sm:w-auto border-border/70 hover:border-primary/50 hover:bg-primary/5 hover:text-primary transition-all duration-200 hover:-translate-y-0.5"
                   data-testid="button-contact-me"
                 >
                   <Mail className="w-4 h-4" />
@@ -140,19 +135,19 @@ export function HeroSection() {
               </Link>
             </div>
 
-            {/* Devis CTA — rectangular banner button */}
-            <div className="animate-fade-in-up delay-600">
+            {/* Devis CTA */}
+            <div className="animate-fade-in-up delay-500">
               <Link href="/contact">
                 <div
-                  className="group relative flex items-center justify-between gap-4 rounded-xl border-2 border-primary/25 bg-gradient-to-r from-primary/5 to-blue-400/5 hover:border-primary/50 hover:from-primary/10 hover:to-blue-400/10 transition-all duration-300 px-5 py-4 cursor-pointer hover:-translate-y-0.5 hover:shadow-[0_6px_24px_hsl(216,90%,40%,0.14)]"
+                  className="group flex items-center justify-between gap-4 rounded-2xl border border-border/60 bg-white/60 dark:bg-card/60 backdrop-blur-sm hover:border-primary/30 hover:bg-primary/[0.03] transition-all duration-300 px-5 py-4 cursor-pointer hover:-translate-y-0.5 hover:shadow-[0_8px_32px_hsl(216,90%,40%,0.10)]"
                   data-testid="button-devis"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:border-primary transition-all duration-300">
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    <div className="w-9 h-9 rounded-xl bg-primary/8 border border-primary/15 flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:border-primary transition-all duration-300">
                       <FileText className="w-4 h-4 text-primary group-hover:text-white transition-colors duration-300" />
                     </div>
                     <div className="min-w-0">
-                      <p className="font-bold text-sm text-foreground group-hover:text-primary transition-colors duration-200 leading-snug">
+                      <p className="font-semibold text-sm text-foreground leading-snug">
                         Demander un devis pour votre projet
                       </p>
                       <p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
@@ -161,19 +156,19 @@ export function HeroSection() {
                       </p>
                     </div>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-primary shrink-0 transition-transform duration-200 group-hover:translate-x-1" />
+                  <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-primary" />
                 </div>
               </Link>
             </div>
 
             {/* Stats */}
-            <div className="flex items-center gap-8 pt-4 border-t border-border/60 animate-fade-in-up delay-600">
+            <div className="flex items-center gap-8 pt-5 border-t border-border/50 animate-fade-in-up delay-500">
               {stats.map((stat, i) => (
                 <div key={stat.label} className="flex items-center gap-3">
-                  {i > 0 && <div className="w-px h-9 bg-border" />}
+                  {i > 0 && <div className="w-px h-8 bg-border/60" />}
                   <div>
-                    <p className="text-2xl font-bold text-gradient font-serif leading-none">{stat.value}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
+                    <p className="text-[1.6rem] font-extrabold text-gradient font-serif leading-none">{stat.value}</p>
+                    <p className="text-[11px] text-muted-foreground mt-1 tracking-wide">{stat.label}</p>
                   </div>
                 </div>
               ))}
@@ -181,9 +176,9 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* ── Tech marquee strip ─────────────────────────────────── */}
-        <div className="mt-16 pt-8 border-t border-border/60 animate-fade-in-up delay-700">
-          <p className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest text-center mb-5">
+        {/* ── Tech marquee strip ─────────────────────────────── */}
+        <div className="mt-20 pt-8 border-t border-border/40 animate-fade-in-up delay-700">
+          <p className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-[0.2em] text-center mb-6">
             Technologies maîtrisées
           </p>
           <div className="marquee-wrap">
@@ -191,9 +186,9 @@ export function HeroSection() {
               {[...techItems, ...techItems].map((tech, i) => (
                 <span
                   key={i}
-                  className="inline-flex items-center gap-2 mx-5 text-sm font-semibold text-muted-foreground/70 whitespace-nowrap"
+                  className="inline-flex items-center gap-2 mx-6 text-[13px] font-medium text-muted-foreground/60 whitespace-nowrap"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0" />
+                  <span className="w-1 h-1 rounded-full bg-primary/30 shrink-0" />
                   {tech}
                 </span>
               ))}
