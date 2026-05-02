@@ -50,7 +50,7 @@ export function HeroSection() {
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
 
           {/* ── Left: Profile photo ────────────────────────────── */}
-          <div className="order-2 lg:order-1 flex justify-center lg:justify-start animate-fade-in delay-200">
+          <div className="order-1 lg:order-1 flex justify-center lg:justify-start animate-fade-in delay-200">
             <div className="relative">
               {/* Photo frame */}
               <div className="relative w-[268px] h-[348px] sm:w-[300px] sm:h-[390px] lg:w-[318px] lg:h-[413px] rounded-3xl overflow-hidden shadow-[0_32px_80px_hsl(216,40%,30%,0.18)] border border-white/70">
@@ -74,7 +74,7 @@ export function HeroSection() {
           </div>
 
           {/* ── Right: Content ────────────────────────────────── */}
-          <div className="order-1 lg:order-2 space-y-7">
+          <div className="order-2 lg:order-2 space-y-7">
 
             {/* Role label */}
             <div className="animate-fade-in-up">
