@@ -31,6 +31,12 @@ Preferred communication style: Simple, everyday language.
 - **All API endpoints** are served by the Rust server
 - **Express/Node.js** runs on port 5000 (Vite dev server middleware + proxy to Rust for `/api/*`)
 
+**Rust Modules** (`rust_server/src/`):
+- `main.rs` (68 lines) — entry point: declares modules, CORS, router, server start
+- `models.rs` (185 lines) — all data structs + request input types
+- `state.rs` (111 lines) — `AppState::new()` + 4 seed functions
+- `handlers.rs` (319 lines) — all HTTP handlers + auth/date helpers
+
 **API Endpoints** (served by Rust):
 - `GET /api/projects` — All portfolio projects
 - `GET /api/projects/:id` — Single project

@@ -144,14 +144,11 @@
   body { @apply font-sans antialiased bg-background text-foreground; }
 }
 
-/* ── Scrollbar ───────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: hsl(216 20% 82%); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: hsl(216 40% 64%); }
 .dark ::-webkit-scrollbar-thumb { background: hsl(216 25% 22%); }
-
-/* ── Keyframes ───────────────────────────────────────────── */
 @keyframes fade-in-up {
   from { opacity: 0; transform: translateY(22px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -193,7 +190,6 @@
   to   { width: var(--bar-w, 80%); }
 }
 
-/* ── Animation utilities ─────────────────────────────────── */
 @layer utilities {
   .animate-fade-in-up   { animation: fade-in-up  0.55s ease-out both; }
   .animate-fade-in      { animation: fade-in     0.45s ease-out both; }
@@ -557,7 +553,6 @@
       progress-done 0.35s ease-out forwards !important;
   }
 
-  /* ── Scroll-reveal animations ─────────────────────── */
   .scroll-reveal {
     opacity: 0;
     transform: translateY(30px);
@@ -595,7 +590,6 @@
   .scroll-delay-5 { transition-delay: 400ms; }
   .scroll-delay-6 { transition-delay: 480ms; }
 
-  /* ── Hide scrollbar (cross-browser) ──────────────────── */
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;

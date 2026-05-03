@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Architecture — Portfolio KJS</title>
+<style>
+  :root {
+    --blue: #1a56db; --blue-light: #e8f0fd; --blue-dark: #1140a0;
+    --text: #0f1a2e; --muted: #64748b; --border: #e2e8f0;
+    --bg: #f8fafc; --card: #ffffff; --code-bg: #f1f5f9;
+    --green: #059669; --amber: #d97706; --red: #dc2626; --purple: #7c3aed;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Inter', system-ui, sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+  a { color:var(--blue); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+
+  /* Layout */
+  .layout { display:flex; min-height:100vh; }
+  .sidebar {
+    width:240px; shrink:0; background:var(--card); border-right:1px solid var(--border);
+    position:fixed; top:0; left:0; bottom:0; overflow-y:auto;
+    padding:24px 0; display:flex; flex-direction:column; gap:4px; z-index:10;
+  }
+  .sidebar-brand { padding:0 20px 20px; border-bottom:1px solid var(--border); margin-bottom:12px; }
+  .sidebar-brand .logo {
+    width:40px; height:40px; border-radius:10px; background:var(--blue);
+    color:#fff; font-weight:700; font-size:14px; display:flex; align-items:center; justify-content:center;
+    margin-bottom:8px;
+  }
+  .sidebar-brand h2 { font-size:14px; font-weight:700; color:var(--text); }
+  .sidebar-brand p { font-size:11px; color:var(--muted); }
+  .sidebar a {
+    display:flex; align-items:center; gap:8px; padding:7px 20px;
+    font-size:13px; color:var(--muted); border-radius:0; transition:.15s;
+    border-left:3px solid transparent; text-decoration:none;
+  }
+  .sidebar a:hover { color:var(--blue); background:var(--blue-light); }
+  .sidebar a.active { color:var(--blue); background:var(--blue-light); border-left-color:var(--blue); font-weight:600; }
+  .sidebar-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); padding:12px 20px 4px; }
+  .main { margin-left:240px; padding:40px 48px; max-width:960px; }
+
+  /* Typography */
+  h1 { font-size:2rem; font-weight:800; color:var(--text); margin-bottom:8px; }
+  h2 { font-size:1.35rem; font-weight:700; color:var(--text); margin:40px 0 16px; padding-top:8px; border-top:1px solid var(--border); }
+  h2:first-of-type { border-top:none; margin-top:0; }
+  h3 { font-size:1.05rem; font-weight:600; color:var(--text); margin:24px 0 10px; }
+  h4 { font-size:.9rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin:16px 0 8px; }
+  p { color:#334155; margin-bottom:12px; font-size:.925rem; }
+  ul, ol { padding-left:20px; margin-bottom:12px; }
+  li { font-size:.925rem; color:#334155; margin-bottom:4px; }
+
+  /* Hero banner */
+  .hero {
+    background:linear-gradient(135deg, #1a56db 0%, #1e40af 60%, #1e3a8a 100%);
+    border-radius:16px; padding:36px 40px; margin-bottom:40px; color:#fff;
+    position:relative; overflow:hidden;
+  }
+  .hero::after {
+    content:''; position:absolute; top:-40px; right:-40px; width:200px; height:200px;
+    background:rgba(255,255,255,.07); border-radius:50%;
+  }
+  .hero h1 { color:#fff; font-size:1.8rem; }
+  .hero p { color:rgba(255,255,255,.8); margin-bottom:0; }
+  .hero-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+  .chip { background:rgba(255,255,255,.15); color:#fff; border-radius:20px; padding:4px 12px; font-size:12px; font-weight:600; }
+
+  /* Cards */
+  .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px 24px; margin-bottom:16px; }
+  .card-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:16px; margin-bottom:24px; }
+  .card-sm { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px 18px; }
+  .card-sm h3 { margin:0 0 4px; font-size:.9rem; }
+  .card-sm p { margin:0; font-size:.8rem; color:var(--muted); }
+  .card-sm .badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700; margin-bottom:6px; }
+  .badge-blue { background:var(--blue-light); color:var(--blue); }
+  .badge-green { background:#d1fae5; color:var(--green); }
+  .badge-amber { background:#fef3c7; color:var(--amber); }
+  .badge-purple { background:#ede9fe; color:var(--purple); }
+  .badge-red { background:#fee2e2; color:var(--red); }
+
+  /* Code / tree */
+  pre, code { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+  code { background:var(--code-bg); padding:2px 6px; border-radius:4px; font-size:.82rem; color:#be185d; }
+  pre { background:var(--code-bg); border:1px solid var(--border); border-radius:10px; padding:20px 24px; overflow-x:auto; margin-bottom:16px; font-size:.82rem; line-height:1.7; }
+  pre .c { color:var(--muted); font-style:italic; }
+  pre .k { color:var(--blue); font-weight:600; }
+  pre .s { color:var(--green); }
+  pre .p { color:var(--purple); }
+  .tree { background:var(--code-bg); border:1px solid var(--border); border-radius:10px; padding:20px 24px; font-family:monospace; font-size:.83rem; line-height:1.9; }
+  .tree .dir { color:var(--blue); font-weight:600; }
+  .tree .file { color:var(--text); }
+  .tree .comment { color:var(--muted); font-style:italic; margin-left:4px; }
+
+  /* Table */
+  .table-wrap { overflow-x:auto; margin-bottom:24px; }
+  table { width:100%; border-collapse:collapse; font-size:.85rem; }
+  th { background:var(--code-bg); padding:10px 14px; text-align:left; font-weight:700; color:var(--muted); font-size:.78rem; text-transform:uppercase; letter-spacing:.05em; border-bottom:2px solid var(--border); }
+  td { padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:var(--blue-light); }
+  .method { font-weight:700; font-size:.78rem; padding:2px 7px; border-radius:4px; display:inline-block; }
+  .get { background:#dbeafe; color:#1d4ed8; }
+  .post { background:#d1fae5; color:#065f46; }
+  .put { background:#fef3c7; color:#92400e; }
+  .del { background:#fee2e2; color:#991b1b; }
+  .auth { font-size:.75rem; color:var(--amber); font-weight:600; }
+  .pub { font-size:.75rem; color:var(--green); font-weight:600; }
+
+  /* Info boxes */
+  .info { border-left:4px solid var(--blue); background:var(--blue-light); padding:12px 16px; border-radius:0 8px 8px 0; margin-bottom:16px; font-size:.875rem; }
+  .warn { border-left:4px solid var(--amber); background:#fffbeb; padding:12px 16px; border-radius:0 8px 8px 0; margin-bottom:16px; font-size:.875rem; }
+  .tip { border-left:4px solid var(--green); background:#f0fdf4; padding:12px 16px; border-radius:0 8px 8px 0; margin-bottom:16px; font-size:.875rem; }
+
+  /* Divider */
+  hr { border:none; border-top:1px solid var(--border); margin:32px 0; }
+
+  @media (max-width:768px) {
+    .sidebar { display:none; }
+    .main { margin-left:0; padding:24px 20px; }
+    .card-grid { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- ── Sidebar ──────────────────────────────────────────────────────────── -->
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo">KJS</div>
+    <h2>Portfolio KJS</h2>
+    <p>Documentation technique</p>
+  </div>
+
+  <div class="sidebar-section">Projet</div>
+  <a href="#overview">Vue d'ensemble</a>
+  <a href="#stack">Stack technique</a>
+  <a href="#structure">Structure des fichiers</a>
+
+  <div class="sidebar-section">Architecture</div>
+  <a href="#frontend">Frontend React</a>
+  <a href="#backend">Backend Rust</a>
+  <a href="#data">Données & État</a>
+
+  <div class="sidebar-section">Référence</div>
+  <a href="#api">API Endpoints</a>
+  <a href="#admin">Admin CMS</a>
+  <a href="#env">Variables d'env.</a>
+
+  <div class="sidebar-section">Mise en prod</div>
+  <a href="#deploy">Déploiement</a>
+  <a href="#extend">Ajouter une feature</a>
+</nav>
+
+<!-- ── Main ─────────────────────────────────────────────────────────────── -->
+<main class="main">
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Portfolio Kroman Jibhar Samuel</h1>
+  <p>Documentation complète — architecture, API, déploiement et guide d'extension.</p>
+  <div class="hero-chips">
+    <span class="chip">React 18 + TypeScript</span>
+    <span class="chip">Rust / Axum</span>
+    <span class="chip">Tailwind CSS</span>
+    <span class="chip">Node.js proxy</span>
+    <span class="chip">shadcn/ui</span>
+  </div>
+</div>
+
+<!-- ── OVERVIEW ─────────────────────────────────────────────────────────── -->
+<section id="overview">
+<h2>Vue d'ensemble</h2>
+<p>Ce portfolio est une application <strong>full-stack</strong> composée de deux processus indépendants :</p>
+<ul>
+  <li><strong>Frontend + Proxy Node.js</strong> (port 5000) — React 18 servi par Vite, Express en middleware.</li>
+  <li><strong>API Rust / Axum</strong> (port 3001) — toutes les données et la logique métier.</li>
+</ul>
+<p>Express proxifie les requêtes <code>/api/*</code> vers le serveur Rust. Les fichiers statiques sont servis par Vite en dev, ou par le build <code>dist/</code> en production.</p>
+
+<div class="info">
+  <strong>Mot de passe admin :</strong> <code>nexalion2024</code> (ou variable <code>ADMIN_PASSWORD</code>).
+  En-tête HTTP : <code>x-admin-password</code>
+</div>
+
+<div class="card-grid">
+  <div class="card-sm">
+    <span class="badge badge-blue">Frontend</span>
+    <h3>React + TypeScript</h3>
+    <p>React 18, Wouter, TanStack Query, Tailwind, shadcn/ui. Build via Vite.</p>
+  </div>
+  <div class="card-sm">
+    <span class="badge badge-amber">Backend</span>
+    <h3>Rust / Axum</h3>
+    <p>API REST sur le port 3001. État en mémoire (Arc + Mutex). Multipart upload.</p>
+  </div>
+  <div class="card-sm">
+    <span class="badge badge-green">Proxy</span>
+    <h3>Node.js / Express</h3>
+    <p>Port 5000. Sert le frontend et proxifie /api/* vers Rust.</p>
+  </div>
+  <div class="card-sm">
+    <span class="badge badge-purple">Design</span>
+    <h3>Nexalion Brand</h3>
+    <p>Bleu royal hsl(216,90%,40%), Plus Jakarta Sans, thème light/dark.</p>
+  </div>
+</div>
+</section>
+
+<!-- ── STACK ──────────────────────────────────────────────────────────────  -->
+<section id="stack">
+<h2>Stack technique</h2>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Couche</th><th>Technologie</th><th>Version</th><th>Rôle</th></tr></thead>
+  <tbody>
+    <tr><td>UI Framework</td><td><strong>React</strong></td><td>18</td><td>Composants, state, rendu</td></tr>
+    <tr><td>Language</td><td><strong>TypeScript</strong></td><td>5</td><td>Typage fort front + server</td></tr>
+    <tr><td>Routing</td><td><strong>Wouter</strong></td><td>3</td><td>SPA routing léger (&lt;3 Ko)</td></tr>
+    <tr><td>Data Fetching</td><td><strong>TanStack Query</strong></td><td>5</td><td>Cache, refetch, mutations</td></tr>
+    <tr><td>Styling</td><td><strong>Tailwind CSS</strong></td><td>3</td><td>Utility-first, design system</td></tr>
+    <tr><td>Components</td><td><strong>shadcn/ui</strong></td><td>—</td><td>Radix UI primitives stylisés</td></tr>
+    <tr><td>Build</td><td><strong>Vite</strong></td><td>5</td><td>Dev server HMR, build prod</td></tr>
+    <tr><td>Proxy</td><td><strong>Express / Node.js</strong></td><td>18</td><td>Middleware + proxy /api/*</td></tr>
+    <tr><td>API Server</td><td><strong>Rust / Axum</strong></td><td>0.7</td><td>REST API, upload, analytics</td></tr>
+    <tr><td>ORM (config.)</td><td><strong>Drizzle</strong></td><td>—</td><td>Schéma PostgreSQL prêt</td></tr>
+    <tr><td>Transitions</td><td><strong>View Transitions API</strong></td><td>Chrome 111+</td><td>Animations directionnelles pages</td></tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<!-- ── STRUCTURE ─────────────────────────────────────────────────────────── -->
+<section id="structure">
+<h2>Structure des fichiers</h2>
+<div class="tree">
+<span class="dir">portfolio/</span>
+├── <span class="dir">client/src/</span>
+│   ├── <span class="dir">components/</span>            <span class="comment">Composants réutilisables</span>
+│   │   ├── navigation.tsx           <span class="comment">Nav + hamburger + thème</span>
+│   │   ├── hero-section.tsx         <span class="comment">Section accueil</span>
+│   │   ├── services-section.tsx     <span class="comment">3 cartes services</span>
+│   │   ├── projects-section.tsx     <span class="comment">Grille projets + dialog</span>
+│   │   ├── about-section.tsx        <span class="comment">Bio + timeline + photo</span>
+│   │   ├── contact-section.tsx      <span class="comment">Cartes contact + CTA</span>
+│   │   ├── footer.tsx               <span class="comment">Footer 4 colonnes</span>
+│   │   ├── scroll-reveal.tsx        <span class="comment">HOC animation au scroll</span>
+│   │   ├── theme-provider.tsx       <span class="comment">Light/dark context</span>
+│   │   └── <span class="dir">ui/</span>                <span class="comment">shadcn/ui — ne pas modifier</span>
+│   ├── <span class="dir">pages/</span>                 <span class="comment">Routes Wouter</span>
+│   │   ├── home.tsx                 <span class="comment">/ — page d'accueil</span>
+│   │   ├── projects.tsx             <span class="comment">/projets</span>
+│   │   ├── blog.tsx                 <span class="comment">/blog — liste articles</span>
+│   │   ├── blog-post.tsx            <span class="comment">/blog/:slug — article</span>
+│   │   ├── resources.tsx            <span class="comment">/ressources</span>
+│   │   ├── about.tsx                <span class="comment">/apropos</span>
+│   │   ├── contact.tsx              <span class="comment">/contact</span>
+│   │   └── <span class="dir">admin/</span>             <span class="comment">CMS sections (onglets)</span>
+│   │       ├── shared.tsx           <span class="comment">StatCard, AdminSkeleton, API helper</span>
+│   │       ├── dashboard.tsx        <span class="comment">Stats globales</span>
+│   │       ├── blog.tsx             <span class="comment">CRUD articles</span>
+│   │       ├── files.tsx            <span class="comment">Ressources téléchargeables</span>
+│   │       ├── projects.tsx         <span class="comment">CRUD projets</span>
+│   │       ├── media.tsx            <span class="comment">Upload médias par projet</span>
+│   │       └── infos.tsx            <span class="comment">Coordonnées + textes hero + services</span>
+│   ├── <span class="dir">lib/</span>
+│   │   ├── queryClient.ts           <span class="comment">TanStack Query + fetch helper</span>
+│   │   ├── utils.ts                 <span class="comment">cn(), classnames</span>
+│   │   └── project-config.ts        <span class="comment">Icônes, labels, styles catégories</span>
+│   ├── App.tsx                      <span class="comment">Router + View Transitions + Progress bar</span>
+│   └── index.css                    <span class="comment">Design tokens, animations, aurora</span>
+├── <span class="dir">server/</span>
+│   ├── index.ts                     <span class="comment">Express entry point</span>
+│   ├── routes.ts                    <span class="comment">Proxy /api/* → Rust:3001</span>
+│   └── vite.ts                      <span class="comment">Vite middleware (dev)</span>
+├── <span class="dir">rust_server/src/</span>
+│   ├── main.rs                      <span class="comment">Entry : modules + CORS + router + start</span>
+│   ├── models.rs                    <span class="comment">Structs (Project, BlogPost, etc.)</span>
+│   ├── state.rs                     <span class="comment">AppState + fonctions seed</span>
+│   └── handlers.rs                  <span class="comment">Tous les handlers HTTP + helpers</span>
+├── <span class="dir">shared/</span>
+│   └── schema.ts                    <span class="comment">Drizzle schema + types Zod partagés</span>
+└── architecture.html                <span class="comment">Ce fichier</span>
+</div>
+</section>
+
+<!-- ── FRONTEND ───────────────────────────────────────────────────────────── -->
+<section id="frontend">
+<h2>Frontend React</h2>
+
+<h3>Pages et routes</h3>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Route</th><th>Fichier</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>/</code></td><td>pages/home.tsx</td><td>Hero + Services + Projets + About + Contact</td></tr>
+    <tr><td><code>/projets</code></td><td>pages/projects.tsx</td><td>Grille projets filtrables</td></tr>
+    <tr><td><code>/blog</code></td><td>pages/blog.tsx</td><td>Liste articles avec filtres catégories</td></tr>
+    <tr><td><code>/blog/:slug</code></td><td>pages/blog-post.tsx</td><td>Article complet avec rendu Markdown simplifié</td></tr>
+    <tr><td><code>/ressources</code></td><td>pages/resources.tsx</td><td>Ressources téléchargeables gratuites</td></tr>
+    <tr><td><code>/apropos</code></td><td>pages/about.tsx</td><td>Bio, compétences, timeline</td></tr>
+    <tr><td><code>/contact</code></td><td>pages/contact.tsx</td><td>4 cartes contact + CTA devis</td></tr>
+    <tr><td><code>/admin</code></td><td>pages/admin.tsx</td><td>CMS protégé par mot de passe</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Animations de navigation</h3>
+<p>Deux systèmes en parallèle dans <code>App.tsx</code> :</p>
+<ul>
+  <li><strong>View Transitions API</strong> (Chrome 111+, Safari 18+) — <code>document.startViewTransition()</code> avec animations CSS <code>::view-transition-old/new</code> directionnelles.</li>
+  <li><strong>Fallback CSS</strong> — classe <code>page-enter-forward</code> / <code>page-enter-back</code> sur la div <code>key={location}</code>. Déclenche l'animation à chaque changement de route.</li>
+</ul>
+<p>Direction détectée via <code>PAGE_ORDER</code> : aller vers une page à droite dans la liste = <em>forward</em> (slide de droite), aller vers une page à gauche = <em>back</em> (slide de gauche).</p>
+
+<h3>Conventions composants</h3>
+<ul>
+  <li>Toutes les sections ont <code>max-w-7xl mx-auto px-6 lg:px-8</code> pour le container.</li>
+  <li><code>ScrollReveal</code> wrapping les éléments qui doivent s'animer à l'entrée dans le viewport.</li>
+  <li>Constantes visuelles de catégorie dans <code>lib/project-config.ts</code> (icônes, labels, couleurs).</li>
+  <li>Tout fetch passe par TanStack Query — pas de <code>useEffect + fetch</code> directs.</li>
+</ul>
+
+<h3>Thème light/dark</h3>
+<p>Géré par <code>ThemeProvider</code> via localStorage clé <code>portfolio-theme</code>. Tailwind <code>darkMode: ["class"]</code>. La classe <code>.dark</code> est sur <code>document.documentElement</code>.</p>
+</section>
+
+<!-- ── BACKEND RUST ───────────────────────────────────────────────────────── -->
+<section id="backend">
+<h2>Backend Rust / Axum</h2>
+
+<h3>Modules</h3>
+<div class="card-grid">
+  <div class="card-sm">
+    <span class="badge badge-amber">models.rs</span>
+    <h3>Types & Structs</h3>
+    <p>Toutes les structs de données (<code>Project</code>, <code>BlogPost</code>, etc.) et les types d'entrée (<code>CreateProject</code>, <code>UpdateBlogPost</code>…).</p>
+  </div>
+  <div class="card-sm">
+    <span class="badge badge-blue">state.rs</span>
+    <h3>AppState & Seed</h3>
+    <p><code>AppState::new()</code> initialise toutes les collections (<code>Arc&lt;Mutex&lt;Vec&lt;T&gt;&gt;&gt;</code>) et les données de démo.</p>
+  </div>
+  <div class="card-sm">
+    <span class="badge badge-purple">handlers.rs</span>
+    <h3>Handlers HTTP</h3>
+    <p>Toutes les fonctions handler + helpers (<code>check_admin_auth</code>, <code>projects_with_media</code>, <code>chrono_date</code>).</p>
+  </div>
+  <div class="card-sm">
+    <span class="badge badge-green">main.rs</span>
+    <h3>Entrée + Router</h3>
+    <p>Déclare les modules, configure CORS, crée le <code>Router</code> Axum et démarre le serveur sur <code>:3001</code>.</p>
+  </div>
+</div>
+
+<h3>Gestion de l'état</h3>
+<p>L'état est entièrement <strong>en mémoire</strong> (pas de base de données active). Chaque collection est un <code>Arc&lt;Mutex&lt;Vec&lt;T&gt;&gt;&gt;</code> partagé entre threads. <strong>Les données sont perdues au redémarrage.</strong></p>
+
+<div class="warn">
+  Pour persister les données, connectez PostgreSQL via <code>DATABASE_URL</code> et utilisez le schéma Drizzle dans <code>shared/schema.ts</code>. Drizzle est déjà configuré — ajoutez les requêtes SQL dans <code>handlers.rs</code> via <code>sqlx</code> ou une couche de storage Node.js.
+</div>
+
+<h3>Authentification admin</h3>
+<p>Chaque handler admin appelle <code>check_admin_auth(&amp;headers)</code> qui lit l'en-tête <code>x-admin-password</code> et le compare à la variable d'environnement <code>ADMIN_PASSWORD</code> (fallback : <code>nexalion2024</code>).</p>
+
+<h3>Upload de médias</h3>
+<p>Les fichiers sont uploadés via <code>multipart/form-data</code>, écrits dans <code>rust_server/uploads/</code> avec un UUID comme nom. L'URL retournée est <code>/uploads/&lt;uuid&gt;.ext</code>. Le proxy Express sert ce dossier statique.</p>
+</section>
+
+<!-- ── DATA ───────────────────────────────────────────────────────────────── -->
+<section id="data">
+<h2>Données & Schéma</h2>
+
+<h3>Modèles principaux</h3>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Modèle</th><th>Champs clés</th><th>Stockage</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Project</strong></td><td>id, title, description, problem, solution, result, technologies[], category, demo_url, download_url, media[]</td><td>Mémoire Rust</td></tr>
+    <tr><td><strong>BlogPost</strong></td><td>id, title, slug, excerpt, content, category, tags[], status (draft/published), view_count, read_time</td><td>Mémoire Rust</td></tr>
+    <tr><td><strong>FreeFile</strong></td><td>id, title, description, file_url, file_type, download_count, category, tags[]</td><td>Mémoire Rust</td></tr>
+    <tr><td><strong>Service</strong></td><td>id, title, description, icon, features[]</td><td>Mémoire Rust</td></tr>
+    <tr><td><strong>ContactInfo</strong></td><td>email, linkedin, whatsapp, github</td><td>Mémoire Rust</td></tr>
+    <tr><td><strong>SiteContent</strong></td><td>hero_description, hero_highlights[], about_quote</td><td>Mémoire Rust</td></tr>
+    <tr><td><strong>MediaItem</strong></td><td>id, url, media_type, project_id, filename</td><td>Mémoire Rust + fichiers disk</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Catégories de projets</h3>
+<p>Définies dans <code>client/src/lib/project-config.ts</code> et <code>rust_server/src/handlers.rs</code> :</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+  <code>dashboard</code> <code>app-web</code> <code>app-mobile</code> <code>site-web</code> <code>excel-vba</code> <code>automatisation</code>
+</div>
+</section>
+
+<!-- ── API ────────────────────────────────────────────────────────────────── -->
+<section id="api">
+<h2>API Endpoints</h2>
+<p>Base URL en dev : <code>http://localhost:5000/api</code> (proxifié vers Rust:3001).</p>
+
+<h3>Endpoints publics</h3>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Méthode</th><th>Endpoint</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><span class="method get">GET</span></td><td><code>/api/projects</code></td><td>Tous les projets avec médias</td></tr>
+    <tr><td><span class="method get">GET</span></td><td><code>/api/projects/:id</code></td><td>Un projet par ID</td></tr>
+    <tr><td><span class="method get">GET</span></td><td><code>/api/services</code></td><td>3 cartes services</td></tr>
+    <tr><td><span class="method get">GET</span></td><td><code>/api/skills</code></td><td>Compétences (statique)</td></tr>
+    <tr><td><span class="method get">GET</span></td><td><code>/api/contact</code></td><td>Coordonnées</td></tr>
+    <tr><td><span class="method get">GET</span></td><td><code>/api/site-content</code></td><td>Textes dynamiques hero/about</td></tr>
+    <tr><td><span class="method get">GET</span></td><td><code>/api/blog</code></td><td>Articles publiés</td></tr>
+    <tr><td><span class="method get">GET</span></td><td><code>/api/blog/:slug</code></td><td>Article par slug (incrémente view_count)</td></tr>
+    <tr><td><span class="method get">GET</span></td><td><code>/api/files</code></td><td>Ressources téléchargeables</td></tr>
+    <tr><td><span class="method post">POST</span></td><td><code>/api/files/:id/download</code></td><td>Incrémente download_count</td></tr>
+    <tr><td><span class="method post">POST</span></td><td><code>/api/track</code></td><td>Analytics — <code>{ event_type, path }</code></td></tr>
+    <tr><td><span class="method get">GET</span></td><td><code>/health</code></td><td>Health check — retourne "OK"</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Endpoints admin <span class="auth">🔒 x-admin-password requis</span></h3>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Méthode</th><th>Endpoint</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><span class="method get">GET</span></td><td><code>/api/admin/stats</code></td><td>Dashboard stats</td></tr>
+    <tr><td><span class="method get">GET</span></td><td><code>/api/admin/blog</code></td><td>Tous les articles (brouillons inclus)</td></tr>
+    <tr><td><span class="method post">POST</span></td><td><code>/api/admin/blog</code></td><td>Créer un article</td></tr>
+    <tr><td><span class="method put">PUT</span></td><td><code>/api/admin/blog/:id</code></td><td>Modifier un article</td></tr>
+    <tr><td><span class="method del">DELETE</span></td><td><code>/api/admin/blog/:id</code></td><td>Supprimer un article</td></tr>
+    <tr><td><span class="method post">POST</span></td><td><code>/api/admin/files</code></td><td>Ajouter une ressource</td></tr>
+    <tr><td><span class="method del">DELETE</span></td><td><code>/api/admin/files/:id</code></td><td>Supprimer une ressource</td></tr>
+    <tr><td><span class="method post">POST</span></td><td><code>/api/admin/projects</code></td><td>Créer un projet</td></tr>
+    <tr><td><span class="method put">PUT</span></td><td><code>/api/admin/projects/:id</code></td><td>Modifier un projet</td></tr>
+    <tr><td><span class="method del">DELETE</span></td><td><code>/api/admin/projects/:id</code></td><td>Supprimer un projet</td></tr>
+    <tr><td><span class="method post">POST</span></td><td><code>/api/admin/projects/:id/upload</code></td><td>Upload média (multipart)</td></tr>
+    <tr><td><span class="method get">GET</span></td><td><code>/api/admin/projects/:id/media</code></td><td>Lister les médias d'un projet</td></tr>
+    <tr><td><span class="method del">DELETE</span></td><td><code>/api/admin/media/:media_id</code></td><td>Supprimer un média</td></tr>
+    <tr><td><span class="method put">PUT</span></td><td><code>/api/admin/contact</code></td><td>Mettre à jour les coordonnées</td></tr>
+    <tr><td><span class="method put">PUT</span></td><td><code>/api/admin/site-content</code></td><td>Textes hero + about</td></tr>
+    <tr><td><span class="method put">PUT</span></td><td><code>/api/admin/services</code></td><td>Modifier les 3 cartes services</td></tr>
+  </tbody>
+</table>
+</div>
+</section>
+
+<!-- ── ADMIN CMS ───────────────────────────────────────────────────────────── -->
+<section id="admin">
+<h2>Admin CMS</h2>
+<p>Accessible sur <code>/admin</code>. Mot de passe : <code>nexalion2024</code>. Session stockée dans <code>sessionStorage</code>.</p>
+
+<div class="card-grid">
+  <div class="card-sm">
+    <span class="badge badge-blue">Tableau de bord</span>
+    <h3>Stats globales</h3>
+    <p>Visites totales, vues blog, téléchargements, nombre de projets par catégorie.</p>
+  </div>
+  <div class="card-sm">
+    <span class="badge badge-green">Blog</span>
+    <h3>CRUD articles</h3>
+    <p>Créer, éditer, publier/dépublier, supprimer. Champ status : <code>published</code> | <code>draft</code>.</p>
+  </div>
+  <div class="card-sm">
+    <span class="badge badge-amber">Ressources</span>
+    <h3>Fichiers téléchargeables</h3>
+    <p>Ajouter / supprimer des ressources gratuites (xlsx, pbix, pdf, xlsm…).</p>
+  </div>
+  <div class="card-sm">
+    <span class="badge badge-purple">Projets</span>
+    <h3>CRUD projets</h3>
+    <p>Titre, description, problème, solution, résultat, technologies, catégorie, liens.</p>
+  </div>
+  <div class="card-sm">
+    <span class="badge badge-red">Médias</span>
+    <h3>Upload photos/vidéos</h3>
+    <p>Upload par projet, carousel dans les cards. Formats : jpg, png, gif, webp, mp4, webm, mov.</p>
+  </div>
+  <div class="card-sm">
+    <span class="badge badge-blue">Informations</span>
+    <h3>Textes & coordonnées</h3>
+    <p>Email, LinkedIn, WhatsApp, GitHub. Texte hero, highlights, citation about. Services.</p>
+  </div>
+</div>
+
+<div class="tip">
+  <strong>Pour changer le mot de passe :</strong> définir la variable d'environnement <code>ADMIN_PASSWORD</code> côté Rust.
+  Mettre aussi à jour la constante <code>PASSWORD</code> dans <code>client/src/pages/admin.tsx</code>.
+</div>
+</section>
+
+<!-- ── VARIABLES D'ENV ─────────────────────────────────────────────────────── -->
+<section id="env">
+<h2>Variables d'environnement</h2>
+
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Variable</th><th>Côté</th><th>Défaut</th><th>Description</th></tr></thead>
+  <tbody>
+    <tr><td><code>ADMIN_PASSWORD</code></td><td>Rust</td><td><code>nexalion2024</code></td><td>Mot de passe API admin</td></tr>
+    <tr><td><code>ALLOWED_ORIGIN</code></td><td>Rust</td><td><code>http://localhost:5000</code></td><td>Origin autorisée par CORS</td></tr>
+    <tr><td><code>DATABASE_URL</code></td><td>Node.js</td><td>—</td><td>PostgreSQL (pour migration future)</td></tr>
+    <tr><td><code>SESSION_SECRET</code></td><td>Node.js</td><td>—</td><td>Clé session Express</td></tr>
+    <tr><td><code>PORT</code></td><td>Node.js</td><td><code>5000</code></td><td>Port Express / Vite proxy</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="warn">
+  En production sur Replit : définir <code>ADMIN_PASSWORD</code> et <code>ALLOWED_ORIGIN</code> dans les Secrets du projet (ne jamais mettre en clair dans le code).
+</div>
+</section>
+
+<!-- ── DÉPLOIEMENT ────────────────────────────────────────────────────────── -->
+<section id="deploy">
+<h2>Déploiement</h2>
+
+<h3>Sur Replit (recommandé)</h3>
+<ol>
+  <li>Vérifier que les deux workflows sont en marche : <strong>Start application</strong> (port 5000) et <strong>Rust API Server</strong> (port 3001).</li>
+  <li>Définir <code>ADMIN_PASSWORD</code> et <code>ALLOWED_ORIGIN</code> dans les Secrets Replit.</li>
+  <li>Cliquer sur <strong>Deploy</strong> dans l'interface Replit — le build et le hosting sont automatiques.</li>
+</ol>
+
+<h3>Sur un VPS / VM</h3>
+<pre># 1. Build frontend
+npm run build
+
+# 2. Build Rust (release)
+cd rust_server && cargo build --release && cd ..
+
+# 3. Lancer les deux processus
+ALLOWED_ORIGIN=https://votredomaine.com \
+ADMIN_PASSWORD=votre_secret \
+./rust_server/target/release/portfolio-api &
+
+node ./dist/index.cjs</pre>
+
+<h3>Variables de production</h3>
+<pre>ALLOWED_ORIGIN=https://kjs.portfolio.com
+ADMIN_PASSWORD=motdepassefort123
+DATABASE_URL=postgresql://user:pass@host/db</pre>
+
+<div class="info">
+  Le serveur Rust sert aussi les fichiers <code>/uploads/*</code> statiques. Assurez-vous que le dossier <code>uploads/</code> est persistant (ne pas le gitignorer en prod).
+</div>
+</section>
+
+<!-- ── ÉTENDRE ────────────────────────────────────────────────────────────── -->
+<section id="extend">
+<h2>Ajouter une fonctionnalité</h2>
+
+<h3>Nouvelle page frontend</h3>
+<ol>
+  <li>Créer <code>client/src/pages/mapage.tsx</code> avec <code>export default function MaPage()</code>.</li>
+  <li>Ajouter la route dans <code>App.tsx</code> : <code>&lt;Route path="/mapage" component={MaPage} /&gt;</code>.</li>
+  <li>Ajouter le lien dans <code>components/navigation.tsx</code>.</li>
+  <li>Ajouter <code>"/mapage"</code> dans <code>PAGE_ORDER</code> dans <code>App.tsx</code> pour les transitions directionnelles.</li>
+</ol>
+
+<h3>Nouvel endpoint API</h3>
+<ol>
+  <li>Ajouter la struct dans <code>rust_server/src/models.rs</code>.</li>
+  <li>Ajouter le champ dans <code>AppState</code> et <code>AppState::new()</code> dans <code>state.rs</code>.</li>
+  <li>Écrire le handler dans <code>handlers.rs</code> (<code>pub async fn</code>).</li>
+  <li>Enregistrer la route dans <code>main.rs</code> (bloc <code>Router::new()</code>).</li>
+</ol>
+
+<h3>Ajouter une catégorie de projet</h3>
+<ol>
+  <li>Dans <code>client/src/lib/project-config.ts</code> : ajouter l'entrée dans <code>CATEGORY_ICONS</code>, <code>CATEGORY_LABELS</code>, <code>CATEGORY_STYLES</code> et <code>PROJECT_FILTERS</code>.</li>
+  <li>Dans <code>rust_server/src/handlers.rs</code> : mettre à jour le handler <code>list_skills()</code> si nécessaire.</li>
+  <li>Dans <code>pages/admin/projects.tsx</code> : ajouter l'option dans le <code>&lt;select&gt;</code> catégorie.</li>
+  <li>Dans <code>pages/admin/dashboard.tsx</code> : ajouter la ligne dans la grille catégories.</li>
+</ol>
+
+<h3>Passer à PostgreSQL</h3>
+<ol>
+  <li>Définir <code>DATABASE_URL</code> dans les Secrets.</li>
+  <li>Lancer <code>npm run db:push</code> pour appliquer le schéma Drizzle (voir <code>shared/schema.ts</code>).</li>
+  <li>Remplacer les <code>Arc&lt;Mutex&lt;&gt;&gt;</code> dans <code>state.rs</code> par des appels SQL via <code>sqlx</code> dans les handlers.</li>
+</ol>
+
+<hr />
+<p style="text-align:center;color:var(--muted);font-size:.8rem;">Portfolio KJS · Kroman Jibhar Samuel · Logisticien & Data Analyst · Côte d'Ivoire</p>
+</section>
+
+</main>
+</div>
+
+<script>
+  const links = document.querySelectorAll('.sidebar a');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const link = document.querySelector(`.sidebar a[href="#${e.target.id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  document.querySelectorAll('section[id]').forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
