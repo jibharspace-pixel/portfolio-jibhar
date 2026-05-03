@@ -550,6 +550,53 @@ DATABASE_URL=postgresql://user:pass@host/db</pre>
 </div>
 </section>
 
+<!-- ── HORS REPLIT ─────────────────────────────────────────────────────────── -->
+<section id="offline">
+<h2>Utiliser hors Replit</h2>
+
+<h3>Prérequis</h3>
+<ul>
+  <li>Node.js 18+</li>
+  <li>Rust stable + Cargo</li>
+  <li>Git</li>
+</ul>
+
+<h3>Lancer en local</h3>
+<ol>
+  <li>Cloner le projet.</li>
+  <li>Installer les dépendances front : <code>npm install</code>.</li>
+  <li>Démarrer le serveur Rust : <code>cd rust_server &amp;&amp; cargo run</code>.</li>
+  <li>Démarrer le frontend : <code>npm run dev</code>.</li>
+  <li>Ouvrir <code>http://localhost:5000</code>.</li>
+</ol>
+
+<h3>Variables à définir</h3>
+<pre>ADMIN_PASSWORD=nexalion2024
+ALLOWED_ORIGIN=http://localhost:5000
+SESSION_SECRET=votre_cle_session
+DATABASE_URL=postgresql://user:pass@localhost:5432/portfolio</pre>
+
+<h3>Build production</h3>
+<pre># Frontend
+npm run build
+
+# Backend
+cd rust_server
+cargo build --release</pre>
+
+<h3>Démarrage hors Replit</h3>
+<pre># Terminal 1
+cd rust_server
+./target/release/portfolio-api
+
+# Terminal 2
+node ./dist/index.cjs</pre>
+
+<div class="tip">
+  Si vous déployez sur un VPS ou un hébergement classique, gardez <code>ALLOWED_ORIGIN</code> aligné avec l’URL publique du site.
+</div>
+</section>
+
 <!-- ── ÉTENDRE ────────────────────────────────────────────────────────────── -->
 <section id="extend">
 <h2>Ajouter une fonctionnalité</h2>
