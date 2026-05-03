@@ -115,7 +115,6 @@ export function ProjectsSection({ password }: { password: string }) {
         )}
       </div>
 
-      {/* ── Form ────────────────────────────────────────────────────────── */}
       {creating && (
         <Card className="border border-primary/25 bg-primary/[0.03] shadow-sm">
           <CardContent className="p-5 space-y-4">
@@ -193,7 +192,6 @@ export function ProjectsSection({ password }: { password: string }) {
         </Card>
       )}
 
-      {/* ── List ────────────────────────────────────────────────────────── */}
       {isLoading ? (
         <AdminSkeleton rows={4} />
       ) : !projects?.length ? (

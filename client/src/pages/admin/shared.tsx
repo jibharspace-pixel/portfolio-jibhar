@@ -32,7 +32,6 @@ export function StatCard({
 }) {
   return (
     <Card className="border border-border/60 overflow-hidden relative">
-      {/* Top accent line */}
       <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${accent}`} />
       <CardContent className="p-5 pt-6">
         <div className="flex items-start justify-between">
@@ -50,7 +49,6 @@ export function StatCard({
   );
 }
 
-// ── Confirm delete dialog ──────────────────────────────────────────────────────
 export function ConfirmDelete({
   trigger,
   title = "Confirmer la suppression",
@@ -98,7 +96,6 @@ export function ConfirmDelete({
   );
 }
 
-// ── API helper ────────────────────────────────────────────────────────────────
 export const API = {
   get:  (url: string, pw: string) =>
     fetch(url, { headers: { "x-admin-password": pw } }).then(r => r.json()),
@@ -110,7 +107,6 @@ export const API = {
     fetch(url, { method: "DELETE", headers: { "x-admin-password": pw } }),
 };
 
-// ── Section label ──────────────────────────────────────────────────────────────
 export function SectionHeader({ title, description }: { title: string; description?: string }) {
   return (
     <div className="pb-1">
@@ -120,7 +116,6 @@ export function SectionHeader({ title, description }: { title: string; descripti
   );
 }
 
-// ── Form field wrapper ─────────────────────────────────────────────────────────
 export function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>

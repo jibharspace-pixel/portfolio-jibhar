@@ -44,7 +44,6 @@ function LoginScreen({ onLogin }: { onLogin: (pw: string) => void }) {
   return (
     <div className="min-h-screen bg-background bg-aurora-page flex items-center justify-center px-4">
       <div className="w-full max-w-sm animate-fade-in-up">
-        {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-nexalion shadow-[0_8px_32px_hsl(216,90%,40%,0.35)] mb-5">
             <Lock className="w-7 h-7 text-white" />
@@ -152,7 +151,6 @@ function AdminLayout({ password, onLogout }: { password: string; onLogout: () =>
 
       {/* ── Desktop sidebar ──────────────────────────────────────────────── */}
       <aside className="hidden lg:flex w-56 xl:w-60 shrink-0 bg-white dark:bg-card border-r border-border/60 flex-col fixed inset-y-0 left-0 z-40 shadow-[1px_0_0_0_hsl(216,20%,90%)]">
-        {/* Brand */}
         <div className="px-4 py-5 border-b border-border/60">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-nexalion flex items-center justify-center text-white font-bold text-sm font-serif shadow-sm shrink-0">
@@ -165,14 +163,12 @@ function AdminLayout({ password, onLogout }: { password: string; onLogout: () =>
           </div>
         </div>
 
-        {/* Nav */}
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
           {NAV.map(item => (
             <NavItem key={item.id} item={item} active={section === item.id} onClick={() => navigate(item.id)} />
           ))}
         </nav>
 
-        {/* Logout */}
         <div className="px-3 py-3 border-t border-border/60">
           <button
             onClick={onLogout}
@@ -185,7 +181,6 @@ function AdminLayout({ password, onLogout }: { password: string; onLogout: () =>
         </div>
       </aside>
 
-      {/* ── Mobile top bar ────────────────────────────────────────────────── */}
       <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-card/95 backdrop-blur-md border-b border-border/60 h-14 flex items-center justify-between px-4 shadow-sm">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-nexalion flex items-center justify-center text-white text-xs font-bold font-serif">KJS</div>
@@ -210,7 +205,6 @@ function AdminLayout({ password, onLogout }: { password: string; onLogout: () =>
         </div>
       </header>
 
-      {/* ── Mobile drawer ────────────────────────────────────────────────── */}
       {mobileOpen && (
         <div
           className="lg:hidden fixed inset-0 z-40 top-14"
@@ -230,10 +224,8 @@ function AdminLayout({ password, onLogout }: { password: string; onLogout: () =>
         </div>
       )}
 
-      {/* ── Main content ──────────────────────────────────────────────────── */}
       <main className="flex-1 lg:ml-56 xl:ml-60 pt-14 lg:pt-0 min-h-screen">
         <div className="max-w-4xl mx-auto px-5 py-8">
-          {/* Section transition */}
           <div key={section} className="page-enter">
             {sectionContent[section]}
           </div>

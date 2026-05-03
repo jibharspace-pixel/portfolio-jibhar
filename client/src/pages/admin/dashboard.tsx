@@ -26,7 +26,6 @@ export function DashboardSection({ password }: { password: string }) {
     <div className="space-y-7">
       <SectionHeader title="Tableau de bord" description="Vue d'ensemble des performances du portfolio." />
 
-      {/* Stats */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
         <StatCard
           label="Visites totales"
@@ -57,9 +56,7 @@ export function DashboardSection({ password }: { password: string }) {
         />
       </div>
 
-      {/* Two-column */}
       <div className="grid lg:grid-cols-2 gap-5">
-        {/* Articles récents */}
         <Card className="border border-border/60">
           <CardContent className="p-5">
             <p className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
@@ -85,7 +82,6 @@ export function DashboardSection({ password }: { password: string }) {
           </CardContent>
         </Card>
 
-        {/* Top pages */}
         <Card className="border border-border/60">
           <CardContent className="p-5">
             <p className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
@@ -115,9 +111,7 @@ export function DashboardSection({ password }: { password: string }) {
         </Card>
       </div>
 
-      {/* Bottom row */}
       <div className="grid sm:grid-cols-2 gap-5">
-        {/* Projets par catégorie */}
         <Card className="border border-border/60">
           <CardContent className="p-5">
             <p className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
@@ -144,7 +138,6 @@ export function DashboardSection({ password }: { password: string }) {
           </CardContent>
         </Card>
 
-        {/* Ressources populaires */}
         <Card className="border border-border/60">
           <CardContent className="p-5">
             <p className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">

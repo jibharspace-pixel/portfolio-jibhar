@@ -113,7 +113,6 @@ export function MediaSection({ password }: { password: string }) {
                 </div>
 
                 <CardContent className="p-4 space-y-3">
-                  {/* Media grid */}
                   {media.length > 0 ? (
                     <div className="grid grid-cols-3 gap-1.5">
                       {media.map(item => (
@@ -121,7 +120,6 @@ export function MediaSection({ password }: { password: string }) {
                           {item.media_type === "image"
                             ? <img src={item.url} alt="" className="w-full h-full object-cover" />
                             : <video src={item.url} className="w-full h-full object-cover" muted />}
-                          {/* Overlay with delete */}
                           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                             <ConfirmDelete
                               title="Supprimer ce média ?"
@@ -147,7 +145,6 @@ export function MediaSection({ password }: { password: string }) {
                     </div>
                   )}
 
-                  {/* Upload buttons */}
                   <div className="flex items-center gap-2">
                     <UploadBtn projectId={p.id} accept="image/*"  label="Photo"  icon={Image} password={password} onDone={refresh} />
                     <UploadBtn projectId={p.id} accept="video/*"  label="Vidéo"  icon={Video} password={password} onDone={refresh} />

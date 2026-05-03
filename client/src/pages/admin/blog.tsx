@@ -108,7 +108,6 @@ export function BlogSection({ password }: { password: string }) {
         )}
       </div>
 
-      {/* ── Form ────────────────────────────────────────────────────────── */}
       {creating && (
         <Card className="border border-primary/25 bg-primary/[0.03] shadow-sm">
           <CardContent className="p-5 space-y-4">
@@ -185,17 +184,17 @@ export function BlogSection({ password }: { password: string }) {
         </Card>
       )}
 
-      {/* ── Filters ─────────────────────────────────────────────────────── */}
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-1 px-1 whitespace-nowrap">
         {(["all", "published", "draft"] as const).map(f => (
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all border ${
+            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all border shrink-0 ${
               filter === f
                 ? "bg-primary text-white border-primary shadow-sm"
                 : "border-border/60 text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-muted/50"
             }`}
+            data-testid={`button-filter-post-${f}`}
           >
             {f === "all" ? "Tous" : f === "published" ? "Publiés" : "Brouillons"}
             <span className="ml-1.5 text-xs opacity-70">
@@ -205,7 +204,6 @@ export function BlogSection({ password }: { password: string }) {
         ))}
       </div>
 
-      {/* ── List ────────────────────────────────────────────────────────── */}
       {isLoading ? (
         <AdminSkeleton rows={3} />
       ) : !filtered?.length ? (
