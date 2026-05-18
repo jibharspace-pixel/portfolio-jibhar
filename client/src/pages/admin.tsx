@@ -175,6 +175,17 @@ function AdminLayout({ password, onLogout }: { password: string; onLogout: () =>
           ))}
         </nav>
 
+        <div className="px-4 py-3 border-t border-border/60">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2">Stack</p>
+          <div className="flex flex-wrap gap-1.5">
+            {["React", "TypeScript", "Tailwind CSS", "Rust · Axum"].map(t => (
+              <span key={t} className="inline-flex items-center px-2 py-0.5 rounded-md bg-primary/8 dark:bg-primary/12 text-primary text-[11px] font-medium border border-primary/15">
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
+
         <div className="px-3 py-3 border-t border-border/60">
           <button
             onClick={onLogout}
