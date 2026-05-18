@@ -8,7 +8,7 @@ import { API } from "./shared";
 import type { Service } from "@shared/schema";
 
 interface ContactInfo { email: string; linkedin: string; whatsapp: string; github: string; }
-interface SiteContent { hero_description: string; hero_highlights: string[]; about_quote: string; }
+interface SiteContent { hero_description: string; hero_highlights: string[]; about_quote: string; footer_tagline: string; }
 
 function SectionCard({ icon: Icon, title, subtitle, children }: { icon: typeof Mail; title: string; subtitle: string; children: React.ReactNode }) {
   return (
@@ -53,7 +53,7 @@ export function InfosSection({ password }: { password: string }) {
   const [savingS, setSavingS] = useState(false); const [savedS, setSavedS] = useState(false);
 
   const cf = contactForm ?? contact ?? { email: "", linkedin: "", whatsapp: "", github: "" };
-  const sf = contentForm ?? content ?? { hero_description: "", hero_highlights: ["", "", ""], about_quote: "" };
+  const sf = contentForm ?? content ?? { hero_description: "", hero_highlights: ["", "", ""], about_quote: "", footer_tagline: "" };
   const svf = servicesForm ?? services ?? [];
 
   const flash = (set: (v: boolean) => void) => { set(true); setTimeout(() => set(false), 2500); };
@@ -139,6 +139,13 @@ export function InfosSection({ password }: { password: string }) {
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">Citation (page À propos)</label>
               <Input value={sf.about_quote} onChange={e => setContentForm(p => ({ ...(p ?? sf), about_quote: e.target.value }))} placeholder="Autodidacte déterminé..." className="h-9 text-sm" data-testid="input-about-quote" />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">Texte du pied de page (footer)</label>
+              <textarea value={sf.footer_tagline} onChange={e => setContentForm(p => ({ ...(p ?? sf), footer_tagline: e.target.value }))} rows={2}
+                placeholder="Je conçois des solutions digitales sur mesure…"
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+                data-testid="input-footer-tagline" />
             </div>
             <SaveBtn saving={savingT} saved={savedT} onSave={saveContent} testId="button-save-content" />
           </>

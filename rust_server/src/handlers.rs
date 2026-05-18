@@ -56,6 +56,11 @@ pub fn chrono_date() -> String {
 
 pub async fn health() -> &'static str { "OK" }
 
+pub async fn verify_admin(Json(payload): Json<VerifyPayload>) -> StatusCode {
+    let password = std::env::var("ADMIN_PASSWORD").unwrap_or_else(|_| "nexalion2024".to_string());
+    if payload.password == password { StatusCode::OK } else { StatusCode::UNAUTHORIZED }
+}
+
 // ─── Project Handlers ─────────────────────────────────────────────────────────
 
 pub async fn list_projects(State(state): State<AppState>) -> Json<Vec<Project>> {
@@ -150,6 +155,7 @@ pub async fn update_site_content(State(state): State<AppState>, headers: HeaderM
     sc.hero_description = p.hero_description;
     sc.hero_highlights = p.hero_highlights;
     sc.about_quote = p.about_quote;
+    if !p.footer_tagline.is_empty() { sc.footer_tagline = p.footer_tagline; }
     Ok(Json(sc.clone()))
 }
 

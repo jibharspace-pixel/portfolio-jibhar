@@ -94,6 +94,7 @@ pub struct SiteContent {
     pub hero_description: String,
     pub hero_highlights: Vec<String>,
     pub about_quote: String,
+    pub footer_tagline: String,
 }
 
 // ─── Input / Request Types ────────────────────────────────────────────────────
@@ -151,6 +152,13 @@ pub struct UpdateSiteContent {
     pub hero_description: String,
     pub hero_highlights: Vec<String>,
     pub about_quote: String,
+    #[serde(default)]
+    pub footer_tagline: String,
+}
+
+#[derive(Deserialize)]
+pub struct VerifyPayload {
+    pub password: String,
 }
 
 #[derive(Deserialize)]

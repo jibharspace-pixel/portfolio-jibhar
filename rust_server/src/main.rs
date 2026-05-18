@@ -53,6 +53,7 @@ async fn main() {
         .route("/api/admin/projects/:id/upload",  post(upload_media))
         .route("/api/admin/projects/:id/media",   get(get_project_media))
         .route("/api/admin/media/:media_id",      delete(delete_media_item))
+        .route("/api/admin/verify",               post(verify_admin))
         .route("/api/admin/contact",              put(update_contact))
         .route("/api/admin/site-content",         put(update_site_content))
         .route("/api/admin/services",             put(update_services))

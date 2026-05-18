@@ -14,7 +14,6 @@ import { MediaSection }     from "./admin/media";
 import { InfosSection }     from "./admin/infos";
 
 const ADMIN_KEY = "kjs_admin_password";
-const PASSWORD  = "nexalion2024";
 
 type Section = "dashboard" | "blog" | "files" | "projects" | "media" | "infos";
 
@@ -36,9 +35,22 @@ function LoginScreen({ onLogin }: { onLogin: (pw: string) => void }) {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise(r => setTimeout(r, 380));
-    if (pw === PASSWORD) onLogin(pw);
-    else { setErr(true); setLoading(false); }
+    try {
+      const res = await fetch("/api/admin/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: pw }),
+      });
+      if (res.ok) {
+        onLogin(pw);
+      } else {
+        setErr(true);
+        setLoading(false);
+      }
+    } catch {
+      setErr(true);
+      setLoading(false);
+    }
   };
 
   return (
@@ -52,14 +64,12 @@ function LoginScreen({ onLogin }: { onLogin: (pw: string) => void }) {
           <p className="text-sm text-muted-foreground mt-1">Portfolio · Kroman Jibhar Samuel</p>
         </div>
 
-        {/* Card */}
         <div className="bg-white/90 dark:bg-card/90 backdrop-blur-md border border-border/60 rounded-2xl shadow-[0_8px_40px_hsl(216,20%,60%,0.12)] p-6 space-y-4">
           <form onSubmit={submit} className="space-y-4">
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-widest block mb-1.5">
                 Mot de passe
               </label>
-              {/* Hidden username for accessibility / password managers */}
               <input type="text" name="username" autoComplete="username" className="hidden" readOnly value="admin" />
               <Input
                 type="password"
@@ -114,7 +124,6 @@ function NavItem({
       }`}
       data-testid={`nav-admin-${item.id}`}
     >
-      {/* Active left bar */}
       {active && (
         <span className="absolute left-0 top-2 bottom-2 w-[3px] rounded-r-full bg-primary nav-active-line" />
       )}
@@ -128,11 +137,9 @@ function NavItem({
 function AdminLayout({ password, onLogout }: { password: string; onLogout: () => void }) {
   const [section,    setSection]    = useState<Section>("dashboard");
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [prevSection, setPrevSection] = useState<Section | null>(null);
 
   const navigate = (s: Section) => {
     if (s === section) return;
-    setPrevSection(section);
     setSection(s);
     setMobileOpen(false);
   };
@@ -149,7 +156,6 @@ function AdminLayout({ password, onLogout }: { password: string; onLogout: () =>
   return (
     <div className="min-h-screen bg-[hsl(216,25%,97%)] dark:bg-background flex">
 
-      {/* ── Desktop sidebar ──────────────────────────────────────────────── */}
       <aside className="hidden lg:flex w-56 xl:w-60 shrink-0 bg-white dark:bg-card border-r border-border/60 flex-col fixed inset-y-0 left-0 z-40 shadow-[1px_0_0_0_hsl(216,20%,90%)]">
         <div className="px-4 py-5 border-b border-border/60">
           <div className="flex items-center gap-2.5">
