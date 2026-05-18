@@ -4,46 +4,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { useLanguage } from "@/lib/language-context";
 import profileImage from "@assets/WhatsApp_Image_2025-12-18_à_11.19.30_7d050f19_1766058148816.jpg";
 
 interface SiteContent { hero_description: string; hero_highlights: string[]; about_quote: string; }
 
-const DEFAULT_QUOTE = "Autodidacte déterminé, je transforme la complexité en solutions simples et efficaces.";
-
-const timeline = [
-  {
-    period: "2024 — Présent",
-    title: "Freelance Logisticien & Data Analyst",
-    org: "Nexalion Digital Store",
-    desc: "Conception de solutions digitales sur mesure : dashboards Power BI, applications React, automatisation VBA et intégration IA.",
-    color: "bg-primary",
-  },
-  {
-    period: "2024",
-    title: "Licence Supply Chain",
-    org: "INPHB — Institut National Polytechnique",
-    desc: "Félix Houphouët-Boigny, Côte d'Ivoire. Spécialisation en gestion des flux logistiques, optimisation des stocks et analyse de performance.",
-    color: "bg-blue-400",
-  },
-  {
-    period: "2021 — 2024",
-    title: "Formation autodidacte",
-    org: "Développement & Data",
-    desc: "Apprentissage intensif de React, TypeScript, Power BI, SQL, Python et des outils d'IA. Construction de projets concrets pour des clients réels.",
-    color: "bg-purple-400",
-  },
-];
-
-const values = [
-  { label: "Rigueur", desc: "Chaque détail compte pour un résultat irréprochable." },
-  { label: "Adaptabilité", desc: "Je m'adapte à votre stack et vos contraintes." },
-  { label: "Livraison rapide", desc: "Des solutions opérationnelles sans délais inutiles." },
-  { label: "Communication", desc: "Transparent sur l'avancement à chaque étape." },
-];
+const TIMELINE_COLORS = ["bg-primary", "bg-blue-400", "bg-purple-400"];
 
 export function AboutSection() {
+  const { t } = useLanguage();
   const { data: siteContent } = useQuery<SiteContent>({ queryKey: ["/api/site-content"] });
-  const quote = siteContent?.about_quote || DEFAULT_QUOTE;
+  const quote = siteContent?.about_quote || t.about.quote;
 
   return (
     <section id="apropos" className="py-20 lg:py-28 relative overflow-hidden" data-testid="section-about">
@@ -54,10 +25,10 @@ export function AboutSection() {
         {/* ── Section header ─────────────────────── */}
         <ScrollReveal className="mb-14">
           <Badge variant="secondary" className="mb-4 text-xs font-semibold px-3 py-1 rounded-full border border-primary/20 bg-primary/8 text-primary tracking-wide uppercase">
-            À propos
+            {t.about.badge}
           </Badge>
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-            Qui suis-je ?
+            {t.about.title}
           </h2>
           <div className="h-0.5 w-12 bg-primary rounded-full" />
         </ScrollReveal>
@@ -81,19 +52,19 @@ export function AboutSection() {
             <ScrollReveal direction="left" delay={80}>
               <div className="space-y-4 text-muted-foreground leading-relaxed text-[0.95rem]">
                 <p>
-                  Diplômé de l'<span className="text-foreground font-semibold">Institut National Polytechnique Félix Houphouët-Boigny</span> (INPHB),
-                  titulaire d'une licence en Supply Chain. Cette formation solide en logistique ne m'a pas empêché
-                  d'explorer et de développer ma passion pour la technologie.
+                  {t.about.bio1.split("Institut National Polytechnique Félix Houphouët-Boigny (INPHB)")[0]}
+                  <span className="text-foreground font-semibold">Institut National Polytechnique Félix Houphouët-Boigny (INPHB)</span>
+                  {t.about.bio1.split("Institut National Polytechnique Félix Houphouët-Boigny (INPHB)")[1]}
                 </p>
                 <p>
-                  Je conçois des solutions digitales basées sur l'automatisation et le développement
-                  d'applications web. J'interviens aussi dans l'<span className="text-foreground font-semibold">analyse de données</span> à
-                  l'aide de Power BI, SQL, Excel et Power Pivot.
+                  {t.about.bio2.split(t.about.bio2Bold)[0]}
+                  <span className="text-foreground font-semibold">{t.about.bio2Bold}</span>
+                  {t.about.bio2.split(t.about.bio2Bold)[1]}
                 </p>
                 <p>
-                  Je travaille en équipe à travers{" "}
-                  <span className="text-primary font-semibold">Nexalion Digital Store</span>,
-                  notre boutique digitale pour rendre vos projets plus fluides et performants.
+                  {t.about.bio3.split("Nexalion Digital Store")[0]}
+                  <span className="text-primary font-semibold">Nexalion Digital Store</span>
+                  {t.about.bio3.split("Nexalion Digital Store")[1]}
                 </p>
               </div>
 
@@ -109,19 +80,19 @@ export function AboutSection() {
             {/* Timeline */}
             <div>
               <ScrollReveal delay={100}>
-                <h3 className="font-serif text-lg font-bold text-foreground mb-6">Parcours</h3>
+                <h3 className="font-serif text-lg font-bold text-foreground mb-6">{t.about.journeyTitle}</h3>
               </ScrollReveal>
               <div className="space-y-0">
-                {timeline.map((item, i) => (
+                {t.about.timeline.map((item, i) => (
                   <ScrollReveal key={i} delay={i * 120 + 150}>
                     <div className="flex gap-4">
                       {/* Left timeline */}
                       <div className="flex flex-col items-center">
-                        <div className={`w-3 h-3 rounded-full ${item.color} mt-1.5 shrink-0 shadow-sm`} />
-                        {i < timeline.length - 1 && <div className="w-px flex-1 bg-border/60 mt-2 mb-0 min-h-[40px]" />}
+                        <div className={`w-3 h-3 rounded-full ${TIMELINE_COLORS[i]} mt-1.5 shrink-0 shadow-sm`} />
+                        {i < t.about.timeline.length - 1 && <div className="w-px flex-1 bg-border/60 mt-2 mb-0 min-h-[40px]" />}
                       </div>
                       {/* Content */}
-                      <div className={`pb-6 ${i === timeline.length - 1 ? "pb-0" : ""}`}>
+                      <div className={`pb-6 ${i === t.about.timeline.length - 1 ? "pb-0" : ""}`}>
                         <span className="text-xs font-semibold text-primary/70 tracking-wide">{item.period}</span>
                         <h4 className="font-semibold text-sm text-foreground mt-0.5">{item.title}</h4>
                         <p className="text-xs font-medium text-muted-foreground mb-1.5">{item.org}</p>
@@ -155,9 +126,9 @@ export function AboutSection() {
             <ScrollReveal direction="right" delay={100}>
               <div className="grid grid-cols-3 gap-2.5">
                 {[
-                  { value: "10+", label: "Projets" },
-                  { value: "5+", label: "Clients" },
-                  { value: "3+", label: "Années" },
+                  { value: "10+", label: t.about.statsLabels.projects },
+                  { value: "5+",  label: t.about.statsLabels.clients },
+                  { value: "3+",  label: t.about.statsLabels.years },
                 ].map((stat) => (
                   <Card key={stat.label} className="border border-border/60 text-center">
                     <CardContent className="p-3.5">
@@ -178,11 +149,11 @@ export function AboutSection() {
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-0.5">
-                      <h3 className="font-semibold text-sm">Formation académique</h3>
-                      <Badge variant="secondary" className="text-[10px] rounded-full px-2">Juin 2024</Badge>
+                      <h3 className="font-semibold text-sm">{t.about.academicTitle}</h3>
+                      <Badge variant="secondary" className="text-[10px] rounded-full px-2">{t.about.academicDate}</Badge>
                     </div>
-                    <p className="text-sm font-medium text-foreground">INPHB — Licence Supply Chain</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Institut Félix Houphouët-Boigny</p>
+                    <p className="text-sm font-medium text-foreground">{t.about.academicDegree}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t.about.academicSchool}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -191,7 +162,7 @@ export function AboutSection() {
             {/* Values */}
             <ScrollReveal direction="right" delay={240}>
               <div className="grid grid-cols-2 gap-2.5">
-                {values.map(({ label, desc }) => (
+                {t.about.values.map(({ label, desc }) => (
                   <div key={label} className="rounded-xl border border-border/60 bg-card p-3.5 hover:border-primary/30 hover:bg-primary/5 transition-colors">
                     <div className="flex items-center gap-1.5 mb-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />

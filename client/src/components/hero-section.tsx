@@ -2,13 +2,8 @@ import { ArrowRight, Mail, BarChart3, CheckCircle2, FileText, Clock } from "luci
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { useLanguage } from "@/lib/language-context";
 import profileImage from "@assets/WhatsApp_Image_2025-12-18_à_11.19.30_7d050f19_1766058148816.jpg";
-
-const stats = [
-  { value: "10+", label: "Projets réalisés" },
-  { value: "5+", label: "Clients satisfaits" },
-  { value: "3+", label: "Années d'expérience" },
-];
 
 const techItems = [
   "Power BI", "React.js", "TypeScript", "Rust", "SQL", "Excel VBA",
@@ -32,10 +27,11 @@ interface SiteContent {
 }
 
 export function HeroSection() {
+  const { t } = useLanguage();
   const { data: content } = useQuery<SiteContent>({ queryKey: ["/api/site-content"] });
 
   const description = content?.hero_description ?? defaultDescription;
-  const highlights = content?.hero_highlights ?? defaultHighlights;
+  const highlights  = content?.hero_highlights ?? defaultHighlights;
 
   return (
     <section
@@ -66,7 +62,7 @@ export function HeroSection() {
               {/* Location pill */}
               <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white/95 dark:bg-card dark:border-border/70 backdrop-blur-sm border border-border/50 shadow-[0_4px_20px_hsl(0,0%,0%,0.12)] dark:shadow-[0_4px_20px_hsl(0,0%,0%,0.40)] rounded-full px-4 py-1.5 flex items-center gap-1.5 whitespace-nowrap">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0 shadow-[0_0_6px_hsl(142,72%,45%,0.60)]" />
-                <span className="text-[11.5px] font-semibold text-foreground/80 dark:text-foreground/90 tracking-tight">Disponible · Côte d'Ivoire</span>
+                <span className="text-[11.5px] font-semibold text-foreground/80 dark:text-foreground/90 tracking-tight">{t.hero.available}</span>
               </div>
               {/* Soft glow behind photo */}
               <div className="absolute inset-0 -z-10 rounded-3xl blur-2xl scale-95 opacity-30 bg-primary/20" />
@@ -80,7 +76,7 @@ export function HeroSection() {
             <div className="animate-fade-in-up">
               <span className="inline-flex items-center gap-2 text-xs font-bold text-primary tracking-[0.18em] uppercase">
                 <span className="w-6 h-px bg-primary/60" />
-                Logisticien & Data Analyst
+                {t.hero.role}
               </span>
             </div>
 
@@ -118,7 +114,7 @@ export function HeroSection() {
                   data-testid="button-view-projects"
                 >
                   <BarChart3 className="w-4 h-4" />
-                  Voir mes projets
+                  {t.hero.viewProjects}
                   <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
@@ -130,7 +126,7 @@ export function HeroSection() {
                   data-testid="button-contact-me"
                 >
                   <Mail className="w-4 h-4" />
-                  Me contacter
+                  {t.hero.contactMe}
                 </Button>
               </Link>
             </div>
@@ -148,11 +144,11 @@ export function HeroSection() {
                     </div>
                     <div className="min-w-0">
                       <p className="font-semibold text-sm text-foreground leading-snug">
-                        Demander un devis pour votre projet
+                        {t.hero.quoteTitle}
                       </p>
                       <p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
                         <Clock className="w-3 h-3 shrink-0" />
-                        Consultation gratuite · Réponse sous 24h
+                        {t.hero.quoteSubtitle}
                       </p>
                     </div>
                   </div>
@@ -163,7 +159,7 @@ export function HeroSection() {
 
             {/* Stats */}
             <div className="flex items-center gap-4 sm:gap-8 pt-5 border-t border-border/50 animate-fade-in-up delay-500">
-              {stats.map((stat, i) => (
+              {t.hero.stats.map((stat, i) => (
                 <div key={stat.label} className="flex items-center gap-3">
                   {i > 0 && <div className="w-px h-8 bg-border/60" />}
                   <div>
@@ -179,7 +175,7 @@ export function HeroSection() {
         {/* ── Tech marquee strip ─────────────────────────────── */}
         <div className="mt-20 pt-8 border-t border-border/40 animate-fade-in-up delay-700">
           <p className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-[0.2em] text-center mb-6">
-            Technologies maîtrisées
+            {t.hero.techStrip}
           </p>
           <div className="marquee-wrap">
             <div className="marquee-track">

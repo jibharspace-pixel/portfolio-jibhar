@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { Mail, Linkedin, MessageCircle, Github, MapPin, ArrowRight, Clock, CheckCircle2 } from "lucide-react";
+import { Mail, Linkedin, MessageCircle, Github, MapPin, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { useLanguage } from "@/lib/language-context";
 import type { ContactInfo } from "@shared/schema";
 
 function ContactSkeleton() {
@@ -24,13 +25,8 @@ function ContactSkeleton() {
   );
 }
 
-const perks = [
-  "Consultation gratuite pour évaluer votre projet",
-  "Réponse sous 24h garantie",
-  "Devis personnalisé sans engagement",
-];
-
 export function ContactSection() {
+  const { t } = useLanguage();
   const { data: contactInfo, isLoading, error } = useQuery<ContactInfo>({
     queryKey: ["/api/contact"],
   });
@@ -42,7 +38,7 @@ export function ContactSection() {
       value: info.email,
       href: `mailto:${info.email}`,
       icon: Mail,
-      description: "Envoyez-moi un email",
+      description: t.contact.methods.email,
       primary: true,
       bg: "bg-nexalion",
       hoverBorder: "hover:border-blue-300/60",
@@ -54,7 +50,7 @@ export function ContactSection() {
       value: "Kroman Jibhar Samuel",
       href: info.linkedin,
       icon: Linkedin,
-      description: "Connectons-nous",
+      description: t.contact.methods.linkedin,
       primary: false,
       bg: "bg-blue-600",
       hoverBorder: "hover:border-blue-300/60",
@@ -66,7 +62,7 @@ export function ContactSection() {
       value: info.whatsapp,
       href: `https://wa.me/${info.whatsapp?.replace(/[^0-9]/g, "")}`,
       icon: MessageCircle,
-      description: "Message direct",
+      description: t.contact.methods.whatsapp,
       primary: false,
       bg: "bg-green-500",
       hoverBorder: "hover:border-green-300/60",
@@ -78,7 +74,7 @@ export function ContactSection() {
       value: "@kromanjibhar",
       href: info.github,
       icon: Github,
-      description: "Voir mes projets",
+      description: t.contact.methods.github,
       primary: false,
       bg: "bg-gray-900",
       hoverBorder: "hover:border-gray-400/50",
@@ -95,14 +91,14 @@ export function ContactSection() {
         {/* ── Header ──────────────────────────────── */}
         <ScrollReveal className="mb-14">
           <Badge variant="secondary" className="mb-4 text-xs font-semibold px-3 py-1 rounded-full border border-primary/20 bg-primary/8 text-primary tracking-wide uppercase">
-            Contact
+            {t.contact.badge}
           </Badge>
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-            Travaillons ensemble
+            {t.contact.title}
           </h2>
           <div className="h-0.5 w-12 bg-primary rounded-full mb-4" />
           <p className="text-muted-foreground text-base max-w-xl leading-relaxed">
-            Vous avez un projet en tête ? Choisissez le canal qui vous convient le mieux.
+            {t.contact.subtitle}
           </p>
         </ScrollReveal>
 
@@ -110,7 +106,7 @@ export function ContactSection() {
           <ContactSkeleton />
         ) : error ? (
           <div className="text-center py-12">
-            <p className="text-muted-foreground text-sm">Impossible de charger les informations de contact.</p>
+            <p className="text-muted-foreground text-sm">{t.contact.errorLoading}</p>
           </div>
         ) : contactInfo ? (
           <div className="space-y-10">
@@ -143,7 +139,7 @@ export function ContactSection() {
                           </div>
                           <p className="text-xs font-semibold text-primary truncate">{method.value}</p>
                           <div className="flex items-center gap-1 text-xs font-semibold text-muted-foreground group-hover:text-primary transition-colors mt-auto">
-                            <span>Ouvrir</span>
+                            <span>{t.contact.open}</span>
                             <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
                           </div>
                         </CardContent>
@@ -165,13 +161,13 @@ export function ContactSection() {
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 text-blue-100">
                       <MapPin className="w-4 h-4" />
-                      <span className="text-sm font-medium">Abidjan, Côte d'Ivoire · Remote worldwide</span>
+                      <span className="text-sm font-medium">{t.contact.location}</span>
                     </div>
                     <h3 className="font-serif text-2xl lg:text-3xl font-bold text-white leading-tight">
-                      Prêt à démarrer votre projet ?
+                      {t.contact.bannerTitle}
                     </h3>
                     <ul className="space-y-1.5 mt-2">
-                      {perks.map(p => (
+                      {t.contact.perks.map(p => (
                         <li key={p} className="flex items-center gap-2 text-sm text-blue-100">
                           <CheckCircle2 className="w-4 h-4 text-white/70 shrink-0" />
                           {p}
@@ -187,7 +183,7 @@ export function ContactSection() {
                     >
                       <a href={`mailto:${contactInfo.email}`} data-testid="button-contact-cta">
                         <Mail className="w-4 h-4 mr-2" />
-                        Envoyez un message
+                        {t.contact.sendMessage}
                       </a>
                     </Button>
                     <Button

@@ -4,8 +4,9 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { useLanguage } from "@/lib/language-context";
 
-const services = [
+const servicesMeta = [
   {
     id: "data",
     icon: BarChart3,
@@ -14,15 +15,6 @@ const services = [
     iconColor: "text-blue-600 dark:text-blue-400",
     glow: "card-hover-glow",
     borderHover: "hover:border-blue-300/60",
-    title: "Data & Business Intelligence",
-    description:
-      "Des tableaux de bord interactifs et des analyses avancées pour piloter vos décisions avec précision et clarté.",
-    features: [
-      "Dashboards Power BI & DAX",
-      "SQL & Bases de données",
-      "Excel avancé & Power Query",
-      "KPIs Supply Chain",
-    ],
   },
   {
     id: "web",
@@ -32,15 +24,6 @@ const services = [
     iconColor: "text-primary",
     glow: "card-hover-glow",
     borderHover: "hover:border-primary/40",
-    title: "Développement Web & Applications",
-    description:
-      "Applications web modernes, performantes et scalables — du frontend React au backend Rust, clé en main.",
-    features: [
-      "React.js / TypeScript",
-      "API REST (Rust / Node.js)",
-      "Bases de données (PostgreSQL)",
-      "Déploiement & hébergement",
-    ],
   },
   {
     id: "automation",
@@ -50,24 +33,10 @@ const services = [
     iconColor: "text-amber-600 dark:text-amber-400",
     glow: "card-hover-glow-amber",
     borderHover: "hover:border-amber-300/60",
-    title: "Automatisation & Supply Chain",
-    description:
-      "Automatisez vos tâches répétitives et optimisez vos flux logistiques pour gagner en efficacité et réduire les erreurs.",
-    features: [
-      "Macros VBA & Power Automate",
-      "Scripts Python & Power Query",
-      "Gestion des stocks & KPIs",
-      "Optimisation des flux logistiques",
-    ],
   },
 ];
 
-const process = [
-  { num: "01", icon: Search, title: "Évaluation", desc: "Analyse de vos besoins et objectifs" },
-  { num: "02", icon: Pencil, title: "Conception", desc: "Design de la solution adaptée" },
-  { num: "03", icon: Zap, title: "Réalisation", desc: "Développement itératif & tests" },
-  { num: "04", icon: PackageCheck, title: "Livraison", desc: "Formation, documentation & support" },
-];
+const processIcons = [Search, Pencil, Zap, PackageCheck];
 
 const skills = [
   { label: "Power BI & Data Viz", pct: 92 },
@@ -79,6 +48,8 @@ const skills = [
 ];
 
 export function ServicesSection() {
+  const { t } = useLanguage();
+
   return (
     <section id="services" className="py-20 lg:py-28 relative overflow-hidden bg-[hsl(216,30%,99%)] dark:bg-muted/10" data-testid="section-services">
 
@@ -87,34 +58,35 @@ export function ServicesSection() {
         {/* ── Section header ─────────────────────── */}
         <ScrollReveal className="text-center mb-14">
           <Badge variant="secondary" className="mb-4 text-xs font-semibold px-3 py-1 rounded-full border border-primary/20 bg-primary/8 text-primary tracking-wide uppercase">
-            Services
+            {t.services.badge}
           </Badge>
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-            Ce que je propose
+            {t.services.title}
           </h2>
           <div className="h-0.5 w-12 bg-primary rounded-full mx-auto mb-4" />
           <p className="text-muted-foreground text-base max-w-2xl mx-auto leading-relaxed">
-            Des solutions digitales sur mesure pour transformer vos données en décisions et optimiser vos opérations.
+            {t.services.subtitle}
           </p>
         </ScrollReveal>
 
         {/* ── Service cards ──────────────────────── */}
         <div className="grid md:grid-cols-3 gap-6 mb-16">
-          {services.map((s, i) => {
-            const Icon = s.icon;
+          {t.services.items.map((s, i) => {
+            const meta = servicesMeta[i];
+            const Icon = meta.icon;
             return (
-              <ScrollReveal key={s.id} delay={i * 120} className="h-full">
+              <ScrollReveal key={meta.id} delay={i * 120} className="h-full">
                 <div
-                  className={`group relative rounded-2xl bg-card border border-border/60 overflow-hidden transition-all duration-300 hover:-translate-y-1.5 h-full ${s.glow} ${s.borderHover}`}
-                  data-testid={`card-service-${s.id}`}
+                  className={`group relative rounded-2xl bg-card border border-border/60 overflow-hidden transition-all duration-300 hover:-translate-y-1.5 h-full ${meta.glow} ${meta.borderHover}`}
+                  data-testid={`card-service-${meta.id}`}
                 >
                   {/* Gradient top accent bar */}
-                  <div className={`h-[3px] w-full bg-gradient-to-r ${s.accent}`} />
+                  <div className={`h-[3px] w-full bg-gradient-to-r ${meta.accent}`} />
 
                   <div className="p-6">
                     {/* Icon */}
-                    <div className={`w-12 h-12 rounded-xl ${s.iconBg} flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110`}>
-                      <Icon className={`w-6 h-6 ${s.iconColor}`} />
+                    <div className={`w-12 h-12 rounded-xl ${meta.iconBg} flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110`}>
+                      <Icon className={`w-6 h-6 ${meta.iconColor}`} />
                     </div>
 
                     {/* Title & desc */}
@@ -125,7 +97,7 @@ export function ServicesSection() {
                     <ul className="space-y-2">
                       {s.features.map(f => (
                         <li key={f} className="flex items-center gap-2.5 text-sm text-foreground/80">
-                          <CheckCircle2 className={`w-3.5 h-3.5 ${s.iconColor} shrink-0`} />
+                          <CheckCircle2 className={`w-3.5 h-3.5 ${meta.iconColor} shrink-0`} />
                           {f}
                         </li>
                       ))}
@@ -140,14 +112,15 @@ export function ServicesSection() {
         {/* ── Process steps ──────────────────────── */}
         <div className="mb-16">
           <ScrollReveal className="text-center mb-10">
-            <h3 className="font-serif text-2xl lg:text-3xl font-bold mb-2">Ma démarche</h3>
-            <p className="text-sm text-muted-foreground">4 étapes pour transformer votre idée en solution opérationnelle</p>
+            <h3 className="font-serif text-2xl lg:text-3xl font-bold mb-2">{t.services.processTitle}</h3>
+            <p className="text-sm text-muted-foreground">{t.services.processSubtitle}</p>
           </ScrollReveal>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {process.map((step, i) => {
-              const Icon = step.icon;
+            {t.services.process.map((step, i) => {
+              const Icon = processIcons[i];
+              const num = String(i + 1).padStart(2, "0");
               return (
-                <ScrollReveal key={step.num} delay={i * 100}>
+                <ScrollReveal key={num} delay={i * 100}>
                   <div className="relative text-center group">
                     {/* Connector line */}
                     {i < 3 && (
@@ -157,7 +130,7 @@ export function ServicesSection() {
                       <div className="w-14 h-14 rounded-2xl bg-card border border-border/60 flex items-center justify-center mx-auto mb-3 group-hover:border-primary/40 group-hover:bg-primary/5 group-hover:shadow-[0_4px_16px_hsl(216,90%,40%,0.12)] transition-all duration-300 shadow-sm">
                         <Icon className="w-5 h-5 text-primary" />
                       </div>
-                      <span className="text-[10px] font-bold text-primary/40 tracking-widest block mb-0.5">{step.num}</span>
+                      <span className="text-[10px] font-bold text-primary/40 tracking-widest block mb-0.5">{num}</span>
                       <p className="font-semibold text-sm text-foreground">{step.title}</p>
                       <p className="text-xs text-muted-foreground mt-0.5 leading-snug px-2">{step.desc}</p>
                     </div>
@@ -173,8 +146,8 @@ export function ServicesSection() {
           <div className="rounded-2xl border border-border/60 bg-card p-7 lg:p-8">
             <div className="grid lg:grid-cols-2 gap-x-12 gap-y-5">
               <div className="lg:col-span-2 mb-2">
-                <h3 className="font-serif text-xl font-bold text-foreground mb-1">Compétences Techniques</h3>
-                <p className="text-sm text-muted-foreground">Niveau de maîtrise par domaine</p>
+                <h3 className="font-serif text-xl font-bold text-foreground mb-1">{t.services.skillsTitle}</h3>
+                <p className="text-sm text-muted-foreground">{t.services.skillsSubtitle}</p>
               </div>
               {skills.map((skill) => (
                 <div key={skill.label} className="space-y-1.5">

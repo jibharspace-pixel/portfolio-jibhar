@@ -2,14 +2,15 @@ import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   FileSpreadsheet, FileText, Database, FileCode,
-  Download, Package, ArrowDownToLine, ExternalLink,
-  Tag, Loader2,
+  Download, Package, ArrowDownToLine,
+  Loader2,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
+import { useLanguage } from "@/lib/language-context";
 import type { FreeFile } from "@shared/schema";
 
 const fileTypeIcons: Record<string, typeof FileText> = {
@@ -27,13 +28,6 @@ const fileTypeColors: Record<string, string> = {
   py: "bg-blue-50 text-blue-700 border-blue-200",
 };
 
-const categoryFilters = [
-  { key: "all", label: "Tout" },
-  { key: "data", label: "Data & BI" },
-  { key: "automatisation", label: "Automatisation" },
-  { key: "formation", label: "Formation" },
-];
-
 function ResourceSkeleton() {
   return (
     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -50,7 +44,7 @@ function ResourceSkeleton() {
   );
 }
 
-function ResourceCard({ file }: { file: FreeFile }) {
+function ResourceCard({ file, downloadLabel }: { file: FreeFile; downloadLabel: string }) {
   const [downloading, setDownloading] = useState(false);
   const qc = useQueryClient();
   const Icon = fileTypeIcons[file.file_type] ?? Package;
@@ -104,7 +98,7 @@ function ResourceCard({ file }: { file: FreeFile }) {
       <div className="flex items-center justify-between mt-auto pt-4 border-t border-border/60">
         <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <ArrowDownToLine className="w-3.5 h-3.5" />
-          {file.download_count} téléchargements
+          {file.download_count}
         </span>
         <Button
           size="sm"
@@ -116,7 +110,7 @@ function ResourceCard({ file }: { file: FreeFile }) {
           {downloading
             ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
             : <Download className="w-3.5 h-3.5 mr-1" />}
-          {downloading ? "…" : "Télécharger"}
+          {downloading ? "…" : downloadLabel}
         </Button>
       </div>
     </div>
@@ -124,6 +118,7 @@ function ResourceCard({ file }: { file: FreeFile }) {
 }
 
 export default function Resources() {
+  const { t } = useLanguage();
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
@@ -145,26 +140,26 @@ export default function Resources() {
           <div className="absolute -top-24 left-0 w-80 h-80 bg-primary/8 rounded-full blur-[80px] pointer-events-none" />
           <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
             <Badge variant="secondary" className="mb-4 text-xs font-semibold px-3 py-1 rounded-full border border-primary/20 bg-primary/8 text-primary tracking-wide uppercase">
-              Gratuit
+              {t.resources.badge}
             </Badge>
             <h1 className="font-serif text-4xl sm:text-5xl font-bold tracking-tight mb-4">
-              Ressources Gratuites
+              {t.resources.title}
             </h1>
             <div className="h-0.5 w-12 bg-primary rounded-full mb-4" />
             <p className="text-muted-foreground max-w-xl leading-relaxed mb-8">
-              Templates Excel, dashboards Power BI, guides PDF et macros VBA — téléchargeables gratuitement.
+              {t.resources.subtitle}
             </p>
 
             {/* Stats */}
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
                 <Package className="w-4 h-4 text-primary" />
-                <span className="text-sm font-semibold text-foreground">{files?.length ?? "—"} ressources</span>
+                <span className="text-sm font-semibold text-foreground">{files?.length ?? "—"} {t.resources.resources}</span>
               </div>
               <div className="h-4 w-px bg-border" />
               <div className="flex items-center gap-2">
                 <ArrowDownToLine className="w-4 h-4 text-primary" />
-                <span className="text-sm font-semibold text-foreground">{totalDownloads}+ téléchargements</span>
+                <span className="text-sm font-semibold text-foreground">{totalDownloads}+ {t.resources.downloads}</span>
               </div>
             </div>
           </div>
@@ -173,7 +168,7 @@ export default function Resources() {
         {/* Filters */}
         <div className="max-w-7xl mx-auto px-6 lg:px-8 pb-8">
           <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
-            {categoryFilters.map(({ key, label }) => (
+            {t.resources.filters.map(({ key, label }) => (
               <button
                 key={key}
                 onClick={() => setFilter(key)}
@@ -195,11 +190,11 @@ export default function Resources() {
           {isLoading ? <ResourceSkeleton /> : !filtered?.length ? (
             <div className="text-center py-20">
               <Package className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
-              <p className="text-muted-foreground">Aucune ressource dans cette catégorie.</p>
+              <p className="text-muted-foreground">{t.resources.empty}</p>
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-              {filtered.map(f => <ResourceCard key={f.id} file={f} />)}
+              {filtered.map(f => <ResourceCard key={f.id} file={f} downloadLabel={t.resources.downloadBtn} />)}
             </div>
           )}
         </section>

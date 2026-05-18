@@ -5,6 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
+import { LanguageProvider } from "@/lib/language-context";
 import Home from "@/pages/home";
 import Projects from "@/pages/projects";
 import Blog from "@/pages/blog";
@@ -140,13 +141,15 @@ function AnimatedRouter() {
 export default function App() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="portfolio-theme">
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <ViewTransitionNavigator />
-          <AnimatedRouter />
-        </TooltipProvider>
-      </QueryClientProvider>
+      <LanguageProvider>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <Toaster />
+            <ViewTransitionNavigator />
+            <AnimatedRouter />
+          </TooltipProvider>
+        </QueryClientProvider>
+      </LanguageProvider>
     </ThemeProvider>
   );
 }

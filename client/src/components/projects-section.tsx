@@ -14,15 +14,16 @@ import {
   DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { useLanguage } from "@/lib/language-context";
 import {
-  CATEGORY_ICONS, CATEGORY_LABELS, CATEGORY_STYLES,
+  CATEGORY_ICONS, CATEGORY_STYLES,
   DEFAULT_STYLE, PROJECT_FILTERS,
 } from "@/lib/project-config";
 import type { Project, MediaItem } from "@shared/schema";
 
 // ─── In-card media carousel with nav buttons ──────────────────────────────────
 
-function CardMediaCarousel({ project, onOpenDialog }: { project: Project; onOpenDialog: () => void }) {
+function CardMediaCarousel({ project, onOpenDialog, viewLabel }: { project: Project; onOpenDialog: () => void; viewLabel: string }) {
   const [idx, setIdx] = useState(0);
   const [slideClass, setSlideClass] = useState("");
   const style = CATEGORY_STYLES[project.category] ?? DEFAULT_STYLE;
@@ -61,7 +62,7 @@ function CardMediaCarousel({ project, onOpenDialog }: { project: Project; onOpen
         {/* View hint */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/8 flex items-center justify-center transition-all duration-200">
           <div className="opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center gap-2 bg-black/40 text-white text-xs font-semibold px-3 py-1.5 rounded-full backdrop-blur-sm">
-            <Eye className="w-3 h-3" /> Voir le projet
+            <Eye className="w-3 h-3" /> {viewLabel}
           </div>
         </div>
       </div>
@@ -263,6 +264,7 @@ function ProjectsSkeleton() {
 // ─── Main Section ─────────────────────────────────────────────────────────────
 
 export function ProjectsSection() {
+  const { t } = useLanguage();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [filter, setFilter] = useState("all");
 
@@ -270,7 +272,28 @@ export function ProjectsSection() {
     queryKey: ["/api/projects"],
   });
 
+  // Build translated filter buttons from PROJECT_FILTERS keys + i18n labels
+  const filterButtons = PROJECT_FILTERS.map(({ key }) => ({
+    key,
+    label: (t.projects.filters as Record<string, string>)[key] ?? key,
+  }));
+
+  // Build CATEGORY_LABELS from i18n
+  const categoryLabels: Record<string, string> = {
+    data: t.projects.filters.data,
+    web: t.projects.filters.web,
+    automation: t.projects.filters.automation,
+    logistique: t.projects.filters.logistique,
+  };
+
   const filtered = filter === "all" ? projects : projects?.filter((p) => p.category === filter);
+
+  // PSR block definitions (translated)
+  const psrBlocks = [
+    { key: "problem" as const, label: t.projects.problem, color: "border-border/60 bg-muted/40", labelColor: "text-muted-foreground", dot: "bg-muted-foreground" },
+    { key: "solution" as const, label: t.projects.solution, color: "border-primary/20 bg-primary/5", labelColor: "text-primary", dot: "bg-primary" },
+    { key: "result" as const, label: t.projects.result, color: "border-green-500/20 bg-green-500/5", labelColor: "text-green-600 dark:text-green-400", dot: "bg-green-500" },
+  ];
 
   return (
     <section id="projets" className="py-20 lg:py-28 relative overflow-hidden" data-testid="section-projects">
@@ -282,21 +305,21 @@ export function ProjectsSection() {
         {/* Header */}
         <ScrollReveal className="mb-12">
           <Badge variant="secondary" className="mb-4 text-xs font-semibold px-3 py-1 rounded-full border border-primary/20 bg-primary/8 text-primary tracking-wide uppercase">
-            Portfolio
+            {t.projects.badge}
           </Badge>
           <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-            Mes Projets
+            {t.projects.title}
           </h2>
           <div className="h-0.5 w-12 bg-primary rounded-full mb-4" />
           <p className="text-muted-foreground text-base max-w-xl leading-relaxed">
-            Découvrez une sélection de projets réalisés dans différents domaines.
+            {t.projects.subtitle}
           </p>
         </ScrollReveal>
 
         {/* Filters */}
         <ScrollReveal delay={80} className="mb-10">
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-1 px-1">
-            {PROJECT_FILTERS.map(({ key, label }) => (
+            {filterButtons.map(({ key, label }) => (
               <button
                 key={key}
                 onClick={() => setFilter(key)}
@@ -318,7 +341,7 @@ export function ProjectsSection() {
           <ProjectsSkeleton />
         ) : error ? (
           <div className="text-center py-16">
-            <p className="text-muted-foreground text-sm">Une erreur est survenue lors du chargement.</p>
+            <p className="text-muted-foreground text-sm">{t.projects.errorLoading}</p>
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -340,6 +363,7 @@ export function ProjectsSection() {
                     <CardMediaCarousel
                       project={project}
                       onOpenDialog={() => setSelectedProject(project)}
+                      viewLabel={t.projects.viewProject}
                     />
 
                     {/* ── Card body ── */}
@@ -350,7 +374,7 @@ export function ProjectsSection() {
                       {/* Category + title */}
                       <div className="mb-3">
                         <span className={`inline-flex items-center text-[11px] font-semibold px-2 py-0.5 rounded-md border mb-2 ${style.badgeBg}`}>
-                          {CATEGORY_LABELS[project.category]}
+                          {categoryLabels[project.category] ?? project.category}
                         </span>
                         <h3 className="font-serif font-bold text-base leading-snug text-foreground group-hover:text-primary transition-colors duration-200">
                           {project.title}
@@ -379,7 +403,7 @@ export function ProjectsSection() {
                       {/* Footer row */}
                       <div className="flex items-center justify-between pt-3 border-t border-border/50">
                         <div className="flex items-center gap-1.5 text-xs font-semibold text-primary group-hover:gap-2.5 transition-all duration-200">
-                          <span>Voir le projet</span>
+                          <span>{t.projects.viewProject}</span>
                           <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
                         </div>
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -432,7 +456,7 @@ export function ProjectsSection() {
                   <DialogHeader>
                     <div className="flex items-center gap-2 mb-1">
                       <span className={`inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-lg border ${style.badgeBg}`}>
-                        {CATEGORY_LABELS[selectedProject.category]}
+                        {categoryLabels[selectedProject.category] ?? selectedProject.category}
                       </span>
                     </div>
                     <DialogTitle className="font-serif text-2xl lg:text-3xl tracking-tight leading-snug">
@@ -445,24 +469,20 @@ export function ProjectsSection() {
 
                   {/* PSR blocks */}
                   <div className="space-y-3">
-                    {[
-                      { label: "Problème", value: selectedProject.problem, color: "border-border/60 bg-muted/40", labelColor: "text-muted-foreground", dot: "bg-muted-foreground" },
-                      { label: "Solution", value: selectedProject.solution, color: "border-primary/20 bg-primary/5", labelColor: "text-primary", dot: "bg-primary" },
-                      { label: "Résultat", value: selectedProject.result, color: "border-green-500/20 bg-green-500/5", labelColor: "text-green-600 dark:text-green-400", dot: "bg-green-500" },
-                    ].map(({ label, value, color, labelColor, dot }) => (
-                      <div key={label} className={`p-4 rounded-xl border ${color}`}>
+                    {psrBlocks.map(({ key, label, color, labelColor, dot }) => (
+                      <div key={key} className={`p-4 rounded-xl border ${color}`}>
                         <div className="flex items-center gap-2 mb-2">
                           <span className={`w-2 h-2 rounded-full ${dot} shrink-0`} />
                           <p className={`text-xs font-bold uppercase tracking-wider ${labelColor}`}>{label}</p>
                         </div>
-                        <p className="text-sm text-foreground leading-relaxed">{value}</p>
+                        <p className="text-sm text-foreground leading-relaxed">{(selectedProject as any)[key]}</p>
                       </div>
                     ))}
                   </div>
 
                   {/* Technologies */}
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">Technologies utilisées</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3">{t.projects.technologiesUsed}</p>
                     <div className="flex flex-wrap gap-2">
                       {selectedProject.technologies.map((tech) => (
                         <span key={tech} className="text-xs bg-muted/80 text-foreground/80 px-3 py-1 rounded-md font-mono border border-border/50">
@@ -479,7 +499,7 @@ export function ProjectsSection() {
                         <Button size="sm" className="bg-nexalion hover:opacity-90 text-sm font-semibold shadow-sm" asChild>
                           <a href={selectedProject.demoUrl} target="_blank" rel="noopener noreferrer" data-testid="link-demo">
                             <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
-                            Voir la démo
+                            {t.projects.viewDemo}
                           </a>
                         </Button>
                       )}
@@ -487,7 +507,7 @@ export function ProjectsSection() {
                         <Button size="sm" variant="outline" className="text-sm font-medium border-border/60 hover:border-primary/40" asChild>
                           <a href={selectedProject.downloadUrl} download data-testid="link-download">
                             <Download className="w-3.5 h-3.5 mr-1.5" />
-                            Télécharger
+                            {t.projects.download}
                           </a>
                         </Button>
                       )}

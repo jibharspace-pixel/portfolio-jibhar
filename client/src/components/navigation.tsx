@@ -1,24 +1,27 @@
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, Download } from "lucide-react";
+import { Menu, X, Download, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Link, useLocation } from "wouter";
-
-const navItems = [
-  { label: "Accueil",    href: "/" },
-  { label: "Projets",    href: "/projets" },
-  { label: "Blog",       href: "/blog" },
-  { label: "Ressources", href: "/ressources" },
-  { label: "À propos",   href: "/apropos" },
-  { label: "Contact",    href: "/contact" },
-];
+import { useLanguage } from "@/lib/language-context";
+import type { Lang } from "@/lib/i18n";
 
 export function Navigation() {
+  const { lang, setLang, t } = useLanguage();
   const [isScrolled, setIsScrolled]         = useState(false);
   const [isMobileMenuOpen, setMobileOpen]   = useState(false);
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
   const [location]                          = useLocation();
   const navRef                              = useRef<HTMLDivElement>(null);
+
+  const navItems = [
+    { label: t.nav.home,      href: "/" },
+    { label: t.nav.projects,  href: "/projets" },
+    { label: t.nav.blog,      href: "/blog" },
+    { label: t.nav.resources, href: "/ressources" },
+    { label: t.nav.about,     href: "/apropos" },
+    { label: t.nav.contact,   href: "/contact" },
+  ];
 
   // Scroll shadow
   useEffect(() => {
@@ -48,10 +51,12 @@ export function Navigation() {
       width:   btnRect.width,
       opacity: 1,
     });
-  }, [location]);
+  }, [location, lang]);
 
   const isActive = (href: string) =>
     href === "/" ? location === "/" : location.startsWith(href);
+
+  const toggleLang = () => setLang(lang === "fr" ? "en" : "fr");
 
   return (
     <header
@@ -96,10 +101,7 @@ export function Navigation() {
                       ? "text-primary"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
-                  data-testid={`link-nav-${item.label
-                    .toLowerCase()
-                    .replace(/\s+/g, "-")
-                    .replace(/[^a-z0-9-]/g, "")}`}
+                  data-testid={`link-nav-${item.href === "/" ? "accueil" : item.href.replace("/", "")}`}
                 >
                   {item.label}
                   {/* Active underline — grows from center */}
@@ -113,6 +115,16 @@ export function Navigation() {
 
           {/* Right actions */}
           <div className="flex items-center gap-2 shrink-0">
+            {/* Language toggle */}
+            <button
+              onClick={toggleLang}
+              className="flex items-center gap-1 h-8 px-2.5 rounded-md border border-border/60 text-xs font-bold text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all duration-150"
+              data-testid="button-lang-toggle"
+              aria-label="Switch language"
+            >
+              <Globe className="w-3 h-3 shrink-0" />
+              <span>{lang === "fr" ? "EN" : "FR"}</span>
+            </button>
             <ThemeToggle />
             <Button
               size="sm"
@@ -120,8 +132,8 @@ export function Navigation() {
               data-testid="button-download-cv"
             >
               <Download className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">Télécharger CV</span>
-              <span className="md:hidden">CV</span>
+              <span className="hidden md:inline">{t.nav.downloadCv}</span>
+              <span className="md:hidden">{t.nav.cv}</span>
             </Button>
             <Button
               variant="ghost"
@@ -151,10 +163,7 @@ export function Navigation() {
                   className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-left transition-colors mobile-menu-item`}
                   style={{ animationDelay: `${i * 30}ms` }}
                   data-active={isActive(item.href) ? "true" : "false"}
-                  data-testid={`link-mobile-${item.label
-                    .toLowerCase()
-                    .replace(/\s+/g, "-")
-                    .replace(/[^a-z0-9-]/g, "")}`}
+                  data-testid={`link-mobile-${item.href === "/" ? "accueil" : item.href.replace("/", "")}`}
                 >
                   {isActive(item.href) && (
                     <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
@@ -165,14 +174,22 @@ export function Navigation() {
                 </button>
               </Link>
             ))}
-            <div className="pt-2 mt-1 border-t border-border">
+            <div className="pt-2 mt-1 border-t border-border flex gap-2">
               <Button
-                className="w-full bg-nexalion hover:opacity-90 font-medium text-sm"
+                className="flex-1 bg-nexalion hover:opacity-90 font-medium text-sm"
                 data-testid="button-mobile-download-cv"
               >
                 <Download className="w-3.5 h-3.5 mr-2" />
-                Télécharger CV
+                {t.nav.downloadCv}
               </Button>
+              <button
+                onClick={toggleLang}
+                className="flex items-center gap-1.5 px-4 rounded-md border border-border/60 text-sm font-bold text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all"
+                data-testid="button-mobile-lang-toggle"
+              >
+                <Globe className="w-3.5 h-3.5" />
+                {lang === "fr" ? "EN" : "FR"}
+              </button>
             </div>
           </div>
         </div>

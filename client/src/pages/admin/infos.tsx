@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2, Save, CheckCircle, Mail, Phone, Link2, AlignLeft, Briefcase } from "lucide-react";
+import { Loader2, Save, CheckCircle, Mail, Phone, Link2, AlignLeft, Briefcase, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,7 +8,7 @@ import { API } from "./shared";
 import type { Service } from "@shared/schema";
 
 interface ContactInfo { email: string; linkedin: string; whatsapp: string; github: string; }
-interface SiteContent { hero_description: string; hero_highlights: string[]; about_quote: string; footer_tagline: string; }
+interface SiteContent { hero_description: string; hero_highlights: string[]; about_quote: string; footer_tagline: string; stack_tags: string[]; }
 
 function SectionCard({ icon: Icon, title, subtitle, children }: { icon: typeof Mail; title: string; subtitle: string; children: React.ReactNode }) {
   return (
@@ -53,7 +53,7 @@ export function InfosSection({ password }: { password: string }) {
   const [savingS, setSavingS] = useState(false); const [savedS, setSavedS] = useState(false);
 
   const cf = contactForm ?? contact ?? { email: "", linkedin: "", whatsapp: "", github: "" };
-  const sf = contentForm ?? content ?? { hero_description: "", hero_highlights: ["", "", ""], about_quote: "", footer_tagline: "" };
+  const sf = contentForm ?? content ?? { hero_description: "", hero_highlights: ["", "", ""], about_quote: "", footer_tagline: "", stack_tags: [] };
   const svf = servicesForm ?? services ?? [];
 
   const flash = (set: (v: boolean) => void) => { set(true); setTimeout(() => set(false), 2500); };
@@ -84,6 +84,18 @@ export function InfosSection({ password }: { password: string }) {
     h[i] = val;
     setContentForm(p => ({ ...(p ?? sf), hero_highlights: h }));
   };
+
+  const addTag = () =>
+    setContentForm(p => ({ ...(p ?? sf), stack_tags: [...(sf.stack_tags ?? []), ""] }));
+
+  const updateTag = (i: number, val: string) => {
+    const tags = [...(sf.stack_tags ?? [])];
+    tags[i] = val;
+    setContentForm(p => ({ ...(p ?? sf), stack_tags: tags }));
+  };
+
+  const removeTag = (i: number) =>
+    setContentForm(p => ({ ...(p ?? sf), stack_tags: (sf.stack_tags ?? []).filter((_, idx) => idx !== i) }));
 
   const updateSvc = (idx: number, field: keyof Service, value: string) =>
     setServicesForm(svf.map((s, i) => i === idx ? { ...s, [field]: value } : s));
@@ -146,6 +158,37 @@ export function InfosSection({ password }: { password: string }) {
                 placeholder="Je conçois des solutions digitales sur mesure…"
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring"
                 data-testid="input-footer-tagline" />
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-xs font-semibold text-muted-foreground uppercase">Stack (badges de la barre admin)</label>
+                <button type="button" onClick={addTag}
+                  className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 font-medium transition-colors"
+                  data-testid="button-add-stack-tag">
+                  <Plus className="w-3.5 h-3.5" /> Ajouter
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {(sf.stack_tags ?? []).map((tag, i) => (
+                  <div key={i} className="flex items-center gap-1 bg-primary/8 border border-primary/15 rounded-md pl-2 pr-1 py-0.5">
+                    <input
+                      value={tag}
+                      onChange={e => updateTag(i, e.target.value)}
+                      className="text-xs font-medium text-primary bg-transparent outline-none w-24 min-w-0"
+                      placeholder="React…"
+                      data-testid={`input-stack-tag-${i}`}
+                    />
+                    <button type="button" onClick={() => removeTag(i)}
+                      className="text-muted-foreground hover:text-red-500 transition-colors ml-0.5 shrink-0"
+                      data-testid={`button-remove-stack-tag-${i}`}>
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+                {(sf.stack_tags ?? []).length === 0 && (
+                  <p className="text-xs text-muted-foreground italic">Aucun badge — cliquez sur Ajouter.</p>
+                )}
+              </div>
             </div>
             <SaveBtn saving={savingT} saved={savedT} onSave={saveContent} testId="button-save-content" />
           </>

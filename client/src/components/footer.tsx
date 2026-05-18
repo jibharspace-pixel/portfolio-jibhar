@@ -1,18 +1,10 @@
 import { Link } from "wouter";
 import { Mail, Linkedin, MessageCircle, Github, ExternalLink, ArrowUp } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { useLanguage } from "@/lib/language-context";
 
 interface ContactInfo { email: string; linkedin: string; whatsapp: string; github: string; }
 interface SiteContent { footer_tagline: string; }
-
-const NAV_LINKS = [
-  { label: "Accueil",    href: "/" },
-  { label: "Projets",    href: "/projets" },
-  { label: "Blog",       href: "/blog" },
-  { label: "Ressources", href: "/ressources" },
-  { label: "À propos",   href: "/apropos" },
-  { label: "Contact",    href: "/contact" },
-];
 
 const TECH_STACK = ["React", "TypeScript", "Tailwind CSS", "Rust · Axum"];
 
@@ -23,6 +15,7 @@ function whatsappHref(raw: string) {
 }
 
 export function Footer() {
+  const { t } = useLanguage();
   const { data: contact } = useQuery<ContactInfo>({ queryKey: ["/api/contact"] });
   const { data: content } = useQuery<SiteContent>({ queryKey: ["/api/site-content"] });
 
@@ -55,7 +48,7 @@ export function Footer() {
               </div>
               <div>
                 <p className="font-serif font-bold text-base text-foreground leading-tight">Kroman Jibhar Samuel</p>
-                <p className="text-xs text-muted-foreground">Logisticien & Data Analyst</p>
+                <p className="text-xs text-muted-foreground">{t.footer.role}</p>
               </div>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mb-5">
@@ -80,9 +73,9 @@ export function Footer() {
 
           {/* Navigation */}
           <div>
-            <p className="text-xs font-bold text-foreground uppercase tracking-widest mb-4">Navigation</p>
+            <p className="text-xs font-bold text-foreground uppercase tracking-widest mb-4">{t.footer.navTitle}</p>
             <ul className="space-y-2.5">
-              {NAV_LINKS.map(({ label, href }) => (
+              {t.footer.links.map(({ label, href }) => (
                 <li key={href}>
                   <Link href={href}>
                     <span className="text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">
@@ -96,7 +89,7 @@ export function Footer() {
 
           {/* Contact & Stack */}
           <div>
-            <p className="text-xs font-bold text-foreground uppercase tracking-widest mb-4">Contact</p>
+            <p className="text-xs font-bold text-foreground uppercase tracking-widest mb-4">{t.footer.contactTitle}</p>
             <ul className="space-y-2.5 mb-7">
               <li>
                 <a href={`mailto:${email}`} className="text-sm text-muted-foreground hover:text-primary transition-colors">
@@ -112,7 +105,7 @@ export function Footer() {
               <li className="text-sm text-muted-foreground">Abidjan, Côte d'Ivoire</li>
             </ul>
 
-            <p className="text-xs font-bold text-foreground uppercase tracking-widest mb-3">Stack</p>
+            <p className="text-xs font-bold text-foreground uppercase tracking-widest mb-3">{t.footer.stackTitle}</p>
             <div className="flex flex-wrap gap-1.5">
               {TECH_STACK.map((name) => (
                 <span key={name} className="text-[11px] font-mono text-muted-foreground bg-muted/60 border border-border/60 px-2 py-0.5 rounded">
@@ -128,7 +121,7 @@ export function Footer() {
       <div className="border-t border-border/60">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground text-center sm:text-left">
-            © {year} Kroman Jibhar Samuel · Tous droits réservés
+            © {year} Kroman Jibhar Samuel · {t.footer.copyright}
           </p>
           <button
             onClick={scrollTop}
@@ -136,7 +129,7 @@ export function Footer() {
             data-testid="button-back-to-top"
           >
             <ArrowUp className="w-3.5 h-3.5" />
-            Retour en haut
+            {t.footer.backToTop}
           </button>
         </div>
       </div>

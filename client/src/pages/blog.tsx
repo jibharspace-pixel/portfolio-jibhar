@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
-import { Clock, Calendar, Tag, ArrowRight, BookOpen, Search } from "lucide-react";
+import { Clock, Calendar, BookOpen, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
+import { useLanguage } from "@/lib/language-context";
 import type { BlogPost } from "@shared/schema";
 
 const categoryColors: Record<string, string> = {
@@ -23,14 +24,6 @@ const categoryGradients: Record<string, string> = {
   ia: "from-purple-500 to-violet-600",
   web: "from-green-500 to-emerald-600",
 };
-
-const filters = [
-  { key: "all", label: "Tous" },
-  { key: "logistique", label: "Logistique" },
-  { key: "data", label: "Data & BI" },
-  { key: "automatisation", label: "Automatisation" },
-  { key: "ia", label: "IA" },
-];
 
 function BlogSkeleton() {
   return (
@@ -50,7 +43,7 @@ function BlogSkeleton() {
   );
 }
 
-function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boolean }) {
+function BlogCard({ post, featured = false, labels }: { post: BlogPost; featured?: boolean; labels: { featured: string; readArticle: string; read: string; minRead: string } }) {
   const gradient = categoryGradients[post.category] ?? "from-primary to-blue-500";
   const colorClass = categoryColors[post.category] ?? "bg-muted text-muted-foreground";
 
@@ -66,7 +59,7 @@ function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boole
             <BookOpen className="w-20 h-20 text-white/20" />
             <div className="absolute top-4 left-4">
               <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full border border-white/20">
-                À la une
+                {labels.featured}
               </span>
             </div>
           </div>
@@ -78,7 +71,7 @@ function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boole
                   {post.category}
                 </Badge>
                 <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Clock className="w-3 h-3" />{post.read_time} min
+                  <Clock className="w-3 h-3" />{post.read_time} {labels.minRead}
                 </span>
               </div>
               <h2 className="font-serif text-2xl font-bold text-foreground leading-tight mb-3 group-hover:text-primary transition-colors">
@@ -92,7 +85,7 @@ function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boole
                 {post.created_at}
               </span>
               <span className="flex items-center gap-1 text-sm font-semibold text-primary">
-                Lire l'article
+                {labels.readArticle}
                 <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
               </span>
             </div>
@@ -120,7 +113,7 @@ function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boole
               {post.category}
             </Badge>
             <span className="text-xs text-muted-foreground flex items-center gap-1">
-              <Clock className="w-3 h-3" />{post.read_time} min
+              <Clock className="w-3 h-3" />{post.read_time} {labels.minRead}
             </span>
           </div>
           <h3 className="font-serif font-bold text-foreground leading-tight mb-2 group-hover:text-primary transition-colors line-clamp-2">
@@ -132,7 +125,7 @@ function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boole
               <Calendar className="w-3 h-3" />{post.created_at}
             </span>
             <span className="flex items-center gap-1 text-xs font-semibold text-primary">
-              Lire <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
+              {labels.read} <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
             </span>
           </div>
         </div>
@@ -142,6 +135,7 @@ function BlogCard({ post, featured = false }: { post: BlogPost; featured?: boole
 }
 
 export default function Blog() {
+  const { t } = useLanguage();
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
@@ -153,6 +147,13 @@ export default function Blog() {
   const filtered = filter === "all" ? posts : posts?.filter(p => p.category === filter);
   const [featured, ...rest] = filtered ?? [];
 
+  const cardLabels = {
+    featured: t.blog.featured,
+    readArticle: t.blog.readArticle,
+    read: t.blog.read,
+    minRead: t.blog.minRead,
+  };
+
   return (
     <div className="min-h-screen bg-background bg-aurora-page">
       <Navigation />
@@ -163,14 +164,14 @@ export default function Blog() {
           <div className="absolute -top-24 right-0 w-80 h-80 bg-primary/8 rounded-full blur-[80px] pointer-events-none" />
           <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
             <Badge variant="secondary" className="mb-4 text-xs font-semibold px-3 py-1 rounded-full border border-primary/20 bg-primary/8 text-primary tracking-wide uppercase">
-              Blog
+              {t.blog.badge}
             </Badge>
             <h1 className="font-serif text-4xl sm:text-5xl font-bold tracking-tight mb-4">
-              Articles & Insights
+              {t.blog.title}
             </h1>
             <div className="h-0.5 w-12 bg-primary rounded-full mb-4" />
             <p className="text-muted-foreground max-w-xl leading-relaxed">
-              Explorez mes articles sur la logistique, l'analyse de données, l'automatisation et l'intelligence artificielle.
+              {t.blog.subtitle}
             </p>
           </div>
         </section>
@@ -178,7 +179,7 @@ export default function Blog() {
         {/* Filters */}
         <div className="max-w-7xl mx-auto px-6 lg:px-8 pb-6">
           <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
-            {filters.map(({ key, label }) => (
+            {t.blog.filters.map(({ key, label }) => (
               <button
                 key={key}
                 onClick={() => setFilter(key)}
@@ -200,12 +201,12 @@ export default function Blog() {
           {isLoading ? <BlogSkeleton /> : !filtered?.length ? (
             <div className="text-center py-20">
               <BookOpen className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
-              <p className="text-muted-foreground">Aucun article dans cette catégorie.</p>
+              <p className="text-muted-foreground">{t.blog.empty}</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featured && <BlogCard post={featured} featured />}
-              {rest.map(p => <BlogCard key={p.id} post={p} />)}
+              {featured && <BlogCard post={featured} featured labels={cardLabels} />}
+              {rest.map(p => <BlogCard key={p.id} post={p} labels={cardLabels} />)}
             </div>
           )}
         </section>

@@ -156,6 +156,7 @@ pub async fn update_site_content(State(state): State<AppState>, headers: HeaderM
     sc.hero_highlights = p.hero_highlights;
     sc.about_quote = p.about_quote;
     if !p.footer_tagline.is_empty() { sc.footer_tagline = p.footer_tagline; }
+    if !p.stack_tags.is_empty() { sc.stack_tags = p.stack_tags; }
     Ok(Json(sc.clone()))
 }
 

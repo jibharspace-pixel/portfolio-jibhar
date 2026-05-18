@@ -95,6 +95,7 @@ pub struct SiteContent {
     pub hero_highlights: Vec<String>,
     pub about_quote: String,
     pub footer_tagline: String,
+    pub stack_tags: Vec<String>,
 }
 
 // ─── Input / Request Types ────────────────────────────────────────────────────
@@ -154,6 +155,8 @@ pub struct UpdateSiteContent {
     pub about_quote: String,
     #[serde(default)]
     pub footer_tagline: String,
+    #[serde(default)]
+    pub stack_tags: Vec<String>,
 }
 
 #[derive(Deserialize)]

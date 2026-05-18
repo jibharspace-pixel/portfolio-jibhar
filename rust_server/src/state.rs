@@ -44,6 +44,7 @@ impl AppState {
                 ],
                 about_quote: "Autodidacte déterminé, je transforme la complexité en solutions simples et efficaces.".into(),
                 footer_tagline: "Je conçois des solutions digitales sur mesure — dashboards, apps web et automatisations — pour transformer vos données en décisions.".into(),
+                stack_tags: vec!["React".into(), "TypeScript".into(), "Tailwind CSS".into(), "Rust · Axum".into()],
             })),
         }
     }

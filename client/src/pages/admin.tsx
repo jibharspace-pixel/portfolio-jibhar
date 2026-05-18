@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Lock, LogOut, LayoutDashboard, BookOpen, FolderOpen,
   Image as ImageIcon, Briefcase, Settings, Loader2, AlertCircle,
@@ -133,6 +134,25 @@ function NavItem({
   );
 }
 
+// ── Stack badges (dynamic from API) ───────────────────────────────────────────
+function StackBadges() {
+  const { data } = useQuery<{ stack_tags?: string[] }>({ queryKey: ["/api/site-content"] });
+  const tags = data?.stack_tags ?? [];
+  if (!tags.length) return null;
+  return (
+    <div className="px-4 py-3 border-t border-border/60">
+      <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2">Stack</p>
+      <div className="flex flex-wrap gap-1.5">
+        {tags.map(t => (
+          <span key={t} className="inline-flex items-center px-2 py-0.5 rounded-md bg-primary/8 dark:bg-primary/12 text-primary text-[11px] font-medium border border-primary/15">
+            {t}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Admin layout ──────────────────────────────────────────────────────────────
 function AdminLayout({ password, onLogout }: { password: string; onLogout: () => void }) {
   const [section,    setSection]    = useState<Section>("dashboard");
@@ -175,16 +195,7 @@ function AdminLayout({ password, onLogout }: { password: string; onLogout: () =>
           ))}
         </nav>
 
-        <div className="px-4 py-3 border-t border-border/60">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-2">Stack</p>
-          <div className="flex flex-wrap gap-1.5">
-            {["React", "TypeScript", "Tailwind CSS", "Rust · Axum"].map(t => (
-              <span key={t} className="inline-flex items-center px-2 py-0.5 rounded-md bg-primary/8 dark:bg-primary/12 text-primary text-[11px] font-medium border border-primary/15">
-                {t}
-              </span>
-            ))}
-          </div>
-        </div>
+        <StackBadges />
 
         <div className="px-3 py-3 border-t border-border/60">
           <button
