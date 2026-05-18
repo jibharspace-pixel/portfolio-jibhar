@@ -7,19 +7,34 @@ import express from "express";
 const RUST_API_PORT = 3001;
 
 function proxyToRust(req: any, res: any) {
+  // Express body parsers consume the stream — rebuild body from parsed data
+  const bodyMethods = ["POST", "PUT", "PATCH"];
+  const rawBody: Buffer | null =
+    bodyMethods.includes(req.method) && req.rawBody instanceof Buffer
+      ? req.rawBody
+      : null;
+
+  const headers: Record<string, string | string[]> = {
+    ...req.headers,
+    host: `localhost:${RUST_API_PORT}`,
+  };
+
+  if (rawBody) {
+    headers["content-length"] = String(rawBody.length);
+    if (!headers["content-type"]) {
+      headers["content-type"] = "application/json";
+    }
+  }
+
   const options = {
     hostname: "localhost",
     port: RUST_API_PORT,
     path: req.originalUrl,
     method: req.method,
-    headers: {
-      ...req.headers,
-      host: `localhost:${RUST_API_PORT}`,
-    },
+    headers,
   };
 
   const proxy = http.request(options, (proxyRes) => {
-    // Forward Rust headers but let Express manage CORS at the outer layer
     const forwardHeaders = { ...proxyRes.headers };
     delete forwardHeaders["access-control-allow-origin"];
     res.writeHead(proxyRes.statusCode ?? 500, forwardHeaders);
@@ -30,7 +45,12 @@ function proxyToRust(req: any, res: any) {
     res.status(503).json({ error: "Rust API server unavailable" });
   });
 
-  req.pipe(proxy, { end: true });
+  if (rawBody) {
+    proxy.write(rawBody);
+    proxy.end();
+  } else {
+    req.pipe(proxy, { end: true });
+  }
 }
 
 export async function registerRoutes(
