@@ -211,73 +211,28 @@ export function InfosSection({ password }: { password: string }) {
         )}
       </SectionCard>
 
-      <SectionCard icon={FileText} title="Curriculum Vitae" subtitle="Fichier téléchargeable depuis le bouton CV du site (PDF, DOC, DOCX — max 10 Mo)">
+      <SectionCard icon={FileText} title="Curriculum Vitae" subtitle="Colle le lien Google Drive ou Dropbox vers ton CV PDF">
         <div className="space-y-3">
-          {sf.cv_url ? (
-            <div className="flex items-center justify-between gap-3 rounded-xl border border-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-800/40 px-4 py-3">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
-                  <FileText className="w-4 h-4 text-green-600 dark:text-green-400" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-green-700 dark:text-green-400">CV chargé</p>
-                  <p className="text-xs text-green-600/70 dark:text-green-500/70 truncate">{sf.cv_url}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <a
-                  href={sf.cv_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-xs font-medium text-green-700 dark:text-green-400 hover:underline"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  Voir
-                </a>
-                <button
-                  type="button"
-                  onClick={() => deleteCv.mutate()}
-                  className="flex items-center gap-1 text-xs font-medium text-red-500 hover:text-red-700 transition-colors"
-                  aria-label="Supprimer le CV"
-                >
-                  {deleteCv.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="rounded-xl border border-dashed border-border/60 bg-muted/20 px-4 py-5 text-center">
-              <FileText className="w-8 h-8 text-muted-foreground/30 mx-auto mb-2" />
-              <p className="text-xs text-muted-foreground">Aucun CV chargé — le bouton "Télécharger CV" sera inactif.</p>
-            </div>
+          <div className="rounded-xl border border-amber-200 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-xs text-amber-700 dark:text-amber-400">
+            💡 Upload ton CV sur <strong>Google Drive</strong> → clic droit → "Obtenir le lien" → "Tous les utilisateurs avec le lien" → colle l'URL ici.
+          </div>
+          <div>
+            <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">URL du CV (Google Drive, Dropbox…)</label>
+            <Input
+              value={sf.cv_url ?? ""}
+              onChange={e => setContentForm(p => ({ ...(p ?? sf), cv_url: e.target.value }))}
+              placeholder="https://drive.google.com/file/d/..."
+              className="h-9 text-sm"
+              data-testid="input-cv-url"
+            />
+          </div>
+          {sf.cv_url && (
+            <a href={sf.cv_url} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline">
+              <Download className="w-3.5 h-3.5" /> Tester le lien
+            </a>
           )}
-          <input
-            ref={cvInputRef}
-            type="file"
-            accept=".pdf,.doc,.docx"
-            title="Choisir le fichier CV"
-            aria-label="Choisir le fichier CV"
-            className="hidden"
-            onChange={e => {
-              const file = e.target.files?.[0];
-              if (file) uploadCv.mutate(file);
-              e.target.value = "";
-            }}
-          />
-          <Button
-            type="button"
-            onClick={() => cvInputRef.current?.click()}
-            disabled={uploadCv.isPending}
-            size="sm"
-            className="w-full bg-nexalion hover:opacity-90 font-medium"
-            data-testid="button-upload-cv"
-          >
-            {uploadCv.isPending
-              ? <><Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />Chargement…</>
-              : <><Upload className="w-3.5 h-3.5 mr-1.5" />{sf.cv_url ? "Remplacer le CV" : "Charger le CV"}</>}
-          </Button>
-          {uploadCv.isError && (
-            <p className="text-xs text-red-500 font-medium">{(uploadCv.error as Error).message}</p>
-          )}
+          <SaveBtn saving={savingT} saved={savedT} onSave={saveContent} testId="button-save-cv-url" />
         </div>
       </SectionCard>
 
