@@ -1,51 +1,46 @@
 import type { Express, Request, Response } from "express";
-import { randomUUID } from "crypto";
-import { db, persist, type BlogPost } from "../db";
-import { checkAdmin, today, readTime } from "../helpers";
+import { checkAdmin, readTime } from "../helpers";
+import * as storage from "../storage";
 
 export function registerBlogRoutes(app: Express): void {
-  app.get("/api/blog", (_req, res) => {
-    res.json(db.blog.filter(p => p.status === "published"));
+  app.get("/api/blog", async (_req, res) => {
+    const all = await storage.getBlogPosts();
+    res.json(all.filter(p => p.status === "published"));
   });
 
-  app.get("/api/admin/blog", (req: Request, res: Response) => {
+  app.get("/api/admin/blog", async (req: Request, res: Response) => {
     if (!checkAdmin(req)) return res.sendStatus(401);
-    res.json(db.blog);
+    res.json(await storage.getBlogPosts());
   });
 
-  app.get("/api/blog/:slug", (req, res) => {
-    const post = db.blog.find(p => p.slug === req.params.slug && p.status === "published");
+  app.get("/api/blog/:slug", async (req, res) => {
+    const post = await storage.getBlogPostBySlug(req.params.slug);
     if (!post) return res.sendStatus(404);
-    post.view_count += 1;
-    db.blog_views.set(req.params.slug, (db.blog_views.get(req.params.slug) ?? 0) + 1);
-    res.json(post);
+    await storage.incrementBlogViews(post.id);
+    res.json({ ...post, view_count: (post.view_count ?? 0) + 1 });
   });
 
-  app.post("/api/admin/blog", (req: Request, res: Response) => {
+  app.post("/api/admin/blog", async (req: Request, res: Response) => {
     if (!checkAdmin(req)) return res.sendStatus(401);
-    const post: BlogPost = {
-      id: randomUUID(), created_at: today(), view_count: 0,
-      read_time: readTime(req.body.content ?? ""), ...req.body,
-    };
-    db.blog.unshift(post);
-    persist();
+    const post = await storage.createBlogPost({
+      ...req.body,
+      read_time: readTime(req.body.content ?? ""),
+    });
     res.status(201).json(post);
   });
 
-  app.put("/api/admin/blog/:id", (req: Request, res: Response) => {
+  app.put("/api/admin/blog/:id", async (req: Request, res: Response) => {
     if (!checkAdmin(req)) return res.sendStatus(401);
-    const idx = db.blog.findIndex(x => x.id === req.params.id);
-    if (idx === -1) return res.sendStatus(404);
-    persist();
-    db.blog[idx] = { ...db.blog[idx], ...req.body, read_time: readTime(req.body.content ?? db.blog[idx].content) };
-    res.json(db.blog[idx]);
+    const updated = await storage.updateBlogPost(req.params.id, {
+      ...req.body,
+      read_time: readTime(req.body.content ?? ""),
+    });
+    updated ? res.json(updated) : res.sendStatus(404);
   });
 
-  app.delete("/api/admin/blog/:id", (req: Request, res: Response) => {
+  app.delete("/api/admin/blog/:id", async (req: Request, res: Response) => {
     if (!checkAdmin(req)) return res.sendStatus(401);
-    const before = db.blog.length;
-    db.blog = db.blog.filter(x => x.id !== req.params.id);
-    persist();
-    db.blog.length < before ? res.sendStatus(204) : res.sendStatus(404);
+    const ok = await storage.deleteBlogPost(req.params.id);
+    res.sendStatus(ok ? 204 : 404);
   });
 }

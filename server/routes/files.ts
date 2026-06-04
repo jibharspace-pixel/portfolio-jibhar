@@ -1,39 +1,34 @@
 import type { Express, Request, Response } from "express";
-import { randomUUID } from "crypto";
-import { db, persist, type FreeFile } from "../db";
-import { checkAdmin, today } from "../helpers";
+import { checkAdmin } from "../helpers";
+import * as storage from "../storage";
 
 export function registerFileRoutes(app: Express): void {
-  app.get("/api/files", (_req, res) => res.json(db.files));
-
-  app.post("/api/files/:id/download", (req, res) => {
-    const file = db.files.find(f => f.id === req.params.id);
-    if (!file) return res.sendStatus(404);
-    file.download_count += 1;
-    res.json(file);
+  app.get("/api/files", async (_req, res) => {
+    res.json(await storage.getFiles());
   });
 
-  app.post("/api/admin/files", (req: Request, res: Response) => {
+  app.post("/api/files/:id/download", async (req, res) => {
+    await storage.incrementFileDownloads(req.params.id);
+    const files = await storage.getFiles();
+    const file = files.find(f => f.id === req.params.id);
+    file ? res.json(file) : res.sendStatus(404);
+  });
+
+  app.post("/api/admin/files", async (req: Request, res: Response) => {
     if (!checkAdmin(req)) return res.sendStatus(401);
-    const file: FreeFile = { id: randomUUID(), download_count: 0, created_at: today(), ...req.body };
-    db.files.push(file);
+    const file = await storage.createFile(req.body);
     res.status(201).json(file);
   });
 
-  app.put("/api/admin/files/:id", (req: Request, res: Response) => {
+  app.put("/api/admin/files/:id", async (req: Request, res: Response) => {
     if (!checkAdmin(req)) return res.sendStatus(401);
-    const idx = db.files.findIndex(f => f.id === req.params.id);
-    if (idx === -1) return res.sendStatus(404);
-    persist();
-    db.files[idx] = { ...db.files[idx], ...req.body, id: db.files[idx].id, download_count: db.files[idx].download_count, created_at: db.files[idx].created_at };
-    res.json(db.files[idx]);
+    const updated = await storage.updateFile(req.params.id, req.body);
+    updated ? res.json(updated) : res.sendStatus(404);
   });
 
-  app.delete("/api/admin/files/:id", (req: Request, res: Response) => {
+  app.delete("/api/admin/files/:id", async (req: Request, res: Response) => {
     if (!checkAdmin(req)) return res.sendStatus(401);
-    const before = db.files.length;
-    persist();
-    db.files = db.files.filter(f => f.id !== req.params.id);
-    db.files.length < before ? res.sendStatus(204) : res.sendStatus(404);
+    const ok = await storage.deleteFile(req.params.id);
+    res.sendStatus(ok ? 204 : 404);
   });
 }

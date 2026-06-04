@@ -1,97 +1,72 @@
 import type { Express, Request, Response } from "express";
-import path from "path";
-import fs from "fs";
-import { db, persist } from "../db";
-import type { ContactMessage } from "../db";
 import { checkAdmin } from "../helpers";
-import { upload, uploadsDir } from "../middleware/upload";
+import * as storage from "../storage";
 
 export function registerContactRoutes(app: Express): void {
-  app.get("/api/contact", (_req, res) => res.json(db.contact));
-
-  app.put("/api/admin/contact", (req: Request, res: Response) => {
-    if (!checkAdmin(req)) return res.sendStatus(401);
-    Object.assign(db.contact, req.body);
-    persist();
-    res.json(db.contact);
+  app.get("/api/contact", async (_req, res) => {
+    res.json(await storage.getContact());
   });
 
-  app.get("/api/site-content", (_req, res) => res.json(db.site_content));
-
-  app.put("/api/admin/site-content", (req: Request, res: Response) => {
+  app.put("/api/admin/contact", async (req: Request, res: Response) => {
     if (!checkAdmin(req)) return res.sendStatus(401);
-    Object.assign(db.site_content, req.body);
-    persist();
-    res.json(db.site_content);
+    res.json(await storage.updateContact(req.body));
   });
 
-  app.post("/api/admin/upload-cv", upload.single("file"), (req: Request, res: Response) => {
-    if (!checkAdmin(req)) return res.sendStatus(401);
-    if (!req.file) return res.status(400).json({ error: "Aucun fichier reçu" });
-    const allowed = [".pdf", ".doc", ".docx"];
-    const ext = path.extname(req.file.originalname).toLowerCase();
-    if (!allowed.includes(ext)) {
-      fs.unlink(path.join(uploadsDir, req.file.filename), () => {});
-      return res.status(400).json({ error: "Format non supporté (PDF, DOC, DOCX uniquement)" });
-    }
-    // Delete old CV file if exists
-    if (db.site_content.cv_url) {
-      const oldFile = db.site_content.cv_url.replace("/uploads/", "");
-      fs.unlink(path.join(uploadsDir, oldFile), () => {});
-    }
-    db.site_content.cv_url = `/uploads/${req.file.filename}`;
-    persist();
-    res.json({ cv_url: db.site_content.cv_url });
+  app.get("/api/site-content", async (_req, res) => {
+    res.json(await storage.getSiteContent());
   });
 
-  app.delete("/api/admin/cv", (req: Request, res: Response) => {
+  app.put("/api/admin/site-content", async (req: Request, res: Response) => {
     if (!checkAdmin(req)) return res.sendStatus(401);
-    if (db.site_content.cv_url) {
-      const oldFile = db.site_content.cv_url.replace("/uploads/", "");
-      fs.unlink(path.join(uploadsDir, oldFile), () => {});
-      db.site_content.cv_url = undefined;
-    }
-    persist();
-    res.sendStatus(204);
+    res.json(await storage.updateSiteContent(req.body));
   });
 
-  app.post("/api/contact/submit", (req: Request, res: Response) => {
+  // CV URL (no file upload on free hosting — use external URL)
+  app.put("/api/admin/cv-url", async (req: Request, res: Response) => {
+    if (!checkAdmin(req)) return res.sendStatus(401);
+    const { cv_url } = req.body;
+    res.json(await storage.updateSiteContent({ cv_url: cv_url ?? null }));
+  });
+
+  // Track CV download
+  app.post("/api/cv/download", async (req: Request, res: Response) => {
+    const ip = req.headers["x-forwarded-for"]?.toString() ?? req.socket.remoteAddress;
+    const userAgent = req.headers["user-agent"];
+    await storage.trackCvDownload(ip, userAgent);
+    res.json({ success: true });
+  });
+
+  app.get("/api/admin/cv-downloads", async (req: Request, res: Response) => {
+    if (!checkAdmin(req)) return res.sendStatus(401);
+    const count = await storage.getCvDownloadCount();
+    const history = await storage.getCvDownloadHistory();
+    res.json({ count, history });
+  });
+
+  // Contact form
+  app.post("/api/contact/submit", async (req: Request, res: Response) => {
     const { name, email, subject, message } = req.body ?? {};
     if (!name?.trim() || !email?.trim() || !message?.trim()) {
       return res.status(400).json({ error: "Nom, email et message sont requis." });
     }
-    const msg: ContactMessage = {
-      id: Date.now().toString(),
-      name: name.trim(),
-      email: email.trim(),
-      subject: subject?.trim() ?? "",
-      message: message.trim(),
-      created_at: new Date().toISOString(),
-      read: false,
-    };
-    db.messages.push(msg);
-    persist();
+    const msg = await storage.createMessage({ name: name.trim(), email: email.trim(), subject: subject?.trim() ?? "", message: message.trim() });
+    res.json({ success: true, id: msg.id });
+  });
+
+  app.get("/api/admin/messages", async (req: Request, res: Response) => {
+    if (!checkAdmin(req)) return res.sendStatus(401);
+    res.json(await storage.getMessages());
+  });
+
+  app.put("/api/admin/messages/:id/read", async (req: Request, res: Response) => {
+    if (!checkAdmin(req)) return res.sendStatus(401);
+    await storage.markMessageRead(req.params.id);
     res.json({ success: true });
   });
 
-  app.get("/api/admin/messages", (req: Request, res: Response) => {
+  app.delete("/api/admin/messages/:id", async (req: Request, res: Response) => {
     if (!checkAdmin(req)) return res.sendStatus(401);
-    res.json([...db.messages].reverse());
-  });
-
-  app.put("/api/admin/messages/:id/read", (req: Request, res: Response) => {
-    if (!checkAdmin(req)) return res.sendStatus(401);
-    const msg = db.messages.find(m => m.id === req.params.id);
-    if (!msg) return res.sendStatus(404);
-    msg.read = true;
-    persist();
-    res.json(msg);
-  });
-
-  app.delete("/api/admin/messages/:id", (req: Request, res: Response) => {
-    if (!checkAdmin(req)) return res.sendStatus(401);
-    db.messages = db.messages.filter(m => m.id !== req.params.id);
-    persist();
+    await storage.deleteMessage(req.params.id);
     res.sendStatus(204);
   });
 

@@ -1,40 +1,34 @@
 import type { Express, Request, Response } from "express";
 import { randomUUID } from "crypto";
-import { db, persist, type Project } from "../db";
-import { checkAdmin, projectsWithMedia } from "../helpers";
+import { checkAdmin } from "../helpers";
+import * as storage from "../storage";
 
 export function registerProjectRoutes(app: Express): void {
-  app.get("/api/projects", (_req, res) => res.json(projectsWithMedia()));
+  app.get("/api/projects", async (_req, res) => {
+    res.json(await storage.getProjects());
+  });
 
-  app.get("/api/projects/:id", (req, res) => {
-    const p = projectsWithMedia().find(x => x.id === req.params.id);
+  app.get("/api/projects/:id", async (req, res) => {
+    const all = await storage.getProjects();
+    const p = all.find(x => x.id === req.params.id);
     p ? res.json(p) : res.sendStatus(404);
   });
 
-  app.post("/api/admin/projects", (req: Request, res: Response) => {
+  app.post("/api/admin/projects", async (req: Request, res: Response) => {
     if (!checkAdmin(req)) return res.sendStatus(401);
-    const p: Project = { id: randomUUID(), ...req.body, media: [] };
-    if (!p.demo_url) delete p.demo_url;
-    if (!p.download_url) delete p.download_url;
-    db.projects.unshift(p);
-    persist();
+    const p = await storage.createProject(req.body);
     res.status(201).json(p);
   });
 
-  app.put("/api/admin/projects/:id", (req: Request, res: Response) => {
+  app.put("/api/admin/projects/:id", async (req: Request, res: Response) => {
     if (!checkAdmin(req)) return res.sendStatus(401);
-    const idx = db.projects.findIndex(x => x.id === req.params.id);
-    if (idx === -1) return res.sendStatus(404);
-    db.projects[idx] = { ...db.projects[idx], ...req.body };
-    persist();
-    res.json(db.projects[idx]);
+    const p = await storage.updateProject(req.params.id, req.body);
+    p ? res.json(p) : res.sendStatus(404);
   });
 
-  app.delete("/api/admin/projects/:id", (req: Request, res: Response) => {
+  app.delete("/api/admin/projects/:id", async (req: Request, res: Response) => {
     if (!checkAdmin(req)) return res.sendStatus(401);
-    const before = db.projects.length;
-    db.projects = db.projects.filter(x => x.id !== req.params.id);
-    persist();
-    db.projects.length < before ? res.sendStatus(204) : res.sendStatus(404);
+    const ok = await storage.deleteProject(req.params.id);
+    res.sendStatus(ok ? 204 : 404);
   });
 }
