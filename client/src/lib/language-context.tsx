@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 import type { Lang } from "./i18n";
 import dict from "./i18n";
 
@@ -29,7 +29,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t: dict[lang] }}>
+    <LanguageContext.Provider value={{ lang, setLang, t: dict[lang] as typeof dict["fr"] }}>
       {children}
     </LanguageContext.Provider>
   );

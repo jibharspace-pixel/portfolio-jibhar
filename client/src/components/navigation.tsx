@@ -1,13 +1,19 @@
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, Download, Globe } from "lucide-react";
+import { Menu, X, Download, Globe, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Link, useLocation } from "wouter";
 import { useLanguage } from "@/lib/language-context";
-import type { Lang } from "@/lib/i18n";
+import { DevisDialog } from "@/components/devis-dialog";
+import { useQuery } from "@tanstack/react-query";
+
+interface SiteContent { cv_url?: string; }
+
 
 export function Navigation() {
   const { lang, setLang, t } = useLanguage();
+  const { data: siteContent } = useQuery<SiteContent>({ queryKey: ["/api/site-content"] });
+  const cvUrl = siteContent?.cv_url;
   const [isScrolled, setIsScrolled]         = useState(false);
   const [isMobileMenuOpen, setMobileOpen]   = useState(false);
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
@@ -60,10 +66,10 @@ export function Navigation() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`nav-header fixed top-0 left-0 right-0 z-50 ${
         isScrolled
-          ? "bg-white/92 dark:bg-background/92 backdrop-blur-xl border-b border-border/60 shadow-sm"
-          : "bg-transparent"
+          ? "nav-header--scrolled"
+          : ""
       }`}
       data-testid="navigation-header"
     >
@@ -84,12 +90,11 @@ export function Navigation() {
           <div ref={navRef} className="hidden lg:flex items-center gap-0.5 relative">
             {/* Sliding background pill */}
             <span
-              className="absolute top-1 bottom-1 rounded-md bg-primary/8 pointer-events-none"
+              className="nav-indicator absolute top-1 bottom-1 rounded-md bg-primary/8 pointer-events-none"
               style={{
                 left:    indicatorStyle.left,
                 width:   indicatorStyle.width,
                 opacity: indicatorStyle.opacity,
-                transition: "left 300ms cubic-bezier(0.34,1.2,0.64,1), width 250ms cubic-bezier(0.34,1.2,0.64,1), opacity 200ms ease",
               }}
             />
             {navItems.map((item) => (
@@ -126,15 +131,42 @@ export function Navigation() {
               <span>{lang === "fr" ? "EN" : "FR"}</span>
             </button>
             <ThemeToggle />
-            <Button
-              size="sm"
-              className="hidden sm:flex items-center gap-1.5 bg-nexalion hover:opacity-90 shadow-sm font-medium text-[13px] h-8 px-3"
-              data-testid="button-download-cv"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">{t.nav.downloadCv}</span>
-              <span className="md:hidden">{t.nav.cv}</span>
-            </Button>
+            <DevisDialog trigger={
+              <Button
+                size="sm"
+                variant="outline"
+                className="hidden sm:flex items-center gap-1.5 border-primary/30 text-primary hover:bg-primary/5 hover:border-primary/50 font-medium text-[13px] h-8 px-3"
+                data-testid="button-nav-devis"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span className="hidden md:inline">{lang === "fr" ? "Devis" : "Quote"}</span>
+              </Button>
+            } />
+            {cvUrl ? (
+              <a href={cvUrl} download target="_blank" rel="noopener noreferrer">
+                <Button
+                  size="sm"
+                  className="hidden sm:flex items-center gap-1.5 bg-nexalion hover:opacity-90 shadow-sm font-medium text-[13px] h-8 px-3"
+                  data-testid="button-download-cv"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span className="hidden md:inline">{t.nav.downloadCv}</span>
+                  <span className="md:hidden">{t.nav.cv}</span>
+                </Button>
+              </a>
+            ) : (
+              <Button
+                size="sm"
+                disabled
+                className="hidden sm:flex items-center gap-1.5 bg-nexalion opacity-50 shadow-sm font-medium text-[13px] h-8 px-3 cursor-not-allowed"
+                data-testid="button-download-cv"
+                title="Aucun CV chargé"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span className="hidden md:inline">{t.nav.downloadCv}</span>
+                <span className="md:hidden">{t.nav.cv}</span>
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="icon"
@@ -155,20 +187,23 @@ export function Navigation() {
 
       {/* Mobile menu — animated */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-white/97 dark:bg-background/97 backdrop-blur-xl border-b border-border shadow-lg mobile-menu-enter">
-          <div className="max-w-7xl mx-auto px-6 py-3 flex flex-col gap-0.5">
+        <div className="lg:hidden bg-white dark:bg-background border-b border-border shadow-[0_8px_32px_hsl(216,30%,50%,0.10)] mobile-menu-enter">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
             {navItems.map((item, i) => (
               <Link key={item.href} href={item.href}>
                 <button
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-left transition-colors mobile-menu-item`}
-                  style={{ animationDelay: `${i * 30}ms` }}
+                  type="button"
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-left mobile-menu-item transition-colors duration-150 ${
+                    isActive(item.href)
+                      ? "bg-primary/8 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                  }`}
+                  style={{ animationDelay: `${i * 35}ms` }}
                   data-active={isActive(item.href) ? "true" : "false"}
                   data-testid={`link-mobile-${item.href === "/" ? "accueil" : item.href.replace("/", "")}`}
                 >
-                  {isActive(item.href) && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                  )}
-                  <span className={isActive(item.href) ? "text-primary font-semibold" : "text-muted-foreground"}>
+                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 transition-all duration-200 ${isActive(item.href) ? "bg-primary scale-125" : "bg-border"}`} />
+                  <span className={isActive(item.href) ? "font-semibold" : ""}>
                     {item.label}
                   </span>
                 </button>

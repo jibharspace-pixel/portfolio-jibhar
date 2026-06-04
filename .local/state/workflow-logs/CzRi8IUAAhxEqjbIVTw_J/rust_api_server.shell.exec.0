@@ -1,0 +1,3 @@
+[1m[32m    Finished[0m `dev` profile [unoptimized + debuginfo] target(s) in 0.44s
+[1m[32m     Running[0m `target/debug/portfolio-api`
+🦀 Rust API server running on http://0.0.0.0:3001

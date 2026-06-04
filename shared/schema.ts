@@ -32,9 +32,9 @@ export const projectSchema = z.object({
   solution: z.string(),
   result: z.string(),
   technologies: z.array(z.string()),
-  category: z.enum(["data", "web", "automation", "ai"]),
-  demoUrl: z.string().optional(),
-  downloadUrl: z.string().optional(),
+  category: z.enum(["dashboard", "app-web", "app-mobile", "site-web", "excel-vba", "automatisation"]),
+  demo_url: z.string().optional(),
+  download_url: z.string().optional(),
   media: z.array(mediaItemSchema).optional(),
 });
 export type Project = z.infer<typeof projectSchema>;
@@ -90,11 +90,20 @@ export const adminStatsSchema = z.object({
 export type AdminStats = z.infer<typeof adminStatsSchema>;
 
 // Service / Skill / Contact
-export const serviceSchema = z.object({ id: z.string(), title: z.string(), description: z.string(), icon: z.string(), features: z.array(z.string()) });
+export const serviceSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string(),
+  icon: z.string(),
+  features: z.array(z.string()),
+  long_description: z.string().optional(),
+  videos: z.array(z.string()).max(2).optional(),
+  photos: z.array(z.string()).max(6).optional(),
+});
 export type Service = z.infer<typeof serviceSchema>;
 
 export const skillCategorySchema = z.object({ id: z.string(), title: z.string(), icon: z.string(), skills: z.array(z.string()) });
 export type SkillCategory = z.infer<typeof skillCategorySchema>;
 
-export const contactInfoSchema = z.object({ email: z.string().email(), linkedin: z.string().url().optional(), whatsapp: z.string().optional(), github: z.string().url().optional() });
+export const contactInfoSchema = z.object({ email: z.string().email(), linkedin: z.string().url().optional(), whatsapp: z.string().optional(), github: z.string().url().optional(), upwork: z.string().url().optional(), chariow: z.string().url().optional() });
 export type ContactInfo = z.infer<typeof contactInfoSchema>;

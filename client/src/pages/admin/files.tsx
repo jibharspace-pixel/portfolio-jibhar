@@ -69,7 +69,7 @@ export function FilesSection({ password }: { password: string }) {
           <CardContent className="p-5 space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-border/60">
               <p className="font-semibold text-sm">Nouveau fichier gratuit</p>
-              <button onClick={() => { setCreating(false); setForm(EMPTY); }} className="p-1 rounded hover:bg-muted/60 transition-colors">
+              <button onClick={() => { setCreating(false); setForm(EMPTY); }} aria-label="Fermer" className="p-1 rounded hover:bg-muted/60 transition-colors">
                 <X className="w-4 h-4 text-muted-foreground" />
               </button>
             </div>
@@ -163,6 +163,7 @@ export function FilesSection({ password }: { password: string }) {
                     onConfirm={() => del(f.id)}
                     trigger={
                       <button
+                        aria-label="Supprimer la ressource"
                         className="p-1.5 rounded-md text-muted-foreground hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors shrink-0"
                         data-testid={`button-delete-file-${f.id}`}
                       >

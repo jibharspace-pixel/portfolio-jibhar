@@ -3,5 +3,13 @@ dist
 .DS_Store
 server/public
 vite.config.ts.*
-*.tar.gztarget/
-Cargo.lock
+*.tar.gz
+
+# Environment — ne jamais committer
+.env
+.env.local
+.env.*.local
+
+# Données et fichiers uploadés — ne pas committer
+data.json
+uploads/

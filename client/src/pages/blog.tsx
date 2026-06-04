@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
+import { ScrollReveal } from "@/components/scroll-reveal";
 import { useLanguage } from "@/lib/language-context";
 import type { BlogPost } from "@shared/schema";
 
@@ -51,14 +52,16 @@ function BlogCard({ post, featured = false, labels }: { post: BlogPost; featured
     return (
       <Link href={`/blog/${post.slug}`}>
         <article
-          className="group cursor-pointer rounded-2xl border border-border/60 overflow-hidden hover:border-primary/30 hover:shadow-[0_8px_40px_hsl(216,90%,40%,0.12)] transition-all duration-300 hover:-translate-y-1 md:col-span-2 lg:col-span-3 grid md:grid-cols-2"
+          className="group cursor-pointer rounded-2xl border border-border/60 overflow-hidden card-interactive hover:border-primary/30 hover:shadow-[0_16px_56px_hsl(216,90%,40%,0.14)] md:col-span-2 lg:col-span-3 grid md:grid-cols-2"
           data-testid={`card-blog-${post.id}`}
         >
           {/* Cover */}
           <div className={`relative h-52 md:h-auto bg-gradient-to-br ${gradient} flex items-center justify-center overflow-hidden`}>
-            <BookOpen className="w-20 h-20 text-white/20" />
+            <BookOpen className="w-20 h-20 text-white/15 transition-transform duration-500 group-hover:scale-110" />
+            {/* Subtle shimmer overlay */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-black/10 via-transparent to-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
             <div className="absolute top-4 left-4">
-              <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full border border-white/20">
+              <span className="bg-white/20 -webkit-backdrop-filter backdrop-filter blur(8px) text-white text-xs font-semibold px-3 py-1 rounded-full border border-white/25">
                 {labels.featured}
               </span>
             </div>
@@ -74,7 +77,7 @@ function BlogCard({ post, featured = false, labels }: { post: BlogPost; featured
                   <Clock className="w-3 h-3" />{post.read_time} {labels.minRead}
                 </span>
               </div>
-              <h2 className="font-serif text-2xl font-bold text-foreground leading-tight mb-3 group-hover:text-primary transition-colors">
+              <h2 className="font-serif text-2xl font-bold text-foreground leading-tight mb-3 group-hover:text-primary transition-colors duration-200">
                 {post.title}
               </h2>
               <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3">{post.excerpt}</p>
@@ -84,9 +87,9 @@ function BlogCard({ post, featured = false, labels }: { post: BlogPost; featured
                 <Calendar className="w-3.5 h-3.5" />
                 {post.created_at}
               </span>
-              <span className="flex items-center gap-1 text-sm font-semibold text-primary">
+              <span className="flex items-center gap-1.5 text-sm font-semibold text-primary">
                 {labels.readArticle}
-                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1.5" />
               </span>
             </div>
           </div>
@@ -98,13 +101,14 @@ function BlogCard({ post, featured = false, labels }: { post: BlogPost; featured
   return (
     <Link href={`/blog/${post.slug}`}>
       <article
-        className="group cursor-pointer rounded-2xl border border-border/60 overflow-hidden hover:border-primary/30 hover:shadow-[0_8px_30px_hsl(216,90%,40%,0.12)] transition-all duration-300 hover:-translate-y-1"
+        className="group cursor-pointer rounded-2xl border border-border/60 overflow-hidden card-interactive hover:border-primary/30 hover:shadow-[0_12px_40px_hsl(216,90%,40%,0.12)]"
         data-testid={`card-blog-${post.id}`}
       >
         {/* Cover */}
-        <div className={`h-36 bg-gradient-to-br ${gradient} flex items-center justify-center relative overflow-hidden`}>
-          <BookOpen className="w-12 h-12 text-white/25" />
-          <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black/20 to-transparent" />
+        <div className={`h-38 bg-gradient-to-br ${gradient} flex items-center justify-center relative overflow-hidden`}>
+          <BookOpen className="w-12 h-12 text-white/20 transition-transform duration-500 group-hover:scale-110" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-black/10 via-transparent to-white/8 opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
+          <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-black/20 to-transparent" />
         </div>
         {/* Content */}
         <div className="p-5">
@@ -116,16 +120,16 @@ function BlogCard({ post, featured = false, labels }: { post: BlogPost; featured
               <Clock className="w-3 h-3" />{post.read_time} {labels.minRead}
             </span>
           </div>
-          <h3 className="font-serif font-bold text-foreground leading-tight mb-2 group-hover:text-primary transition-colors line-clamp-2">
+          <h3 className="font-serif font-bold text-foreground leading-tight mb-2 group-hover:text-primary transition-colors duration-200 line-clamp-2">
             {post.title}
           </h3>
           <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2 mb-4">{post.excerpt}</p>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between pt-3 border-t border-border/50">
             <span className="text-xs text-muted-foreground flex items-center gap-1">
               <Calendar className="w-3 h-3" />{post.created_at}
             </span>
             <span className="flex items-center gap-1 text-xs font-semibold text-primary">
-              {labels.read} <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
+              {labels.read} <ArrowRight className="w-3 h-3 transition-transform duration-200 group-hover:translate-x-1" />
             </span>
           </div>
         </div>
@@ -160,41 +164,47 @@ export default function Blog() {
 
       <main className="pt-16">
         {/* Hero */}
-        <section className="relative py-20 overflow-hidden">
-          <div className="absolute -top-24 right-0 w-80 h-80 bg-primary/8 rounded-full blur-[80px] pointer-events-none" />
+        <section className="relative py-14 sm:py-20 overflow-hidden">
+          <div className="absolute -top-24 right-0 w-96 h-96 bg-primary/6 rounded-full blur-[100px] pointer-events-none animate-glow-pulse" />
+          <div className="absolute top-1/2 -left-32 w-64 h-64 bg-blue-400/4 rounded-full blur-[80px] pointer-events-none" />
           <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
-            <Badge variant="secondary" className="mb-4 text-xs font-semibold px-3 py-1 rounded-full border border-primary/20 bg-primary/8 text-primary tracking-wide uppercase">
-              {t.blog.badge}
-            </Badge>
-            <h1 className="font-serif text-4xl sm:text-5xl font-bold tracking-tight mb-4">
-              {t.blog.title}
-            </h1>
-            <div className="h-0.5 w-12 bg-primary rounded-full mb-4" />
-            <p className="text-muted-foreground max-w-xl leading-relaxed">
-              {t.blog.subtitle}
-            </p>
+            <ScrollReveal>
+              <Badge variant="secondary" className="mb-4 text-xs font-semibold px-3 py-1 rounded-full border border-primary/20 bg-primary/8 text-primary tracking-wide uppercase">
+                {t.blog.badge}
+              </Badge>
+              <h1 className="font-serif text-4xl sm:text-5xl font-bold tracking-tight mb-4">
+                {t.blog.title}
+              </h1>
+              <div className="h-0.5 w-12 bg-gradient-to-r from-primary to-blue-400 rounded-full mb-4 animate-reveal-line" />
+              <p className="text-muted-foreground max-w-xl leading-relaxed">
+                {t.blog.subtitle}
+              </p>
+            </ScrollReveal>
           </div>
         </section>
 
         {/* Filters */}
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 pb-6">
-          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
-            {t.blog.filters.map(({ key, label }) => (
-              <button
-                key={key}
-                onClick={() => setFilter(key)}
-                className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all border whitespace-nowrap shrink-0 ${
-                  filter === key
-                    ? "bg-primary text-white border-primary shadow-sm"
-                    : "border-border/60 text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-muted/50"
-                }`}
-                data-testid={`filter-blog-${key}`}
-              >
-                {label}
-              </button>
-            ))}
+        <ScrollReveal delay={80}>
+          <div className="max-w-7xl mx-auto px-6 lg:px-8 pb-6">
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
+              {t.blog.filters.map(({ key, label }) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setFilter(key)}
+                  className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 border whitespace-nowrap shrink-0 ${
+                    filter === key
+                      ? "bg-primary text-white border-primary shadow-sm scale-[1.02]"
+                      : "border-border/60 text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-muted/50"
+                  }`}
+                  data-testid={`filter-blog-${key}`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Posts grid */}
         <section className="max-w-7xl mx-auto px-6 lg:px-8 pb-24">
@@ -205,8 +215,16 @@ export default function Blog() {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featured && <BlogCard post={featured} featured labels={cardLabels} />}
-              {rest.map(p => <BlogCard key={p.id} post={p} labels={cardLabels} />)}
+              {featured && (
+                <ScrollReveal className="md:col-span-2 lg:col-span-3">
+                  <BlogCard post={featured} featured labels={cardLabels} />
+                </ScrollReveal>
+              )}
+              {rest.map((p, i) => (
+                <ScrollReveal key={p.id} delay={i * 80}>
+                  <BlogCard post={p} labels={cardLabels} />
+                </ScrollReveal>
+              ))}
             </div>
           )}
         </section>

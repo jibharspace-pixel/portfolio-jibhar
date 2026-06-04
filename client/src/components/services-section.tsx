@@ -70,7 +70,7 @@ export function ServicesSection() {
         </ScrollReveal>
 
         {/* ── Service cards ──────────────────────── */}
-        <div className="grid md:grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-16">
           {t.services.items.map((s, i) => {
             const meta = servicesMeta[i];
             const Icon = meta.icon;
@@ -115,7 +115,7 @@ export function ServicesSection() {
             <h3 className="font-serif text-2xl lg:text-3xl font-bold mb-2">{t.services.processTitle}</h3>
             <p className="text-sm text-muted-foreground">{t.services.processSubtitle}</p>
           </ScrollReveal>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {t.services.process.map((step, i) => {
               const Icon = processIcons[i];
               const num = String(i + 1).padStart(2, "0");
@@ -143,8 +143,8 @@ export function ServicesSection() {
 
         {/* ── Skill bars ─────────────────────────── */}
         <ScrollReveal>
-          <div className="rounded-2xl border border-border/60 bg-card p-7 lg:p-8">
-            <div className="grid lg:grid-cols-2 gap-x-12 gap-y-5">
+          <div className="rounded-2xl border border-border/60 bg-card p-5 sm:p-7 lg:p-8">
+            <div className="grid lg:grid-cols-2 gap-x-6 lg:gap-x-12 gap-y-4 sm:gap-y-5">
               <div className="lg:col-span-2 mb-2">
                 <h3 className="font-serif text-xl font-bold text-foreground mb-1">{t.services.skillsTitle}</h3>
                 <p className="text-sm text-muted-foreground">{t.services.skillsSubtitle}</p>

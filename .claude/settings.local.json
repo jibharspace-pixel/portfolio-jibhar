@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Start-Process powershell -ArgumentList \"-NoExit\", \"-Command\", \"cd 'c:\\\\Users\\\\HP\\\\Downloads\\\\portfolio-jibhar'; npm run dev\")",
+      "Bash(rm \"c:/Users/HP/Downloads/portfolio-jibhar/client/src/lib/i18n.ts\")",
+      "Bash(npm outdated *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\HP\\Downloads\\portfolio-jibhar\\client\\src\\lib"
+    ]
+  }
+}

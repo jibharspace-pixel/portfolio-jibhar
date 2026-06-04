@@ -38,7 +38,7 @@ function ProgressBar({ trigger }: { trigger: number }) {
 
   useEffect(() => {
     if (trigger === 0) return;
-    const clear = () => timerRef.current && clearTimeout(timerRef.current);
+    const clear = () => { if (timerRef.current) clearTimeout(timerRef.current); };
     clear();
     setPhase("running");
     timerRef.current = setTimeout(() => {
@@ -125,7 +125,7 @@ function AnimatedRouter() {
           <Route path="/projets" component={Projects} />
           <Route path="/blog" component={Blog} />
           <Route path="/blog/:slug">
-            {(params) => <BlogPostPage slug={(params as any).slug} />}
+            {(params: Record<string, string>) => <BlogPostPage slug={params.slug} />}
           </Route>
           <Route path="/ressources" component={Resources} />
           <Route path="/apropos" component={About} />

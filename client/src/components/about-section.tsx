@@ -63,13 +63,13 @@ export function AboutSection() {
                 </p>
                 <p>
                   {t.about.bio3.split("Nexalion Digital Store")[0]}
-                  <span className="text-primary font-semibold">Nexalion Digital Store</span>
+                  <a href="https://apdzoviz.mychariow.shop" target="_blank" rel="noopener noreferrer" className="text-primary font-semibold underline underline-offset-2 hover:opacity-80 transition-opacity">Nexalion Digital Store</a>
                   {t.about.bio3.split("Nexalion Digital Store")[1]}
                 </p>
               </div>
 
               <Button variant="outline" className="border-primary/30 hover:border-primary/60 hover:bg-primary/5 font-medium text-sm transition-all mt-4" asChild>
-                <a href="https://nexalion.store" target="_blank" rel="noopener noreferrer" data-testid="link-nexalion">
+                <a href="https://apdzoviz.mychariow.shop" target="_blank" rel="noopener noreferrer" data-testid="link-nexalion">
                   <ExternalLink className="w-3.5 h-3.5 mr-2" />
                   Nexalion Digital Store
                   <ArrowRight className="w-3.5 h-3.5 ml-2" />

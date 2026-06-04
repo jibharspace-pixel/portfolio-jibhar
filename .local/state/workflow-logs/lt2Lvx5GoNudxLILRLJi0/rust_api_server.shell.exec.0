@@ -1,0 +1,4 @@
+[1m[32m   Compiling[0m portfolio-api v0.1.0 (/home/runner/workspace/rust_server)
+[1m[36m    Building[0m [=========================> ] 97/98: portfolio-api(bin)          [1m[36m    Building[0m [=========================> ] 97/98: portfolio-api(bin)  [K[1m[32m    Finished[0m `dev` profile [unoptimized + debuginfo] target(s) in 7.42s
+[1m[32m     Running[0m `target/debug/portfolio-api`
+🦀 Rust API server running on http://0.0.0.0:3001

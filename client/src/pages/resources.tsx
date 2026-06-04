@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
+import { ScrollReveal } from "@/components/scroll-reveal";
 import { useLanguage } from "@/lib/language-context";
 import type { FreeFile } from "@shared/schema";
 
@@ -64,13 +65,13 @@ function ResourceCard({ file, downloadLabel }: { file: FreeFile; downloadLabel: 
 
   return (
     <div
-      className="group rounded-2xl border border-border/60 p-5 bg-card hover:border-primary/30 hover:shadow-[0_8px_30px_hsl(216,90%,40%,0.10)] transition-all duration-300 hover:-translate-y-0.5 flex flex-col"
+      className="group rounded-2xl border border-border/60 p-5 bg-card card-interactive hover:border-primary/30 hover:shadow-[0_16px_48px_hsl(216,90%,40%,0.12)] flex flex-col"
       data-testid={`card-resource-${file.id}`}
     >
       {/* Icon */}
       <div className="flex items-start justify-between mb-4">
-        <div className="w-11 h-11 rounded-xl bg-muted/60 border border-border/60 flex items-center justify-center shrink-0">
-          <Icon className="w-5 h-5 text-muted-foreground" />
+        <div className="w-11 h-11 rounded-xl bg-muted/60 border border-border/60 flex items-center justify-center shrink-0 transition-all duration-300 group-hover:bg-primary/8 group-hover:border-primary/20 group-hover:shadow-[0_4px_16px_hsl(216,90%,40%,0.14)]">
+          <Icon className="w-5 h-5 text-muted-foreground transition-colors duration-200 group-hover:text-primary" />
         </div>
         <Badge variant="outline" className={`text-xs font-semibold rounded-md border uppercase ${typeColor}`}>
           .{file.file_type}
@@ -78,7 +79,7 @@ function ResourceCard({ file, downloadLabel }: { file: FreeFile; downloadLabel: 
       </div>
 
       {/* Content */}
-      <h3 className="font-semibold text-sm text-foreground leading-snug mb-2">{file.title}</h3>
+      <h3 className="font-semibold text-sm text-foreground leading-snug mb-2 group-hover:text-foreground/90 transition-colors duration-200">{file.title}</h3>
       <p className="text-xs text-muted-foreground leading-relaxed mb-4 flex-1 line-clamp-3">
         {file.description}
       </p>
@@ -87,7 +88,7 @@ function ResourceCard({ file, downloadLabel }: { file: FreeFile; downloadLabel: 
       {file.tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-4">
           {file.tags.slice(0, 3).map(tag => (
-            <span key={tag} className="text-[11px] bg-muted text-muted-foreground px-2 py-0.5 rounded font-medium">
+            <span key={tag} className="text-[11px] bg-muted text-muted-foreground px-2 py-0.5 rounded font-medium transition-colors duration-150 group-hover:bg-primary/6 group-hover:text-foreground/70">
               {tag}
             </span>
           ))}
@@ -104,7 +105,7 @@ function ResourceCard({ file, downloadLabel }: { file: FreeFile; downloadLabel: 
           size="sm"
           onClick={handleDownload}
           disabled={downloading}
-          className="bg-nexalion hover:opacity-90 text-xs h-8 px-3 font-medium"
+          className="btn-primary-lift bg-nexalion text-xs h-8 px-3 font-medium"
           data-testid={`button-download-${file.id}`}
         >
           {downloading
@@ -136,54 +137,60 @@ export default function Resources() {
 
       <main className="pt-16">
         {/* Hero */}
-        <section className="relative py-20 overflow-hidden">
-          <div className="absolute -top-24 left-0 w-80 h-80 bg-primary/8 rounded-full blur-[80px] pointer-events-none" />
+        <section className="relative py-14 sm:py-20 overflow-hidden">
+          <div className="absolute -top-24 left-0 w-96 h-96 bg-primary/6 rounded-full blur-[100px] pointer-events-none animate-glow-pulse" />
+          <div className="absolute bottom-0 right-0 w-64 h-64 bg-blue-400/4 rounded-full blur-[80px] pointer-events-none" />
           <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
-            <Badge variant="secondary" className="mb-4 text-xs font-semibold px-3 py-1 rounded-full border border-primary/20 bg-primary/8 text-primary tracking-wide uppercase">
-              {t.resources.badge}
-            </Badge>
-            <h1 className="font-serif text-4xl sm:text-5xl font-bold tracking-tight mb-4">
-              {t.resources.title}
-            </h1>
-            <div className="h-0.5 w-12 bg-primary rounded-full mb-4" />
-            <p className="text-muted-foreground max-w-xl leading-relaxed mb-8">
-              {t.resources.subtitle}
-            </p>
+            <ScrollReveal>
+              <Badge variant="secondary" className="mb-4 text-xs font-semibold px-3 py-1 rounded-full border border-primary/20 bg-primary/8 text-primary tracking-wide uppercase">
+                {t.resources.badge}
+              </Badge>
+              <h1 className="font-serif text-4xl sm:text-5xl font-bold tracking-tight mb-4">
+                {t.resources.title}
+              </h1>
+              <div className="h-0.5 w-12 bg-gradient-to-r from-primary to-blue-400 rounded-full mb-4 animate-reveal-line" />
+              <p className="text-muted-foreground max-w-xl leading-relaxed mb-8">
+                {t.resources.subtitle}
+              </p>
 
-            {/* Stats */}
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2">
-                <Package className="w-4 h-4 text-primary" />
-                <span className="text-sm font-semibold text-foreground">{files?.length ?? "—"} {t.resources.resources}</span>
+              {/* Stats */}
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
+                  <Package className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-semibold text-foreground">{files?.length ?? "—"} {t.resources.resources}</span>
+                </div>
+                <div className="h-4 w-px bg-border" />
+                <div className="flex items-center gap-2">
+                  <ArrowDownToLine className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-semibold text-foreground">{totalDownloads}+ {t.resources.downloads}</span>
+                </div>
               </div>
-              <div className="h-4 w-px bg-border" />
-              <div className="flex items-center gap-2">
-                <ArrowDownToLine className="w-4 h-4 text-primary" />
-                <span className="text-sm font-semibold text-foreground">{totalDownloads}+ {t.resources.downloads}</span>
-              </div>
-            </div>
+            </ScrollReveal>
           </div>
         </section>
 
         {/* Filters */}
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 pb-8">
-          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
-            {t.resources.filters.map(({ key, label }) => (
-              <button
-                key={key}
-                onClick={() => setFilter(key)}
-                className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all border whitespace-nowrap shrink-0 ${
-                  filter === key
-                    ? "bg-primary text-white border-primary shadow-sm"
-                    : "border-border/60 text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-muted/50"
-                }`}
-                data-testid={`filter-resource-${key}`}
-              >
-                {label}
-              </button>
-            ))}
+        <ScrollReveal delay={80}>
+          <div className="max-w-7xl mx-auto px-6 lg:px-8 pb-8">
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
+              {t.resources.filters.map(({ key, label }) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setFilter(key)}
+                  className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 border whitespace-nowrap shrink-0 ${
+                    filter === key
+                      ? "bg-primary text-white border-primary shadow-sm scale-[1.02]"
+                      : "border-border/60 text-muted-foreground hover:text-foreground hover:border-primary/30 hover:bg-muted/50"
+                  }`}
+                  data-testid={`filter-resource-${key}`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Grid */}
         <section className="max-w-7xl mx-auto px-6 lg:px-8 pb-24">
@@ -194,7 +201,11 @@ export default function Resources() {
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-              {filtered.map(f => <ResourceCard key={f.id} file={f} downloadLabel={t.resources.downloadBtn} />)}
+              {filtered.map((f, i) => (
+                <ScrollReveal key={f.id} delay={i * 70}>
+                  <ResourceCard file={f} downloadLabel={t.resources.downloadBtn} />
+                </ScrollReveal>
+              ))}
             </div>
           )}
         </section>

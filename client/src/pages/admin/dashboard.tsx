@@ -1,14 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   BookOpen, ArrowDownToLine, Image as ImageIcon,
-  TrendingUp, Briefcase, Package,
+  TrendingUp, Briefcase, Package, MessageSquare, Trash2, Eye, Loader2,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { StatCard, API, SectionHeader } from "./shared";
 import type { AdminStats, BlogPost, FreeFile, Project } from "@shared/schema";
 
+interface ContactMessage {
+  id: string; name: string; email: string; subject: string;
+  message: string; created_at: string; read: boolean;
+}
+
 export function DashboardSection({ password }: { password: string }) {
+  const qc = useQueryClient();
   const { data: stats, isLoading } = useQuery<AdminStats>({
     queryKey:      ["/api/admin/stats"],
     queryFn:       () => API.get("/api/admin/stats", password),
@@ -17,6 +24,22 @@ export function DashboardSection({ password }: { password: string }) {
   const { data: blog }     = useQuery<BlogPost[]>({ queryKey: ["/api/admin/blog"], queryFn: () => API.get("/api/admin/blog", password) });
   const { data: files }    = useQuery<FreeFile[]>({ queryKey: ["/api/files"] });
   const { data: projects } = useQuery<Project[]>({ queryKey: ["/api/projects"] });
+  const { data: messages } = useQuery<ContactMessage[]>({
+    queryKey: ["/api/admin/messages"],
+    queryFn:  () => API.get("/api/admin/messages", password),
+    refetchInterval: 15000,
+  });
+
+  const markRead = useMutation({
+    mutationFn: (id: string) => API.put(`/api/admin/messages/${id}/read`, password, {}),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["/api/admin/messages"] }),
+  });
+  const deleteMsg = useMutation({
+    mutationFn: (id: string) => API.del(`/api/admin/messages/${id}`, password),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["/api/admin/messages"] }),
+  });
+
+  const unread = messages?.filter(m => !m.read).length ?? 0;
 
   const topPages = Object.entries(stats?.page_views ?? {})
     .sort((a, b) => b[1] - a[1]).slice(0, 5);
@@ -110,6 +133,70 @@ export function DashboardSection({ password }: { password: string }) {
           </CardContent>
         </Card>
       </div>
+
+      {/* Messages panel */}
+      <Card className="border border-border/60">
+        <CardContent className="p-5">
+          <p className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+            <MessageSquare className="w-4 h-4 text-primary" />
+            Messages reçus
+            {unread > 0 && (
+              <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-primary text-white">{unread}</span>
+            )}
+          </p>
+          {!messages?.length ? (
+            <p className="text-xs text-muted-foreground text-center py-6">Aucun message reçu</p>
+          ) : (
+            <div className="space-y-2">
+              {messages.slice(0, 8).map(msg => (
+                <div
+                  key={msg.id}
+                  className={`rounded-xl border p-3.5 transition-colors ${msg.read ? "border-border/40 bg-transparent" : "border-primary/20 bg-primary/[0.03]"}`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        {!msg.read && <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />}
+                        <p className="text-sm font-semibold text-foreground truncate">{msg.name}</p>
+                        <p className="text-xs text-muted-foreground truncate">{msg.email}</p>
+                      </div>
+                      {msg.subject && (
+                        <p className="text-xs font-medium text-muted-foreground mb-1">Sujet : {msg.subject}</p>
+                      )}
+                      <p className="text-xs text-foreground/70 leading-relaxed line-clamp-2">{msg.message}</p>
+                      <p className="text-[11px] text-muted-foreground/60 mt-1.5">
+                        {new Date(msg.created_at).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0">
+                      {!msg.read && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-7 w-7 p-0 text-muted-foreground hover:text-primary"
+                          onClick={() => markRead.mutate(msg.id)}
+                          title="Marquer comme lu"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                        </Button>
+                      )}
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-7 w-7 p-0 text-muted-foreground hover:text-red-500"
+                        onClick={() => deleteMsg.mutate(msg.id)}
+                        title="Supprimer"
+                      >
+                        {deleteMsg.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <div className="grid sm:grid-cols-2 gap-5">
         <Card className="border border-border/60">

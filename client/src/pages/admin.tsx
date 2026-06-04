@@ -195,7 +195,6 @@ function AdminLayout({ password, onLogout }: { password: string; onLogout: () =>
           ))}
         </nav>
 
-        <StackBadges />
 
         <div className="px-3 py-3 border-t border-border/60">
           <button

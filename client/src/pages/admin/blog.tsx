@@ -115,7 +115,7 @@ export function BlogSection({ password }: { password: string }) {
               <p className="font-semibold text-sm text-foreground">
                 {editing ? "Modifier l'article" : "Nouvel article"}
               </p>
-              <button onClick={cancel} className="p-1 rounded hover:bg-muted/60 transition-colors">
+              <button onClick={cancel} aria-label="Fermer" className="p-1 rounded hover:bg-muted/60 transition-colors">
                 <X className="w-4 h-4 text-muted-foreground" />
               </button>
             </div>
@@ -231,6 +231,7 @@ export function BlogSection({ password }: { password: string }) {
                     onClick={() => toggle(p)}
                     disabled={saving === p.id}
                     className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+                    aria-label={p.status === "published" ? "Dépublier" : "Publier"}
                     title={p.status === "published" ? "Dépublier" : "Publier"}
                   >
                     {saving === p.id
@@ -239,6 +240,7 @@ export function BlogSection({ password }: { password: string }) {
                   </button>
                   <button
                     onClick={() => startEdit(p)}
+                    aria-label="Modifier l'article"
                     className="p-1.5 rounded-md text-muted-foreground hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
                     data-testid={`button-edit-post-${p.id}`}
                   >
@@ -251,6 +253,7 @@ export function BlogSection({ password }: { password: string }) {
                     onConfirm={() => del(p.id)}
                     trigger={
                       <button
+                        aria-label="Supprimer l'article"
                         className="p-1.5 rounded-md text-muted-foreground hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
                         data-testid={`button-delete-post-${p.id}`}
                       >

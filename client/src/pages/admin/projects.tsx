@@ -42,12 +42,12 @@ const CAT_LABELS: Record<string, string> = {
 type Form = {
   title: string; description: string; category: string;
   problem: string; solution: string; result: string;
-  technologies: string; demo_url: string; download_url: string;
+  technologies: string[]; demo_url: string; download_url: string;
 };
 const EMPTY: Form = {
   title: "", description: "", category: "dashboard",
   problem: "", solution: "", result: "",
-  technologies: "", demo_url: "", download_url: "",
+  technologies: [], demo_url: "", download_url: "",
 };
 
 export function ProjectsSection({ password }: { password: string }) {
@@ -58,32 +58,42 @@ export function ProjectsSection({ password }: { password: string }) {
   const [deleting,    setDeleting]    = useState<string | null>(null);
   const [form,        setForm]        = useState<Form>(EMPTY);
   const [expandedId,  setExpandedId]  = useState<string | null>(null);
+  const [techInput,   setTechInput]   = useState("");
 
   const { data: projects, isLoading } = useQuery<Project[]>({ queryKey: ["/api/projects"] });
 
   const startCreate = () => {
-    setForm(EMPTY); setEditing(null); setCreating(true);
+    setForm(EMPTY); setTechInput(""); setEditing(null); setCreating(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
   const startEdit = (p: Project) => {
     setForm({
       title: p.title, description: p.description, category: p.category,
       problem: p.problem, solution: p.solution, result: p.result,
-      technologies: p.technologies.join(", "),
-      demo_url: (p as any).demo_url ?? "",
-      download_url: (p as any).download_url ?? "",
+      technologies: p.technologies ?? [],
+      demo_url: p.demo_url ?? "",
+      download_url: p.download_url ?? "",
     });
-    setEditing(p); setCreating(true);
+    setTechInput(""); setEditing(p); setCreating(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  const cancel = () => { setCreating(false); setEditing(null); setForm(EMPTY); };
+  const cancel = () => { setCreating(false); setEditing(null); setForm(EMPTY); setTechInput(""); };
+
+  const addTech = (raw: string) => {
+    const tags = raw.split(",").map(t => t.trim()).filter(Boolean);
+    const next = [...new Set([...form.technologies, ...tags])];
+    setForm(f => ({ ...f, technologies: next }));
+    setTechInput("");
+  };
+  const removeTech = (t: string) =>
+    setForm(f => ({ ...f, technologies: f.technologies.filter(x => x !== t) }));
 
   const save = async () => {
     if (!form.title.trim() || !form.description.trim()) return;
     setSaving(true);
     const payload = {
       ...form,
-      technologies: form.technologies.split(",").map(t => t.trim()).filter(Boolean),
+      technologies: form.technologies,
       demo_url:     form.demo_url.trim()     || null,
       download_url: form.download_url.trim() || null,
     };
@@ -120,7 +130,7 @@ export function ProjectsSection({ password }: { password: string }) {
           <CardContent className="p-5 space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-border/60">
               <p className="font-semibold text-sm">{editing ? "Modifier le projet" : "Nouveau projet"}</p>
-              <button onClick={cancel} className="p-1 rounded hover:bg-muted/60 transition-colors">
+              <button onClick={cancel} aria-label="Fermer" className="p-1 rounded hover:bg-muted/60 transition-colors">
                 <X className="w-4 h-4 text-muted-foreground" />
               </button>
             </div>
@@ -141,9 +151,37 @@ export function ProjectsSection({ password }: { password: string }) {
                   <option value="automatisation">Automatisation</option>
                 </select>
               </Field>
-              <Field label="Technologies (virgules)">
-                <Input value={form.technologies} onChange={set("technologies")} placeholder="Power BI, DAX, SQL" className="h-9 text-sm" data-testid="input-project-technologies" />
-              </Field>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground uppercase mb-1.5 block">Technologies</label>
+                <div className="flex flex-wrap gap-1.5 mb-2 min-h-[28px]">
+                  {form.technologies.map(t => (
+                    <span key={t} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-primary/8 text-primary border border-primary/20">
+                      <Tag className="w-2.5 h-2.5 shrink-0" />
+                      {t}
+                      <button type="button" onClick={() => removeTech(t)} className="ml-0.5 hover:text-red-500 transition-colors" aria-label={`Supprimer ${t}`}>
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                  {form.technologies.length === 0 && (
+                    <span className="text-xs text-muted-foreground/50 italic self-center">Aucune technologie ajoutée</span>
+                  )}
+                </div>
+                <Input
+                  value={techInput}
+                  onChange={e => setTechInput(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === "Enter" && techInput.trim()) {
+                      e.preventDefault();
+                      addTech(techInput);
+                    }
+                  }}
+                  onBlur={() => { if (techInput.trim()) addTech(techInput); }}
+                  placeholder="Power BI… (Entrée pour valider)"
+                  className="h-8 text-sm"
+                  data-testid="input-project-technologies"
+                />
+              </div>
               <div className="sm:col-span-2">
                 <Field label="Description courte *">
                   <Input value={form.description} onChange={set("description")} placeholder="Tableau de bord interactif pour le suivi des indicateurs RH" className="h-9 text-sm" data-testid="input-project-description" />
@@ -153,7 +191,7 @@ export function ProjectsSection({ password }: { password: string }) {
                 <Textarea value={form.problem} onChange={set("problem")} placeholder="Décrivez le problème initial…" className="min-h-[90px] text-sm resize-none" data-testid="input-project-problem" />
               </Field>
               <Field label="Solution apportée">
-                <Textarea value={form.solution} onChange={set("solution")} placeholder="Décrivez la solution apportée…" className="min-h-[90px] text-sm resize-none" data-testid="input-project-solution" />
+                <Textarea value={form.solution} onChange={set("solution")} placeholder="Décrivez la solution apportée…" className="min-h-[90px] max-h-[180px] text-sm resize-none overflow-y-auto" data-testid="input-project-solution" />
               </Field>
               <div className="sm:col-span-2">
                 <Field label="Résultat obtenu">
@@ -225,6 +263,7 @@ export function ProjectsSection({ password }: { password: string }) {
                     </Badge>
                     <button
                       onClick={e => { e.stopPropagation(); startEdit(p); }}
+                      aria-label="Modifier le projet"
                       className="p-1.5 rounded-md text-muted-foreground hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors"
                       data-testid={`button-edit-project-${p.id}`}
                     >
@@ -238,6 +277,7 @@ export function ProjectsSection({ password }: { password: string }) {
                       trigger={
                         <button
                           onClick={e => e.stopPropagation()}
+                          aria-label="Supprimer le projet"
                           className="p-1.5 rounded-md text-muted-foreground hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
                           data-testid={`button-delete-project-${p.id}`}
                         >
