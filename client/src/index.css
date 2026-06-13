@@ -325,6 +325,7 @@
   /* Glass / frosted card */
   .glass-card {
     background: rgba(255,255,255,0.80);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255,255,255,0.70);
   }
@@ -811,5 +812,218 @@
   }
   .marquee-wrap:hover .tech-badge {
     opacity: 0.85;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     PREMIUM DESIGN SYSTEM v2
+  ═══════════════════════════════════════════════════════════ */
+
+  /* ── Hero always-dark section ────────────────────────────── */
+  .hero-dark {
+    color-scheme: dark;
+    background: #070b14;
+  }
+
+  /* ── Gradient border card ────────────────────────────────── */
+  .gradient-border {
+    position: relative;
+  }
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      hsl(216,90%,60%,0.30) 0%,
+      transparent 40%,
+      transparent 60%,
+      hsl(270,70%,65%,0.15) 100%
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* ── Glass dark ──────────────────────────────────────────── */
+  .glass-dark {
+    background: rgba(255,255,255,0.03);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.07);
+    transition: background 0.25s ease, border-color 0.25s ease;
+  }
+  .glass-dark:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.11);
+  }
+
+  /* ── Premium section dark ────────────────────────────────── */
+  .section-dark {
+    background: linear-gradient(135deg, #070b14 0%, #08101e 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .section-dark::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse 60% 50% at 80% 20%, hsl(216,90%,50%,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, hsl(270,70%,60%,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* ── Animated gradient text ──────────────────────────────── */
+  @keyframes gradient-shift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .text-gradient-animated {
+    background: linear-gradient(
+      270deg,
+      hsl(216,90%,60%),
+      hsl(200,90%,65%),
+      hsl(270,80%,70%),
+      hsl(216,90%,60%)
+    );
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-shift 6s ease infinite;
+  }
+
+  /* ── Divider glow line ───────────────────────────────────── */
+  .divider-glow {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(216,90%,60%,0.25) 30%,
+      hsl(216,90%,60%,0.25) 70%,
+      transparent 100%
+    );
+  }
+
+  /* ── Project card premium hover glow ────────────────────── */
+  .card-premium-hover {
+    transition: box-shadow 0.35s ease, border-color 0.35s ease;
+  }
+  .card-premium-hover:hover {
+    box-shadow: 0 24px 80px rgba(0,0,0,0.3), 0 0 0 1px hsl(216,90%,60%,0.15);
+    border-color: hsl(216,90%,60%,0.20) !important;
+  }
+
+  /* ── Background orb decorations ─────────────────────────── */
+  .orb-blue {
+    background: radial-gradient(circle, hsl(216,90%,60%), transparent 70%);
+    filter: blur(80px);
+  }
+  .orb-purple {
+    background: radial-gradient(circle, hsl(270,70%,65%), transparent 70%);
+    filter: blur(80px);
+  }
+
+  /* ── Lenis smooth scroll ─────────────────────────────────── */
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+  .lenis.lenis-stopped { overflow: hidden; }
+
+  /* ── Hero theme-aware helpers ────────────────────────────── */
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-size: 80px 80px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+  }
+  .hero-grid--dark {
+    background-image:
+      linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+  }
+  .hero-grid--light {
+    background-image:
+      linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+  }
+
+  /* Jibhar name — outlined in dark mode */
+  .hero-name-jibhar {
+    -webkit-text-stroke: 1.5px hsl(216,90%,62%);
+    color: transparent;
+  }
+
+  /* Stat value glow — dark mode only */
+  .hero-stat-glow {
+    text-shadow: 0 0 40px hsl(216,90%,60%,0.35);
+  }
+
+  /* Profile photo frame shadow */
+  .hero-photo-frame {
+    box-shadow: 0 32px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.06);
+  }
+  .dark .hero-photo-frame {
+    box-shadow: 0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.06);
+  }
+
+  /* Ghost section numbers */
+  .hero-ghost-num {
+    font-size: clamp(14rem, 28vw, 26rem);
+  }
+  .section-ghost-num {
+    font-size: clamp(10rem, 22vw, 20rem);
+    top: -1rem;
+    right: -1rem;
+  }
+
+  /* Primary CTA text color helper */
+  .hero-cta-primary-text {
+    background: linear-gradient(135deg, hsl(216,90%,42%) 0%, hsl(200,90%,52%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Profile photo top accent line */
+  .hero-photo-topline {
+    background: linear-gradient(90deg, hsl(216,90%,60%), hsl(270,80%,65%));
+  }
+
+  /* Noise texture fill */
+  .noise-texture {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+  }
+
+  /* Primary CTA button gradient */
+  .hero-cta-primary {
+    background: linear-gradient(135deg, hsl(216,90%,42%) 0%, hsl(200,90%,52%) 100%);
+    box-shadow: 0 8px 32px hsl(216,90%,40%,0.35);
+  }
+
+  /* Outline CTA — dark mode only */
+  .hero-outline-btn-dark {
+    border-color: rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.75);
+  }
+
+  /* Devis card — dark mode only */
+  .hero-devis-dark {
+    border: 1px solid rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.025);
   }
 }

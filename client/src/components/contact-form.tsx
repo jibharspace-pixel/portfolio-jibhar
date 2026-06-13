@@ -70,11 +70,11 @@ export function ContactForm({ compact = false }: Props) {
     >
       <div className={compact ? "grid sm:grid-cols-2 gap-4" : "grid sm:grid-cols-2 gap-4"}>
         <div className={fieldClass}>
-          <label className={labelClass}><User className="w-3 h-3" />{labels.name} *</label>
+          <label className={labelClass}><User className="w-3 h-3" />{labels.name}</label>
           <Input value={form.name} onChange={set("name")} placeholder="" className={inputClass} data-testid="input-cf-name" />
         </div>
         <div className={fieldClass}>
-          <label className={labelClass}><Mail className="w-3 h-3" />{labels.email} *</label>
+          <label className={labelClass}><Mail className="w-3 h-3" />{labels.email}</label>
           <Input type="email" value={form.email} onChange={set("email")} placeholder="" className={inputClass} data-testid="input-cf-email" />
         </div>
       </div>
@@ -85,7 +85,7 @@ export function ContactForm({ compact = false }: Props) {
       </div>
 
       <div className={fieldClass}>
-        <label className={labelClass}><MessageSquare className="w-3 h-3" />{labels.message} *</label>
+        <label className={labelClass}><MessageSquare className="w-3 h-3" />{labels.message}</label>
         <textarea
           value={form.message}
           onChange={set("message")}

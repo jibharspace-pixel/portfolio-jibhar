@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X, Download, Globe, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -66,42 +67,39 @@ export function Navigation() {
 
   return (
     <header
-      className={`nav-header fixed top-0 left-0 right-0 z-50 ${
-        isScrolled
-          ? "nav-header--scrolled"
-          : ""
+      className={`nav-header fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isScrolled ? "nav-header--scrolled" : ""
       }`}
       data-testid="navigation-header"
     >
       <nav className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-4">
+        <div className="flex items-center justify-between h-[60px] gap-4">
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 shrink-0" data-testid="link-logo">
-            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-nexalion text-white font-serif font-bold text-sm shadow-sm select-none">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+              className="flex items-center justify-center w-8 h-8 rounded-lg bg-nexalion text-white font-serif font-bold text-xs shadow-sm select-none"
+            >
               KJS
-            </div>
-            <span className="hidden md:block font-serif font-semibold text-foreground tracking-tight text-[15px]">
+            </motion.div>
+            <span className="hidden md:block font-serif font-semibold text-foreground tracking-tight text-[14px]">
               Kroman Jibhar Samuel
             </span>
           </Link>
 
-          {/* Desktop nav — with sliding indicator */}
+          {/* Desktop nav */}
           <div ref={navRef} className="hidden lg:flex items-center gap-0.5 relative">
-            {/* Sliding background pill */}
             <span
               className="nav-indicator absolute top-1 bottom-1 rounded-md bg-primary/8 pointer-events-none"
-              style={{
-                left:    indicatorStyle.left,
-                width:   indicatorStyle.width,
-                opacity: indicatorStyle.opacity,
-              }}
+              style={{ left: indicatorStyle.left, width: indicatorStyle.width, opacity: indicatorStyle.opacity }}
             />
             {navItems.map((item) => (
               <Link key={item.href} href={item.href}>
                 <button
                   data-active={isActive(item.href) ? "true" : "false"}
-                  className={`relative px-3.5 py-2 text-[13.5px] font-medium rounded-md transition-colors duration-150 z-10 ${
+                  className={`relative px-3.5 py-2 text-[13px] font-medium rounded-md transition-colors duration-150 z-10 ${
                     isActive(item.href)
                       ? "text-primary"
                       : "text-muted-foreground hover:text-foreground"
@@ -109,7 +107,6 @@ export function Navigation() {
                   data-testid={`link-nav-${item.href === "/" ? "accueil" : item.href.replace("/", "")}`}
                 >
                   {item.label}
-                  {/* Active underline — grows from center */}
                   {isActive(item.href) && (
                     <span className="absolute bottom-0.5 left-3 right-3 h-[2px] bg-primary rounded-full nav-active-line" />
                   )}
@@ -185,50 +182,65 @@ export function Navigation() {
         </div>
       </nav>
 
-      {/* Mobile menu — animated */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden bg-white dark:bg-background border-b border-border shadow-[0_8px_32px_hsl(216,30%,50%,0.10)] mobile-menu-enter">
-          <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
-            {navItems.map((item, i) => (
-              <Link key={item.href} href={item.href}>
+      {/* Mobile menu — Framer Motion */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:hidden bg-white dark:bg-background border-b border-border shadow-[0_8px_32px_hsl(216,30%,50%,0.10)] overflow-hidden"
+          >
+            <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
+              {navItems.map((item, i) => (
+                <motion.div
+                  key={item.href}
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.22, delay: i * 0.04, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <Link href={item.href}>
+                    <button
+                      type="button"
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-left transition-colors duration-150 ${
+                        isActive(item.href)
+                          ? "bg-primary/8 text-primary"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
+                      }`}
+                      data-active={isActive(item.href) ? "true" : "false"}
+                      data-testid={`link-mobile-${item.href === "/" ? "accueil" : item.href.replace("/", "")}`}
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full shrink-0 transition-all duration-200 ${isActive(item.href) ? "bg-primary scale-125" : "bg-border"}`} />
+                      <span className={isActive(item.href) ? "font-semibold" : ""}>
+                        {item.label}
+                      </span>
+                    </button>
+                  </Link>
+                </motion.div>
+              ))}
+              <div className="pt-2 mt-1 border-t border-border flex gap-2">
+                <Button
+                  className="flex-1 bg-nexalion hover:opacity-90 font-medium text-sm"
+                  data-testid="button-mobile-download-cv"
+                >
+                  <Download className="w-3.5 h-3.5 mr-2" />
+                  {t.nav.downloadCv}
+                </Button>
                 <button
                   type="button"
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-left mobile-menu-item transition-colors duration-150 ${
-                    isActive(item.href)
-                      ? "bg-primary/8 text-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
-                  }`}
-                  style={{ animationDelay: `${i * 35}ms` }}
-                  data-active={isActive(item.href) ? "true" : "false"}
-                  data-testid={`link-mobile-${item.href === "/" ? "accueil" : item.href.replace("/", "")}`}
+                  onClick={toggleLang}
+                  className="flex items-center gap-1.5 px-4 rounded-md border border-border/60 text-sm font-bold text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all"
+                  data-testid="button-mobile-lang-toggle"
                 >
-                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 transition-all duration-200 ${isActive(item.href) ? "bg-primary scale-125" : "bg-border"}`} />
-                  <span className={isActive(item.href) ? "font-semibold" : ""}>
-                    {item.label}
-                  </span>
+                  <Globe className="w-3.5 h-3.5" />
+                  {lang === "fr" ? "EN" : "FR"}
                 </button>
-              </Link>
-            ))}
-            <div className="pt-2 mt-1 border-t border-border flex gap-2">
-              <Button
-                className="flex-1 bg-nexalion hover:opacity-90 font-medium text-sm"
-                data-testid="button-mobile-download-cv"
-              >
-                <Download className="w-3.5 h-3.5 mr-2" />
-                {t.nav.downloadCv}
-              </Button>
-              <button
-                onClick={toggleLang}
-                className="flex items-center gap-1.5 px-4 rounded-md border border-border/60 text-sm font-bold text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all"
-                data-testid="button-mobile-lang-toggle"
-              >
-                <Globe className="w-3.5 h-3.5" />
-                {lang === "fr" ? "EN" : "FR"}
-              </button>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

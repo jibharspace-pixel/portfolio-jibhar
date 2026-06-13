@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Plus, Pencil, Trash2, Loader2, X, Briefcase, Save,
   Tag, ExternalLink, ChevronDown, ChevronUp,
   BarChart3, Globe, Cog, Smartphone, Monitor, FileSpreadsheet,
+  Upload, ImageIcon, Video, Images,
 } from "lucide-react";
 import { Button }   from "@/components/ui/button";
 import { Input }    from "@/components/ui/input";
@@ -11,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge }    from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { AdminSkeleton, API, ConfirmDelete, SectionHeader, Field } from "./shared";
-import type { Project } from "@shared/schema";
+import type { Project, MediaItem } from "@shared/schema";
 import type { LucideIcon } from "lucide-react";
 
 const CAT_ICONS: Record<string, LucideIcon> = {
@@ -50,6 +51,9 @@ const EMPTY: Form = {
   technologies: [], demo_url: "", download_url: "",
 };
 
+const MAX_PHOTOS = 6;
+const MAX_VIDEOS = 2;
+
 export function ProjectsSection({ password }: { password: string }) {
   const qc = useQueryClient();
   const [creating,    setCreating]    = useState(false);
@@ -59,11 +63,17 @@ export function ProjectsSection({ password }: { password: string }) {
   const [form,        setForm]        = useState<Form>(EMPTY);
   const [expandedId,  setExpandedId]  = useState<string | null>(null);
   const [techInput,   setTechInput]   = useState("");
+  const [mediaItems,  setMediaItems]  = useState<MediaItem[]>([]);
+  const [uploading,   setUploading]   = useState(false);
+  const [deletingMedia, setDeletingMedia] = useState<string | null>(null);
+  const photoRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLInputElement>(null);
 
   const { data: projects, isLoading } = useQuery<Project[]>({ queryKey: ["/api/projects"] });
 
   const startCreate = () => {
     setForm(EMPTY); setTechInput(""); setEditing(null); setCreating(true);
+    setMediaItems([]);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
   const startEdit = (p: Project) => {
@@ -75,9 +85,13 @@ export function ProjectsSection({ password }: { password: string }) {
       download_url: p.download_url ?? "",
     });
     setTechInput(""); setEditing(p); setCreating(true);
+    setMediaItems(p.media ?? []);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  const cancel = () => { setCreating(false); setEditing(null); setForm(EMPTY); setTechInput(""); };
+  const cancel = () => {
+    setCreating(false); setEditing(null); setForm(EMPTY);
+    setTechInput(""); setMediaItems([]);
+  };
 
   const addTech = (raw: string) => {
     const tags = raw.split(",").map(t => t.trim()).filter(Boolean);
@@ -110,9 +124,55 @@ export function ProjectsSection({ password }: { password: string }) {
     setDeleting(null);
   };
 
+  const uploadFile = async (file: File) => {
+    if (!editing) return;
+    const photos = mediaItems.filter(m => m.media_type === "image").length;
+    const videos = mediaItems.filter(m => m.media_type === "video").length;
+    const isImage = file.type.startsWith("image/");
+    const isVideo = file.type.startsWith("video/");
+    if (isImage && photos >= MAX_PHOTOS) return alert(`Maximum ${MAX_PHOTOS} photos.`);
+    if (isVideo && videos >= MAX_VIDEOS) return alert(`Maximum ${MAX_VIDEOS} vidéos.`);
+    if (!isImage && !isVideo) return;
+
+    setUploading(true);
+    const fd = new FormData();
+    fd.append("file", file);
+    const res = await fetch(`/api/admin/projects/${editing.id}/upload`, {
+      method: "POST",
+      headers: { "x-admin-password": password },
+      body: fd,
+    });
+    if (res.ok) {
+      const item: MediaItem = await res.json();
+      setMediaItems(prev => [...prev, item]);
+      qc.invalidateQueries({ queryKey: ["/api/projects"] });
+    }
+    setUploading(false);
+  };
+
+  const deleteMedia = async (mediaId: string) => {
+    setDeletingMedia(mediaId);
+    await fetch(`/api/admin/media/${mediaId}`, {
+      method: "DELETE",
+      headers: { "x-admin-password": password },
+    });
+    setMediaItems(prev => prev.filter(m => m.id !== mediaId));
+    qc.invalidateQueries({ queryKey: ["/api/projects"] });
+    setDeletingMedia(null);
+  };
+
+  const handleFileInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    for (const f of files) await uploadFile(f);
+    e.target.value = "";
+  };
+
   const set = (k: keyof Form) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
       setForm(f => ({ ...f, [k]: e.target.value }));
+
+  const photos = mediaItems.filter(m => m.media_type === "image");
+  const videos = mediaItems.filter(m => m.media_type === "video");
 
   return (
     <div className="space-y-6">
@@ -212,6 +272,98 @@ export function ProjectsSection({ password }: { password: string }) {
               </Field>
             </div>
 
+            {/* ── Médias (visible uniquement en édition) ──────── */}
+            {editing && (
+              <div className="pt-2 border-t border-border/60 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Images className="w-4 h-4 text-muted-foreground" />
+                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Médias du projet</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <span className={photos.length >= MAX_PHOTOS ? "text-amber-600 font-semibold" : ""}>
+                      <ImageIcon className="w-3 h-3 inline mr-0.5" />{photos.length}/{MAX_PHOTOS}
+                    </span>
+                    <span className="text-border">·</span>
+                    <span className={videos.length >= MAX_VIDEOS ? "text-amber-600 font-semibold" : ""}>
+                      <Video className="w-3 h-3 inline mr-0.5" />{videos.length}/{MAX_VIDEOS}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Boutons d'upload */}
+                <div className="flex gap-2">
+                  <input ref={photoRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileInput} aria-label="Ajouter des photos" title="Ajouter des photos" />
+                  <input ref={videoRef} type="file" accept="video/*" multiple className="hidden" onChange={handleFileInput} aria-label="Ajouter des vidéos" title="Ajouter des vidéos" />
+                  <button
+                    type="button"
+                    disabled={uploading || photos.length >= MAX_PHOTOS}
+                    onClick={() => photoRef.current?.click()}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-border/60 text-muted-foreground hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <ImageIcon className="w-3.5 h-3.5" />
+                    Ajouter photos
+                  </button>
+                  <button
+                    type="button"
+                    disabled={uploading || videos.length >= MAX_VIDEOS}
+                    onClick={() => videoRef.current?.click()}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-border/60 text-muted-foreground hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <Video className="w-3.5 h-3.5" />
+                    Ajouter vidéo
+                  </button>
+                  {uploading && <Loader2 className="w-4 h-4 animate-spin text-primary self-center" />}
+                </div>
+
+                {/* Grille des médias */}
+                {mediaItems.length > 0 ? (
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                    {mediaItems.map(m => (
+                      <div key={m.id} className="relative group rounded-lg overflow-hidden border border-border/60 bg-muted/30 aspect-video">
+                        {m.media_type === "image" ? (
+                          <img src={m.url} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex flex-col items-center justify-center gap-1 text-muted-foreground">
+                            <Video className="w-5 h-5" />
+                            <span className="text-[10px]">Vidéo</span>
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => deleteMedia(m.id)}
+                          disabled={deletingMedia === m.id}
+                          aria-label="Supprimer le média"
+                          className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                        >
+                          {deletingMedia === m.id
+                            ? <Loader2 className="w-3 h-3 animate-spin" />
+                            : <X className="w-3 h-3" />}
+                        </button>
+                        <span className="absolute bottom-1 left-1 text-[9px] font-semibold px-1 rounded bg-black/50 text-white uppercase">
+                          {m.media_type === "image" ? "img" : "vid"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div
+                    className="flex flex-col items-center justify-center gap-2 py-6 rounded-xl border-2 border-dashed border-border/60 cursor-pointer hover:border-primary/40 hover:bg-primary/[0.02] transition-all"
+                    onClick={() => photoRef.current?.click()}
+                  >
+                    <Upload className="w-6 h-6 text-muted-foreground/40" />
+                    <p className="text-xs text-muted-foreground/60">Cliquez pour ajouter des médias</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {!editing && (
+              <p className="text-xs text-muted-foreground/60 bg-muted/30 rounded-lg px-3 py-2 border border-border/40">
+                Les médias (photos et vidéos) peuvent être ajoutés après la création du projet.
+              </p>
+            )}
+
             <div className="flex gap-3 justify-end pt-3 border-t border-border/60">
               <Button variant="outline" onClick={cancel} size="sm">Annuler</Button>
               <Button
@@ -261,6 +413,11 @@ export function ProjectsSection({ password }: { password: string }) {
                     <Badge variant="outline" className={`text-xs font-medium rounded-md border hidden sm:inline-flex ${CAT_COLORS[p.category] ?? ""}`}>
                       {CAT_LABELS[p.category]}
                     </Badge>
+                    {(p.media?.length ?? 0) > 0 && (
+                      <span className="hidden sm:flex items-center gap-0.5 text-xs text-muted-foreground/60">
+                        <Images className="w-3 h-3" />{p.media?.length}
+                      </span>
+                    )}
                     <button
                       onClick={e => { e.stopPropagation(); startEdit(p); }}
                       aria-label="Modifier le projet"
@@ -309,6 +466,20 @@ export function ProjectsSection({ password }: { password: string }) {
                             <Tag className="w-2.5 h-2.5" />{t}
                           </span>
                         ))}
+                      </div>
+                    )}
+                    {(p.media?.length ?? 0) > 0 && (
+                      <div className="mt-3 pt-3 border-t border-border/40">
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Médias</p>
+                        <div className="flex flex-wrap gap-2">
+                          {p.media?.map(m => (
+                            <div key={m.id} className="w-16 h-16 rounded-lg overflow-hidden border border-border/60 bg-muted/30 flex items-center justify-center">
+                              {m.media_type === "image"
+                                ? <img src={m.url} alt="" className="w-full h-full object-cover" />
+                                : <Video className="w-5 h-5 text-muted-foreground" />}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </CardContent>

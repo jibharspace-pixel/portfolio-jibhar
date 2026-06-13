@@ -1,5 +1,6 @@
 import { Switch, Route, useLocation } from "wouter";
 import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -16,7 +17,6 @@ import Contact from "@/pages/contact";
 import Admin from "@/pages/admin";
 import NotFound from "@/pages/not-found";
 
-// ── Navigation order for direction detection ───────────────────────────────────
 const PAGE_ORDER = ['/', '/projets', '/blog', '/ressources', '/apropos', '/contact', '/admin'];
 
 function getPageBase(path: string) {
@@ -58,45 +58,23 @@ function ProgressBar({ trigger }: { trigger: number }) {
   );
 }
 
-// ── View Transitions interceptor ─────────────────────────────────────────────
-function ViewTransitionNavigator() {
-  const [location, setLocation] = useLocation();
-  const locationRef = useRef(location);
-
-  useEffect(() => { locationRef.current = location; }, [location]);
-
-  useEffect(() => {
-    const supportsVT = "startViewTransition" in document;
-    if (!supportsVT) return;
-
-    const handleClick = (e: MouseEvent) => {
-      const anchor = (e.target as HTMLElement).closest("a[href]") as HTMLAnchorElement | null;
-      if (!anchor) return;
-      const href = anchor.getAttribute("href");
-      if (
-        !href ||
-        href.startsWith("http") ||
-        href.startsWith("mailto:") ||
-        href.startsWith("tel:") ||
-        href.startsWith("#")
-      ) return;
-
-      e.preventDefault();
-      const dir = getNavDir(locationRef.current, href);
-      document.documentElement.dataset.navDir = dir;
-
-      (document as any).startViewTransition(() => {
-        setLocation(href);
-        window.scrollTo({ top: 0, behavior: "instant" });
-      });
-    };
-
-    document.addEventListener("click", handleClick, { capture: true });
-    return () => document.removeEventListener("click", handleClick, { capture: true });
-  }, [setLocation]);
-
-  return null;
-}
+// ── Page transition variants ──────────────────────────────────────────────────
+const pageVariants = {
+  initial: (dir: 'forward' | 'back') => ({
+    opacity: 0,
+    x: dir === 'forward' ? 48 : -48,
+  }),
+  animate: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.42, ease: [0.16, 1, 0.3, 1] },
+  },
+  exit: (dir: 'forward' | 'back') => ({
+    opacity: 0,
+    x: dir === 'forward' ? -48 : 48,
+    transition: { duration: 0.18, ease: [0.4, 0, 1, 1] },
+  }),
+};
 
 // ── Animated page router ──────────────────────────────────────────────────────
 function AnimatedRouter() {
@@ -109,7 +87,6 @@ function AnimatedRouter() {
     if (location !== prevLocation.current) {
       const dir = getNavDir(prevLocation.current, location);
       setNavDir(dir);
-      document.documentElement.dataset.navDir = dir;
       prevLocation.current = location;
       setTrigger((t) => t + 1);
       window.scrollTo({ top: 0, behavior: "instant" });
@@ -119,33 +96,42 @@ function AnimatedRouter() {
   return (
     <>
       <ProgressBar trigger={trigger} />
-      <div key={location} className={`page-enter page-enter-${navDir}`}>
-        <Switch>
-          <Route path="/" component={Home} />
-          <Route path="/projets" component={Projects} />
-          <Route path="/blog" component={Blog} />
-          <Route path="/blog/:slug">
-            {(params: Record<string, string>) => <BlogPostPage slug={params.slug} />}
-          </Route>
-          <Route path="/ressources" component={Resources} />
-          <Route path="/apropos" component={About} />
-          <Route path="/contact" component={Contact} />
-          <Route path="/admin" component={Admin} />
-          <Route component={NotFound} />
-        </Switch>
-      </div>
+      <AnimatePresence mode="wait" custom={navDir}>
+        <motion.div
+          key={location}
+          custom={navDir}
+          variants={pageVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          style={{ willChange: "transform, opacity" }}
+        >
+          <Switch>
+            <Route path="/" component={Home} />
+            <Route path="/projets" component={Projects} />
+            <Route path="/blog" component={Blog} />
+            <Route path="/blog/:slug">
+              {(params: Record<string, string>) => <BlogPostPage slug={params.slug} />}
+            </Route>
+            <Route path="/ressources" component={Resources} />
+            <Route path="/apropos" component={About} />
+            <Route path="/contact" component={Contact} />
+            <Route path="/admin" component={Admin} />
+            <Route component={NotFound} />
+          </Switch>
+        </motion.div>
+      </AnimatePresence>
     </>
   );
 }
 
 export default function App() {
   return (
-    <ThemeProvider defaultTheme="light" storageKey="portfolio-theme">
+    <ThemeProvider defaultTheme="dark" storageKey="portfolio-theme">
       <LanguageProvider>
         <QueryClientProvider client={queryClient}>
           <TooltipProvider>
             <Toaster />
-            <ViewTransitionNavigator />
             <AnimatedRouter />
           </TooltipProvider>
         </QueryClientProvider>
