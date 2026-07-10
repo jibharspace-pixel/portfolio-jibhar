@@ -254,7 +254,7 @@ export function HeroSection() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="relative pb-8">
+            <div className="relative">
               {/* Large editorial circle accent — INKY inspired */}
               <motion.div
                 animate={{ scale: [1, 1.04, 1], opacity: isDark ? [0.08, 0.13, 0.08] : [0.10, 0.16, 0.10] }}
@@ -287,29 +287,6 @@ export function HeroSection() {
                 <div className="hero-photo-topline absolute inset-x-0 top-0 h-[2px] pointer-events-none" />
               </div>
 
-              {/* Floating nameplate */}
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="hero-nameplate absolute -bottom-5 left-4 right-4 z-20 rounded-2xl px-4 py-3 flex items-center justify-between"
-              >
-                <div>
-                  <p className={`text-[11px] font-bold leading-none mb-0.5 ${isDark ? "text-white/90" : "text-foreground"}`}>
-                    Kroman Jibhar Samuel
-                  </p>
-                  <p className={`text-[10px] font-mono tracking-wide ${isDark ? "text-white/40" : "text-muted-foreground"}`}>
-                    Logisticien · Dev Full-Stack
-                  </p>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="relative flex w-2 h-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-60" />
-                    <span className="relative inline-flex rounded-full w-2 h-2 bg-green-400" />
-                  </span>
-                  <span className="text-[10px] font-semibold text-green-400">Open</span>
-                </div>
-              </motion.div>
             </div>
           </motion.div>
         </div>
