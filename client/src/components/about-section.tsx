@@ -25,8 +25,8 @@ export function AboutSection() {
   const { data: siteContent } = useQuery<SiteContent>({ queryKey: ["/api/site-content"] });
   const quote = siteContent?.about_quote || t.about.quote;
   const photos = [
-    { src: profileImagePro,     caption: "Mode professionnel" },
-    { src: profileImageStreet,  caption: "Mode street · Décontracté" },
+    { src: profileImagePro,    caption: "" },
+    { src: profileImageStreet, caption: "Décontracté" },
   ];
   const [photoIdx, setPhotoIdx] = useState(0);
 
@@ -75,14 +75,32 @@ export function AboutSection() {
                   <span className="text-foreground font-semibold">Institut National Polytechnique Félix Houphouët-Boigny (INPHB)</span>
                   {t.about.bio1.split("Institut National Polytechnique Félix Houphouët-Boigny (INPHB)")[1]}
                 </p>
-                <p>
-                  {t.about.bio2.split(t.about.bio2Bold)[0]}
-                  <span className="text-foreground font-semibold">{t.about.bio2Bold}</span>
-                  {t.about.bio2.split(t.about.bio2Bold)[1]}
-                </p>
-                <p>
+
+                {/* Deux fronts d'intervention */}
+                <div className="grid gap-2.5 mt-1">
+                  <div className="flex items-start gap-3 rounded-xl border border-border/60 bg-card p-3.5">
+                    <span className="text-base shrink-0 mt-0.5">🔧</span>
+                    <div>
+                      <p className="text-xs font-bold text-foreground mb-0.5">Tech &amp; Digital</p>
+                      <p className="text-[12px] text-muted-foreground leading-relaxed">
+                        Sites web, solutions data, IA &amp; automatisation Excel/VBA. Prototypage rapide, chatbots, tableaux de bord — si ça peut se coder pour simplifier ta vie, je le fais.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 rounded-xl border border-border/60 bg-card p-3.5">
+                    <span className="text-base shrink-0 mt-0.5">📦</span>
+                    <div>
+                      <p className="text-xs font-bold text-foreground mb-0.5">Logistique</p>
+                      <p className="text-[12px] text-muted-foreground leading-relaxed">
+                        Inventaire, planification &amp; mise en relation pour le stockage temporaire. Du stock à placer, un entrepôt à remplir ? Je connecte à la bonne solution.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-[0.9rem]">
                   {t.about.bio3.split("RemoX")[0]}
-                  <span className="text-primary font-semibold">RemoX</span>
+                  <a href="https://remox-landing.onrender.com" target="_blank" rel="noopener noreferrer" className="text-primary font-semibold hover:underline">RemoX</a>
                   {t.about.bio3.split("RemoX")[1]}
                 </p>
               </div>
@@ -148,20 +166,22 @@ export function AboutSection() {
                   </AnimatePresence>
 
                   {/* Gradient + caption subtle */}
-                  <div className="absolute bottom-0 left-0 right-0 pt-10 pb-3 px-4 bg-gradient-to-t from-black/55 to-transparent pointer-events-none">
-                    <AnimatePresence mode="wait">
-                      <motion.p
-                        key={photoIdx}
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -4 }}
-                        transition={{ duration: 0.35, ease: "easeOut" }}
-                        className="text-[11px] font-medium text-white/70 tracking-wide"
-                      >
-                        {photos[photoIdx].caption}
-                      </motion.p>
-                    </AnimatePresence>
-                  </div>
+                  {photos[photoIdx].caption && (
+                    <div className="absolute bottom-0 left-0 right-0 pt-10 pb-3 px-4 bg-gradient-to-t from-black/55 to-transparent pointer-events-none">
+                      <AnimatePresence mode="wait">
+                        <motion.p
+                          key={photoIdx}
+                          initial={{ opacity: 0, y: 6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -4 }}
+                          transition={{ duration: 0.35, ease: "easeOut" }}
+                          className="text-[11px] font-semibold tracking-widest uppercase text-emerald-400"
+                        >
+                          {photos[photoIdx].caption}
+                        </motion.p>
+                      </AnimatePresence>
+                    </div>
+                  )}
 
                   {/* Top accent line */}
                   <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-primary to-blue-400 pointer-events-none" />
