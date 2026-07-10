@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useTheme } from "@/components/theme-provider";
-import { BarChart3, FileSpreadsheet, LayoutDashboard, Globe, Package } from "lucide-react";
+import { BarChart3, FileSpreadsheet, Globe, Package } from "lucide-react";
 
 const SERVICES = [
   {
@@ -17,18 +17,12 @@ const SERVICES = [
   },
   {
     num: "03",
-    icon: LayoutDashboard,
-    label: "Tableaux de bord personnalisés",
-    desc: "Suivez vos performances en temps réel avec des indicateurs adaptés à votre activité et vos objectifs.",
-  },
-  {
-    num: "04",
     icon: Globe,
     label: "App Web, Mobile & IA",
     desc: "Des applications modernes et intelligentes pour digitaliser votre métier et automatiser vos services.",
   },
   {
-    num: "05",
+    num: "04",
     icon: Package,
     label: "Stockage temporaire & Logistique",
     desc: "Mise en relation, gestion de stocks et optimisation des flux pour e-commerçants et opérateurs logistiques.",
