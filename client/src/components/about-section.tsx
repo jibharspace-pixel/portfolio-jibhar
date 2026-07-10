@@ -9,7 +9,7 @@ import profileImage from "@assets/WhatsApp_Image_2025-12-18_à_11.19.30_7d050f19
 
 interface SiteContent { hero_description: string; hero_highlights: string[]; about_quote: string; }
 
-const TIMELINE_COLORS = ["bg-primary", "bg-blue-400", "bg-purple-400"];
+const TIMELINE_COLORS = ["bg-primary", "bg-blue-400", "bg-purple-400", "bg-emerald-400", "bg-amber-400"];
 
 export function AboutSection() {
   const { t } = useLanguage();
@@ -88,7 +88,7 @@ export function AboutSection() {
                     <div className="flex gap-4">
                       {/* Left timeline */}
                       <div className="flex flex-col items-center">
-                        <div className={`w-3 h-3 rounded-full ${TIMELINE_COLORS[i]} mt-1.5 shrink-0 shadow-sm`} />
+                        <div className={`w-3 h-3 rounded-full ${TIMELINE_COLORS[i % TIMELINE_COLORS.length]} mt-1.5 shrink-0 shadow-sm`} />
                         {i < t.about.timeline.length - 1 && <div className="w-px flex-1 bg-border/60 mt-2 mb-0 min-h-[40px]" />}
                       </div>
                       {/* Content */}
