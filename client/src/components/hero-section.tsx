@@ -77,7 +77,7 @@ export function HeroSection() {
               <div className="flex items-center gap-3">
                 <div className={`w-6 h-px ${isDark ? "bg-white/20" : "bg-foreground/20"}`} />
                 <p className={`font-serif italic text-[1.45rem] sm:text-[1.65rem] font-medium tracking-wide ${isDark ? "text-white/55" : "text-foreground/55"}`}>
-                  Hey je suis · Logisticien &amp; Entrepreneur Tech
+                  Bienvenue dans mon univers
                 </p>
               </div>
             </motion.div>
