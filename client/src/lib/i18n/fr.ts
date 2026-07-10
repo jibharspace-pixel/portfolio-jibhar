@@ -129,7 +129,7 @@ export const fr = {
       { label: "Impact réel", desc: "Des solutions qui résolvent de vrais problèmes terrain." },
       { label: "Communication", desc: "Transparent sur l'avancement à chaque étape." },
     ],
-    rapNote: "Passionné de RAP — musique, logistique fiable & digital, tout ça dans le même univers. Tu veux écouter du bon rap ? Reste ici, on s'amusera aussi 🎤",
+    rapNote: "Passionné de RAP 🎤 — musique 🎵, logistique fiable & digital 🚀, tout ça dans le même univers 🌍. Tu veux écouter du bon rap ? Reste ici, on s'amusera aussi 😎🎶",
   },
   contact: {
     badge: "Contact",

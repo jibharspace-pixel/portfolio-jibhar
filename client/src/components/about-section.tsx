@@ -270,8 +270,8 @@ export function AboutSection() {
                   <Music2 className="w-4 h-4 text-purple-400" />
                 </div>
                 <p className="text-[12px] text-muted-foreground leading-relaxed">
-                  <span className="font-semibold text-foreground">Passionné de RAP</span> — musique, logistique fiable &amp; digital, tout ça dans le même univers.{" "}
-                  <span className="text-purple-400 font-medium">Tu veux écouter du bon rap ? Reste ici, on s'amusera aussi.</span>
+                  <span className="font-semibold text-foreground">Passionné de RAP 🎤</span> — musique 🎵, logistique fiable &amp; digital 🚀, tout ça dans le même univers 🌍.{" "}
+                  <span className="text-purple-400 font-medium">Tu veux écouter du bon rap ? Reste ici, on s'amusera aussi 😎🎶</span>
                 </p>
               </div>
             </ScrollReveal>
