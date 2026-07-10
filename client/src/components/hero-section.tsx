@@ -72,6 +72,16 @@ export function HeroSection() {
             animate="visible"
             variants={{ visible: { transition: { staggerChildren: 0.12, delayChildren: 0.05 } } }}
           >
+            {/* Welcome */}
+            <motion.div variants={itemVariants}>
+              <div className="flex items-center gap-3">
+                <div className={`w-6 h-px ${isDark ? "bg-white/20" : "bg-foreground/20"}`} />
+                <p className={`font-serif italic text-[1.45rem] sm:text-[1.65rem] font-medium tracking-wide ${isDark ? "text-white/55" : "text-foreground/55"}`}>
+                  Bienvenue dans mon univers
+                </p>
+              </div>
+            </motion.div>
+
             {/* Available badge */}
             <motion.div variants={itemVariants}>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-green-500/25 bg-green-500/[0.07]">
