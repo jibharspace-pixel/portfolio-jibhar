@@ -8,11 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { useLanguage } from "@/lib/language-context";
 import { useTheme } from "@/components/theme-provider";
-import profileImagePro from "@assets/WhatsApp_Image_2025-12-18_à_11.19.30_7d050f19_1766058148816.jpg";
-// Ajoute ces deux fichiers dans attached_assets/ puis décommente les lignes ci-dessous :
-// import profileImagePro    from "@assets/jibhar_pro.jpg";    // costume, lunettes dorées
-// import profileImageStreet from "@assets/jibhar_street.jpg"; // t-shirt vert, casquette, Apple Watch
-const profileImageStreet = profileImagePro; // placeholder
+import profileImagePro    from "@assets/Jibhar-pro.jpeg";
+import profileImageStreet from "@assets/Jibhar-street.jpeg";
 
 interface SiteContent { hero_description: string; hero_highlights: string[]; about_quote: string; }
 

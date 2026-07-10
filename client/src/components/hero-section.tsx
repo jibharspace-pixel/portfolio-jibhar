@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/language-context";
 import { useTheme } from "@/components/theme-provider";
 import { motion } from "framer-motion";
-import profileImage from "@assets/WhatsApp_Image_2025-12-18_à_11.19.30_7d050f19_1766058148816.jpg";
+import profileImage from "@assets/Jibhar-photo.jpeg";
 
 const techItems = [
   "Power BI", "React.js", "TypeScript", "SQL", "Excel VBA",
