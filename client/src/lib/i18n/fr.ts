@@ -94,7 +94,7 @@ export const fr = {
     timeline: [
       {
         period: "2025 — Présent",
-        title: "CEO & Co-fondateur — RemoX",
+        title: "CEO & Fondateur — RemoX",
         org: "Startup (déclaration en cours)",
         desc: "Plateforme d'assistance routière en temps réel en Côte d'Ivoire. Mise en relation automobilistes/dépanneurs, suivi GPS, paiement en ligne.",
       },
