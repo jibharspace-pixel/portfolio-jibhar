@@ -1,8 +1,4 @@
-import {
-  BarChart3, Code2, Cog,
-  CheckCircle2, Search, Pencil, Zap, PackageCheck,
-} from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { BarChart3, Code2, Cog, Search, Pencil, Zap, PackageCheck } from "lucide-react";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { useLanguage } from "@/lib/language-context";
 
@@ -55,54 +51,52 @@ export function ServicesSection() {
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
 
-        {/* ── Section header ─────────────────────── */}
-        <ScrollReveal className="text-center mb-14">
-          <Badge variant="secondary" className="mb-4 text-xs font-semibold px-3 py-1 rounded-full border border-primary/20 bg-primary/8 text-primary tracking-wide uppercase">
-            {t.services.badge}
-          </Badge>
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-            {t.services.title}
-          </h2>
-          <div className="h-0.5 w-12 bg-primary rounded-full mx-auto mb-4" />
-          <p className="text-muted-foreground text-base max-w-2xl mx-auto leading-relaxed">
-            {t.services.subtitle}
-          </p>
+        {/* ── Section header — éditorial split ──────────────── */}
+        <ScrollReveal className="mb-12">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                <span className="text-[11px] font-bold tracking-[0.22em] uppercase text-muted-foreground">
+                  {t.services.badge}
+                </span>
+              </div>
+              <h2 className="font-sans font-black tracking-[-0.03em] leading-[0.90] text-foreground">
+                <span className="block text-[2.4rem] sm:text-[3.2rem] lg:text-[3.8rem] uppercase">Expertise &amp;</span>
+                <span className="block text-[2.4rem] sm:text-[3.2rem] lg:text-[3.8rem] uppercase text-primary">Services</span>
+              </h2>
+            </div>
+            <div className="max-w-xs">
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {t.services.subtitle}
+              </p>
+            </div>
+          </div>
         </ScrollReveal>
 
-        {/* ── Service cards ──────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-16">
+        {/* ── Service cards — style référence clean ──────────── */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-0 mb-16 border border-border/60 rounded-2xl overflow-hidden">
           {t.services.items.map((s, i) => {
             const meta = servicesMeta[i];
             const Icon = meta.icon;
             return (
-              <ScrollReveal key={meta.id} delay={i * 120} className="h-full">
+              <ScrollReveal key={meta.id} delay={i * 100} className="h-full">
                 <div
-                  className={`group relative rounded-2xl bg-card border border-border/60 overflow-hidden transition-all duration-300 hover:-translate-y-1.5 h-full ${meta.glow} ${meta.borderHover}`}
+                  className={`group relative bg-card p-7 lg:p-8 h-full transition-all duration-300 hover:bg-primary/[0.03] cursor-default ${
+                    i < t.services.items.length - 1 ? "border-r-0 sm:border-r border-b sm:border-b-0 border-border/60" : ""
+                  }`}
                   data-testid={`card-service-${meta.id}`}
                 >
-                  {/* Gradient top accent bar */}
-                  <div className={`h-[3px] w-full bg-gradient-to-r ${meta.accent}`} />
-
-                  <div className="p-6">
-                    {/* Icon */}
-                    <div className={`w-12 h-12 rounded-xl ${meta.iconBg} flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110`}>
-                      <Icon className={`w-6 h-6 ${meta.iconColor}`} />
-                    </div>
-
-                    {/* Title & desc */}
-                    <h3 className="font-serif text-lg font-bold text-foreground mb-2 leading-snug">{s.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-5">{s.description}</p>
-
-                    {/* Feature list */}
-                    <ul className="space-y-2">
-                      {s.features.map(f => (
-                        <li key={f} className="flex items-center gap-2.5 text-sm text-foreground/80">
-                          <CheckCircle2 className={`w-3.5 h-3.5 ${meta.iconColor} shrink-0`} />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
+                  {/* Icon — stroke style */}
+                  <div className={`w-11 h-11 rounded-xl border ${meta.iconBg} border-border/60 flex items-center justify-center mb-6 group-hover:border-primary/40 transition-colors duration-200`}>
+                    <Icon className={`w-5 h-5 ${meta.iconColor}`} strokeWidth={1.5} />
                   </div>
+
+                  <h3 className="font-sans font-bold text-[15px] text-foreground mb-2.5 leading-snug tracking-tight">{s.title}</h3>
+                  <p className="text-[13px] text-muted-foreground leading-relaxed">{s.description}</p>
+
+                  {/* Top accent line on hover */}
+                  <div className={`absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r ${meta.accent} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
                 </div>
               </ScrollReveal>
             );
