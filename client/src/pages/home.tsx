@@ -1,6 +1,7 @@
 import { Navigation } from "@/components/navigation";
 import { HeroSection } from "@/components/hero-section";
-import { StatsStrip } from "@/components/stats-strip";
+import { ServicesStrip } from "@/components/services-strip";
+import { AboutPreview } from "@/components/about-preview";
 import { ProjectsPreviewSection, BlogPreviewSection } from "@/components/home-previews";
 import { QuoteSection } from "@/components/quote-section";
 import { Footer } from "@/components/footer";
@@ -11,7 +12,8 @@ export default function Home() {
       <Navigation />
       <main>
         <HeroSection />
-        <StatsStrip />
+        <ServicesStrip />
+        <AboutPreview />
         <ProjectsPreviewSection />
         <BlogPreviewSection />
         <QuoteSection />

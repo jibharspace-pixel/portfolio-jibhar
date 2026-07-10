@@ -208,7 +208,27 @@ export default function Blog() {
 
         {/* Posts grid */}
         <section className="max-w-7xl mx-auto px-6 lg:px-8 pb-24">
-          {isLoading ? <BlogSkeleton /> : !filtered?.length ? (
+          {isLoading ? <BlogSkeleton /> : !posts?.length ? (
+            /* Aucun article en base → Bientôt disponible */
+            <div className="flex flex-col items-center justify-center py-24 text-center">
+              <div className="w-20 h-20 rounded-2xl bg-primary/8 border border-primary/20 flex items-center justify-center mx-auto mb-6">
+                <BookOpen className="w-9 h-9 text-primary/50" />
+              </div>
+              <h3 className="font-serif text-2xl font-bold text-foreground mb-2">
+                Bientôt disponible
+              </h3>
+              <p className="text-sm text-muted-foreground max-w-sm leading-relaxed">
+                Des articles sur la logistique, la data, l'automatisation et l'IA arrivent très prochainement.
+              </p>
+              <div className="flex items-center gap-2 mt-5 px-4 py-2 rounded-full border border-primary/20 bg-primary/5">
+                <span className="relative flex w-2 h-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-50" />
+                  <span className="relative inline-flex rounded-full w-2 h-2 bg-primary" />
+                </span>
+                <span className="text-xs font-semibold text-primary">En préparation</span>
+              </div>
+            </div>
+          ) : !filtered?.length ? (
             <div className="text-center py-20">
               <BookOpen className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
               <p className="text-muted-foreground">{t.blog.empty}</p>

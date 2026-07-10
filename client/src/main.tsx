@@ -16,4 +16,19 @@ function raf(time: number) {
 }
 requestAnimationFrame(raf);
 
+// ── Protection des photos ──────────────────────────────────────────────────
+// Bloque clic droit sur les images (empêche "Enregistrer l'image sous")
+document.addEventListener("contextmenu", (e) => {
+  if ((e.target as HTMLElement).tagName === "IMG") {
+    e.preventDefault();
+  }
+});
+
+// Bloque le glisser-déposer des images
+document.addEventListener("dragstart", (e) => {
+  if ((e.target as HTMLElement).tagName === "IMG") {
+    e.preventDefault();
+  }
+});
+
 createRoot(document.getElementById("root")!).render(<App />);

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { GraduationCap, ExternalLink, ArrowRight, Music2 } from "lucide-react";
+import remoxLogo   from "@assets/remox-logo.png";
+import capchinaLogo from "@assets/capchina.png";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -104,13 +106,52 @@ export function AboutSection() {
                 </p>
               </div>
 
-              <Button variant="outline" className="border-primary/30 hover:border-primary/60 hover:bg-primary/5 font-medium text-sm transition-all mt-4" asChild>
-                <a href="https://remox-landing.onrender.com" target="_blank" rel="noopener noreferrer" data-testid="link-remox">
-                  <ExternalLink className="w-3.5 h-3.5 mr-2" />
-                  RemoX — Voir la plateforme
-                  <ArrowRight className="w-3.5 h-3.5 ml-2" />
+              {/* Project cards */}
+              <div className="grid gap-3 mt-4">
+                {/* RemoX */}
+                <a
+                  href="https://remox-landing.onrender.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-testid="link-remox"
+                  className="group flex items-center gap-4 rounded-xl border border-border/60 bg-card px-4 py-3.5 hover:border-primary/30 hover:shadow-[0_6px_24px_hsl(216,90%,40%,0.10)] transition-all duration-200"
+                >
+                  <div className="w-12 h-12 rounded-lg overflow-hidden border border-border/40 bg-white shrink-0 flex items-center justify-center p-1">
+                    <img
+                      src={remoxLogo}
+                      alt="RemoX"
+                      className="w-full h-full object-contain"
+                      draggable={false}
+                      onContextMenu={e => e.preventDefault()}
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors">RemoX</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">Dépannage en temps réel · Voir la plateforme</p>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-1 transition-all duration-200 shrink-0" />
                 </a>
-              </Button>
+
+                {/* Capchina */}
+                <div className="group flex items-center gap-4 rounded-xl border border-border/60 bg-card px-4 py-3.5 transition-all duration-200 hover:border-border">
+                  <div className="w-12 h-12 rounded-lg overflow-hidden border border-border/40 bg-white shrink-0 flex items-center justify-center p-1">
+                    <img
+                      src={capchinaLogo}
+                      alt="Capchina"
+                      className="w-full h-full object-contain"
+                      draggable={false}
+                      onContextMenu={e => e.preventDefault()}
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm text-foreground">Capchina</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">Projet en cours</p>
+                  </div>
+                  <span className="text-[10px] font-semibold text-amber-500 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full shrink-0">
+                    Bientôt
+                  </span>
+                </div>
+              </div>
             </ScrollReveal>
 
             {/* Timeline */}
@@ -161,7 +202,13 @@ export function AboutSection() {
                       alt="Kroman Jibhar Samuel"
                       className="w-full h-full object-cover object-top"
                       data-testid="img-about-profile"
+                      draggable={false}
+                      onContextMenu={e => e.preventDefault()}
+                      onDragStart={e => e.preventDefault()}
+                      style={{ WebkitTouchCallout: "none" } as React.CSSProperties}
                     />
+                  {/* Overlay anti-téléchargement */}
+                  <div className="absolute inset-0 z-20 select-none" style={{ WebkitTouchCallout: "none" } as React.CSSProperties} />
                   </AnimatePresence>
 
                   {/* Gradient + caption subtle */}

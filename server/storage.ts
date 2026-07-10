@@ -19,7 +19,7 @@ const DEFAULT_CONTACT: Omit<ContactInfo, never> = {
 };
 
 const DEFAULT_CONTENT = {
-  hero_description: "Je transforme vos données en décisions|vos décisions en résultats|Dashboards, applications web et automatisations conçus sur mesure.",
+  hero_description: "J'aide les entreprises à exploiter leurs données, automatiser leurs processus et optimiser leur logistique pour gagner en efficacité.",
   hero_highlights: ["Tableau de bord sur mesure", "Solutions IA & automatisation", "Solutions Excel & VBA", "Création d'applications & sites web", "Présence digitale & community management"],
   about_quote: "Autodidacte déterminé, je transforme la complexité en solutions simples et efficaces.",
   footer_tagline: "Je transforme vos données en décisions, vos décisions en résultats. Dashboards, applications web et automatisations conçus sur mesure.",
@@ -115,6 +115,14 @@ async function ensureSiteContent() {
   const rows = await db.select().from(site_content).where(eq(site_content.id, 1));
   if (!rows.length) {
     await db.insert(site_content).values({ id: 1, ...DEFAULT_CONTENT });
+  } else {
+    // Migration : remplace l'ancien texte pipe-séparé par le nouveau
+    const row = rows[0];
+    if (row.hero_description?.includes("|")) {
+      await db.update(site_content)
+        .set({ hero_description: DEFAULT_CONTENT.hero_description })
+        .where(eq(site_content.id, 1));
+    }
   }
 }
 
@@ -332,12 +340,12 @@ export async function getContact(): Promise<ContactInfo> {
   await ensureContactInfo();
   const [row] = await db.select().from(contact_info).where(eq(contact_info.id, 1));
   return {
-    email: row.email,
-    linkedin: row.linkedin ?? undefined,
-    whatsapp: row.whatsapp ?? undefined,
-    github: row.github ?? undefined,
-    upwork: row.upwork ?? undefined,
-    chariow: row.chariow ?? undefined,
+    email: row.email || DEFAULT_CONTACT.email,
+    linkedin: row.linkedin || DEFAULT_CONTACT.linkedin,
+    whatsapp: row.whatsapp || DEFAULT_CONTACT.whatsapp,
+    github: row.github || DEFAULT_CONTACT.github,
+    upwork: row.upwork || DEFAULT_CONTACT.upwork,
+    chariow: row.chariow || DEFAULT_CONTACT.chariow,
   };
 }
 
@@ -354,8 +362,9 @@ export async function getSiteContent() {
   const [row] = await db.select().from(site_content).where(eq(site_content.id, 1));
   return {
     ...row,
-    hero_highlights: (row.hero_highlights as string[]) ?? [],
-    stack_tags: (row.stack_tags as string[]) ?? [],
+    hero_description: row.hero_description || DEFAULT_CONTENT.hero_description,
+    hero_highlights: (row.hero_highlights as string[]) ?? DEFAULT_CONTENT.hero_highlights,
+    stack_tags: (row.stack_tags as string[]) ?? DEFAULT_CONTENT.stack_tags,
     cv_url: row.cv_url ?? undefined,
   };
 }

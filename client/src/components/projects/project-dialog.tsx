@@ -54,7 +54,7 @@ export function ProjectDialog({ project, projects, onClose, onSelect }: Props) {
 
   return (
     <Dialog open={!!project} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[92vh] overflow-hidden p-0 gap-0 [&>button]:hidden">
+      <DialogContent className="max-w-3xl max-h-[92vh] overflow-hidden p-0 gap-0 [&>button]:hidden flex flex-col">
         {project && (() => {
           const Icon = CATEGORY_ICONS[project.category] ?? BarChart3;
           const style = CATEGORY_STYLES[project.category] ?? DEFAULT_STYLE;
@@ -68,7 +68,7 @@ export function ProjectDialog({ project, projects, onClose, onSelect }: Props) {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-                className="flex flex-col h-full max-h-[92vh]"
+                className="flex flex-col flex-1 min-h-0"
               >
                 {/* Top accent bar */}
                 <div className={`h-1 w-full bg-gradient-to-r ${style.accentBar} shrink-0`} />

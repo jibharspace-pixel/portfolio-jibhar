@@ -1,4 +1,4 @@
-import { ArrowRight, Mail, BarChart3, CheckCircle2, FileText, Clock, ArrowDown } from "lucide-react";
+import { ArrowRight, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -7,167 +7,110 @@ import { useTheme } from "@/components/theme-provider";
 import { motion } from "framer-motion";
 import profileImage from "@assets/WhatsApp_Image_2025-12-18_à_11.19.30_7d050f19_1766058148816.jpg";
 
-const techItems = [
-  "Power BI", "React.js", "TypeScript", "SQL", "Excel VBA",
-  "Python", "Node.js", "Tailwind CSS", "Supply Chain",
-  "DAX", "PostgreSQL", "Automatisation", "Power Query",
-];
-
-const defaultHighlights = [
-  "Tableaux de bord Power BI",
-  "Applications React / TypeScript",
-  "Automatisation VBA & Python",
-];
-
-const defaultDescription =
-  "Je conçois des solutions digitales et des tableaux de bord sur mesure qui transforment vos données en décisions.";
-
 interface SiteContent {
   hero_description: string;
   hero_highlights: string[];
   about_quote: string;
 }
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.11, delayChildren: 0.05 } },
-};
+const defaultDescription =
+  "J'aide les entreprises à exploiter leurs données, automatiser leurs processus et optimiser leur logistique pour gagner en efficacité.";
+
 const itemVariants = {
-  hidden: { opacity: 0, y: 28 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] } },
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } },
 };
 
 export function HeroSection() {
   const { t } = useLanguage();
   const { theme } = useTheme();
-  const { data: content } = useQuery<SiteContent>({ queryKey: ["/api/site-content"] });
-
-  const description = content?.hero_description ?? defaultDescription;
-  const highlights  = content?.hero_highlights ?? defaultHighlights;
   const isDark = theme === "dark";
+  const { data: content } = useQuery<SiteContent>({ queryKey: ["/api/site-content"] });
+  const description = content?.hero_description ?? defaultDescription;
 
-  // ── Theme tokens ─────────────────────────────────────────────────────────────
   const bg = isDark
     ? "bg-gradient-to-br from-[#060912] via-[#080c1a] to-[#060b18]"
     : "bg-gradient-to-br from-slate-50 via-white to-blue-50/40";
 
-  const eyebrowColor   = isDark ? "text-[hsl(216,90%,70%)]" : "text-primary";
-  const nameKroman     = isDark ? "text-white" : "text-foreground";
-  const nameSamuel     = isDark ? "text-white/80" : "text-foreground/70";
-  const descColor      = isDark ? "text-white/50" : "text-muted-foreground";
-  const highlightColor = isDark ? "text-white/65" : "text-foreground/75";
-  const checkColor     = isDark ? "text-[hsl(216,90%,60%)]" : "text-primary";
-  const statValue      = isDark ? "text-white" : "text-foreground";
-  const statLabel      = isDark ? "text-white/30" : "text-muted-foreground/60";
-  const scrollColor    = isDark ? "text-white/20" : "text-foreground/20";
-  const ghostNum       = isDark ? "text-white/[0.022]" : "text-black/[0.028]";
-  const marqueeLabelColor = isDark ? "text-white/20" : "text-foreground/30";
-  const marqueeTextColor  = isDark ? "text-white/22 hover:text-white/45" : "text-foreground/30 hover:text-foreground/60";
+  const descColor   = isDark ? "text-white/70"  : "text-foreground/70";
+  const borderColor = isDark ? "border-white/[0.07]" : "border-border";
+  const statVal     = isDark ? "text-white" : "text-foreground";
+  const statLbl     = isDark ? "text-white/25" : "text-muted-foreground/60";
+  const divider     = isDark ? "bg-white/[0.07]" : "bg-border";
+  const ghostColor  = isDark ? "text-white" : "text-foreground";
+  const ringOuter   = isDark ? "border-white/[0.04]" : "border-border/30";
+  const photoBorder = isDark ? "border-white/10" : "border-border/50";
 
   return (
     <section
       id="accueil"
-      className={`relative min-h-screen flex flex-col justify-center overflow-hidden pt-16 transition-colors duration-500 ${bg}`}
+      className={`relative min-h-screen flex flex-col overflow-hidden transition-colors duration-500 ${bg}`}
       data-testid="section-hero"
     >
-      {/* Noise texture */}
+      {/* Noise */}
       <div className={`absolute inset-0 pointer-events-none noise-texture ${isDark ? "opacity-[0.035]" : "opacity-[0.018]"}`} />
 
-      {/* Grid lines — dark mode only */}
+      {/* Grid lines dark only */}
       {isDark && <div className="hero-grid hero-grid--dark" />}
 
-      {/* Ghost section number "01" — decorative background */}
-      <div
-        aria-hidden
-        className={`hero-ghost-num absolute -top-6 right-[-2%] select-none pointer-events-none font-serif font-black leading-none ${ghostNum}`}
-      >
-        01
-      </div>
-
-      {/* Glow orbs */}
+      {/* Glow orb */}
       <motion.div
-        animate={{ scale: [1, 1.1, 1], opacity: isDark ? [0.07, 0.13, 0.07] : [0.08, 0.14, 0.08] }}
+        animate={{ opacity: isDark ? [0.07, 0.13, 0.07] : [0.05, 0.10, 0.05] }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/4 right-[15%] w-[520px] h-[520px] rounded-full pointer-events-none orb-blue"
-      />
-      <motion.div
-        animate={{ scale: [1, 1.06, 1], opacity: isDark ? [0.05, 0.09, 0.05] : [0.04, 0.07, 0.04] }}
-        transition={{ duration: 11, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute bottom-0 left-[10%] w-[400px] h-[400px] rounded-full pointer-events-none orb-purple"
+        className="absolute top-0 right-[20%] w-[500px] h-[500px] rounded-full pointer-events-none orb-blue"
       />
 
-      {/* ── Content ────────────────────────────────────────── */}
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-8 py-20 lg:py-24 w-full">
-        <div className="grid lg:grid-cols-[1fr_auto] gap-12 lg:gap-20 items-center">
+      {/* ── Main content ── */}
+      <div className="flex-1 flex flex-col max-w-7xl mx-auto w-full px-6 lg:px-8 pt-24 pb-0">
 
-          {/* Left — text */}
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-10 lg:gap-16 items-center py-10 lg:py-16">
+
+          {/* Left */}
           <motion.div
-            className="space-y-7"
-            variants={containerVariants}
+            className="space-y-7 order-1"
             initial="hidden"
             animate="visible"
+            variants={{ visible: { transition: { staggerChildren: 0.12, delayChildren: 0.05 } } }}
           >
-            {/* Status badge + eyebrow row */}
-            <motion.div variants={itemVariants} className="flex flex-col gap-3">
-              {/* Available badge */}
-              <div className="flex items-center gap-2 w-fit px-3 py-1.5 rounded-full border border-green-500/25 bg-green-500/[0.07]">
+            {/* Available badge */}
+            <motion.div variants={itemVariants}>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-green-500/25 bg-green-500/[0.07]">
                 <span className="relative flex w-2 h-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-60" />
                   <span className="relative inline-flex rounded-full w-2 h-2 bg-green-400" />
                 </span>
                 <span className="text-[11px] font-semibold text-green-400 tracking-wide">
-                  {t.hero.available ?? "Disponible pour un projet"}
+                  {t.hero.available}
                 </span>
               </div>
-              {/* Eyebrow */}
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-px bg-gradient-to-r from-[hsl(216,90%,60%)] to-transparent" />
-                <span className={`font-mono text-[11px] tracking-[0.28em] uppercase select-none ${eyebrowColor}`}>
-                  {t.hero.role}
-                </span>
-              </div>
-            </motion.div>
-
-            {/* Name */}
-            <motion.div variants={itemVariants}>
-              <h1 className="font-serif font-black tracking-tighter leading-[0.88] select-none">
-                <span className={`block text-[3.8rem] sm:text-[5.2rem] lg:text-[6.5rem] xl:text-[7.5rem] ${nameKroman}`}>
-                  Kroman
-                </span>
-                {isDark ? (
-                  <span className="hero-name-jibhar block text-[3.8rem] sm:text-[5.2rem] lg:text-[6.5rem] xl:text-[7.5rem]">
-                    Jibhar
-                  </span>
-                ) : (
-                  <span className="block text-[3.8rem] sm:text-[5.2rem] lg:text-[6.5rem] xl:text-[7.5rem] text-primary">
-                    Jibhar
-                  </span>
-                )}
-                <span className={`block text-[3.8rem] sm:text-[5.2rem] lg:text-[6.5rem] xl:text-[7.5rem] ${nameSamuel}`}>
-                  Samuel
-                </span>
-              </h1>
             </motion.div>
 
             {/* Description */}
-            <motion.p variants={itemVariants} className={`text-[0.975rem] leading-[1.80] max-w-[400px] ${descColor}`}>
-              {description}
-            </motion.p>
-
-            {/* Highlights */}
             <motion.div variants={itemVariants}>
-              <ul className="space-y-2.5">
-                {highlights.map((h) => (
-                  <li key={h} className={`flex items-center gap-2.5 text-sm font-medium ${highlightColor}`}>
-                    <CheckCircle2 className={`w-4 h-4 shrink-0 ${checkColor}`} />
-                    {h}
-                  </li>
+              <p className={`text-[1rem] leading-[1.85] max-w-[420px] ${descColor}`}>
+                {description}
+              </p>
+            </motion.div>
+
+            {/* Stats */}
+            <motion.div variants={itemVariants}>
+              <div className={`flex items-center gap-8 pt-2 border-t ${borderColor}`}>
+                {t.hero.stats.map((stat, i) => (
+                  <div key={stat.label} className="flex items-center gap-4">
+                    {i > 0 && <div className={`w-px h-8 ${divider}`} />}
+                    <div className="cursor-default">
+                      <p className={`font-serif font-black text-[1.8rem] leading-none tracking-tight ${statVal} ${isDark ? "hero-stat-glow" : ""}`}>
+                        {stat.value}
+                      </p>
+                      <p className={`text-[10px] mt-1 tracking-widest font-mono uppercase ${statLbl}`}>{stat.label}</p>
+                    </div>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </motion.div>
 
             {/* CTAs */}
-            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3 pt-1">
+            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3">
               <Link href="/projets">
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Button
@@ -175,7 +118,6 @@ export function HeroSection() {
                     className="group flex items-center gap-2 font-semibold text-sm px-7 w-full sm:w-auto text-white border-0 hero-cta-primary"
                     data-testid="button-view-projects"
                   >
-                    <BarChart3 className="w-4 h-4" />
                     {t.hero.viewProjects}
                     <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
                   </Button>
@@ -195,137 +137,75 @@ export function HeroSection() {
                 </motion.div>
               </Link>
             </motion.div>
-
-            {/* Devis card */}
-            <motion.div variants={itemVariants}>
-              <Link href="/contact">
-                <motion.div
-                  whileHover={{ y: -3 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                  className={`group flex items-center justify-between gap-4 rounded-2xl cursor-pointer px-5 py-4 border transition-colors duration-200 ${
-                    isDark
-                      ? "hero-devis-dark hover:border-[rgba(79,142,247,0.25)]"
-                      : "border-border/60 hover:border-primary/30 hover:bg-primary/[0.02]"
-                  }`}
-                  data-testid="button-devis"
-                >
-                  <div className="flex items-center gap-3.5 min-w-0">
-                    <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 group-hover:shadow-[0_4px_20px_hsl(216,90%,40%,0.35)] bg-primary/10 border border-primary/20">
-                      <FileText className="w-4 h-4 text-primary" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className={`font-semibold text-sm leading-snug ${isDark ? "text-white/85" : "text-foreground"}`}>
-                        {t.hero.quoteTitle}
-                      </p>
-                      <p className={`text-xs flex items-center gap-1.5 mt-0.5 ${isDark ? "text-white/35" : "text-muted-foreground/70"}`}>
-                        <Clock className="w-3 h-3 shrink-0" />
-                        {t.hero.quoteSubtitle}
-                      </p>
-                    </div>
-                  </div>
-                  <ArrowRight className={`w-4 h-4 shrink-0 transition-all duration-200 group-hover:translate-x-1 group-hover:text-primary ${isDark ? "text-white/25" : "text-muted-foreground/40"}`} />
-                </motion.div>
-              </Link>
-            </motion.div>
-
-            {/* Stats */}
-            <motion.div
-              variants={itemVariants}
-              className={`flex items-center gap-8 pt-6 border-t ${isDark ? "border-white/[0.06]" : "border-border"}`}
-            >
-              {t.hero.stats.map((stat, i) => (
-                <div key={stat.label} className="flex items-center gap-4">
-                  {i > 0 && <div className={`w-px h-9 ${isDark ? "bg-white/[0.07]" : "bg-border"}`} />}
-                  <div className="cursor-default">
-                    <p className={`text-[1.9rem] font-black font-serif leading-none tracking-tight ${statValue} ${isDark ? "hero-stat-glow" : ""}`}>
-                      {stat.value}
-                    </p>
-                    <p className={`text-[10px] mt-1 tracking-widest font-mono uppercase ${statLabel}`}>{stat.label}</p>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
           </motion.div>
 
-          {/* Right — profile photo */}
+          {/* Photo */}
           <motion.div
-            className="order-first lg:order-last flex justify-center"
-            initial={{ opacity: 0, scale: 0.88, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            className="order-2 flex justify-center"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="relative">
-              {/* Large editorial circle accent — INKY inspired */}
-              <motion.div
-                animate={{ scale: [1, 1.04, 1], opacity: isDark ? [0.08, 0.13, 0.08] : [0.10, 0.16, 0.10] }}
-                transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-                className={`absolute -right-8 -top-8 w-[75%] h-[75%] rounded-full pointer-events-none ${isDark ? "bg-primary/20" : "bg-primary/18"}`}
-                style={{ filter: "blur(0px)" }}
-              />
-              {/* Small accent dot */}
-              <div className={`absolute -left-3 bottom-16 w-8 h-8 rounded-full pointer-events-none ${isDark ? "bg-blue-400/25" : "bg-blue-400/30"}`} />
+              <div className="absolute -inset-3 rounded-full border border-primary/20 pointer-events-none" />
+              <div className={`absolute -inset-6 rounded-full border pointer-events-none ${ringOuter}`} />
+              <div className="absolute -left-4 bottom-8 w-7 h-7 rounded-full bg-blue-400/30 pointer-events-none" />
 
-              {/* Ambient glow */}
-              <div className="absolute -inset-10 rounded-[3rem] pointer-events-none orb-blue opacity-10" />
-
-              {/* Decorative square accent */}
-              <motion.div
-                animate={{ rotate: [0, 2, 0, -2, 0] }}
-                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-                className={`absolute -bottom-4 -right-4 w-[70%] h-[70%] rounded-2xl pointer-events-none ${isDark ? "bg-primary/8 border border-primary/10" : "bg-primary/6 border border-primary/12"}`}
-              />
-
-              {/* Frame */}
-              <div className="hero-photo-frame relative w-[256px] h-[332px] sm:w-[280px] sm:h-[363px] lg:w-[300px] lg:h-[390px] rounded-3xl overflow-hidden z-10">
+              <div className={`relative w-[260px] h-[260px] sm:w-[300px] sm:h-[300px] lg:w-[340px] lg:h-[340px] rounded-full overflow-hidden z-10 border-2 ${photoBorder}`}>
                 <img
                   src={profileImage}
                   alt="Kroman Jibhar Samuel"
                   className="w-full h-full object-cover object-top"
                   data-testid="img-profile"
+                  draggable={false}
+                  onContextMenu={e => e.preventDefault()}
+                  onDragStart={e => e.preventDefault()}
+                  style={{ WebkitTouchCallout: "none" } as React.CSSProperties}
                 />
-                <div className={`absolute inset-x-0 bottom-0 h-1/3 pointer-events-none ${isDark ? "bg-gradient-to-t from-black/50 to-transparent" : "bg-gradient-to-t from-black/20 to-transparent"}`} />
-                <div className="hero-photo-topline absolute inset-x-0 top-0 h-[2px] pointer-events-none" />
+                {/* Overlay transparent — bloque appui long Android */}
+                <div className="absolute inset-0 z-20 select-none" style={{ WebkitTouchCallout: "none" } as React.CSSProperties} />
+                <div className="hero-photo-topline absolute inset-x-0 top-0 h-[2px] pointer-events-none z-30" />
               </div>
-
             </div>
           </motion.div>
         </div>
 
-        {/* ── Tech marquee ──────────────────────────────── */}
+        {/* Huge decorative name */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.2, delay: 1.2 }}
-          className={`mt-20 pt-8 border-t ${isDark ? "border-white/[0.05]" : "border-border"}`}
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="pb-0 overflow-hidden"
+          aria-hidden
         >
-          <p className={`text-[10px] font-mono uppercase tracking-[0.26em] text-center mb-6 ${marqueeLabelColor}`}>
-            {t.hero.techStrip}
+          <p
+            className={`font-serif font-black leading-[0.82] tracking-tighter select-none whitespace-nowrap ${ghostColor}`}
+            style={{ fontSize: "clamp(5rem, 18vw, 17rem)", opacity: isDark ? 0.12 : 0.04 }}
+          >
+            JIBHAR
           </p>
-          <div className="marquee-wrap">
-            <div className="marquee-track">
-              {[...techItems, ...techItems].map((tech, i) => (
-                <span key={i} className={`inline-flex items-center gap-2 mx-7 text-[13px] font-medium whitespace-nowrap transition-colors duration-300 ${marqueeTextColor}`}>
-                  <span className="w-1.5 h-1.5 rounded-full shrink-0 bg-primary/35" />
-                  {tech}
-                </span>
-              ))}
-            </div>
-          </div>
         </motion.div>
       </div>
 
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2.2 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
-      >
-        <span className={`font-mono text-[9px] tracking-[0.25em] uppercase ${scrollColor}`}>Scroll</span>
-        <motion.div animate={{ y: [0, 5, 0] }} transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}>
-          <ArrowDown className={`w-3.5 h-3.5 ${scrollColor}`} />
-        </motion.div>
-      </motion.div>
+      {/* Wave transition */}
+      <div className="absolute bottom-0 left-0 right-0 leading-[0] overflow-hidden pointer-events-none" style={{ height: 80 }}>
+        <svg
+          viewBox="0 0 1440 80"
+          preserveAspectRatio="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-full"
+        >
+          <path
+            d="M0,40 C180,80 360,10 540,45 C720,80 900,15 1080,50 C1260,80 1380,30 1440,40 L1440,80 L0,80 Z"
+            fill={isDark ? "#0e1118" : "hsl(220,15%,97%)"}
+          />
+          <path
+            d="M0,55 C200,20 440,70 660,45 C880,20 1100,65 1440,50 L1440,80 L0,80 Z"
+            fill={isDark ? "#0e1118" : "hsl(220,15%,97%)"}
+            opacity="0.6"
+          />
+        </svg>
+      </div>
     </section>
   );
 }
