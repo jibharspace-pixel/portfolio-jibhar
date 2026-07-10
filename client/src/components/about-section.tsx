@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { GraduationCap, ExternalLink, ArrowRight, Music2 } from "lucide-react";
-import remoxLogo   from "@assets/remox-logo.png";
-import capchinaLogo from "@assets/capchina.png";
+import remoxLogo from "@assets/remox-logo.png";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -84,7 +83,7 @@ export function AboutSection() {
                     <div>
                       <p className="text-xs font-bold text-foreground mb-0.5">Tech &amp; Digital</p>
                       <p className="text-[12px] text-muted-foreground leading-relaxed">
-                        Sites web, solutions data, IA &amp; automatisation Excel/VBA. Prototypage rapide, chatbots, tableaux de bord — si ça peut se coder pour simplifier ta vie, je le fais.
+                        Sites web, solutions data, IA &amp; automatisation Excel/VBA. Prototypage rapide, chatbots, tableaux de bord, si ça peut se coder pour simplifier ta vie, je le fais.
                       </p>
                     </div>
                   </div>
@@ -132,25 +131,6 @@ export function AboutSection() {
                   <ArrowRight className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-1 transition-all duration-200 shrink-0" />
                 </a>
 
-                {/* Capchina */}
-                <div className="group flex items-center gap-4 rounded-xl border border-border/60 bg-card px-4 py-3.5 transition-all duration-200 hover:border-border">
-                  <div className="w-12 h-12 rounded-lg overflow-hidden border border-border/40 bg-white shrink-0 flex items-center justify-center p-1">
-                    <img
-                      src={capchinaLogo}
-                      alt="Capchina"
-                      className="w-full h-full object-contain"
-                      draggable={false}
-                      onContextMenu={e => e.preventDefault()}
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm text-foreground">Capchina</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Projet en cours</p>
-                  </div>
-                  <span className="text-[10px] font-semibold text-amber-500 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full shrink-0">
-                    Bientôt
-                  </span>
-                </div>
               </div>
             </ScrollReveal>
 
@@ -306,7 +286,7 @@ export function AboutSection() {
                   <Music2 className="w-4 h-4 text-purple-400" />
                 </div>
                 <p className="text-[12px] text-muted-foreground leading-relaxed">
-                  <span className="font-semibold text-foreground">Passionné de RAP 🎤</span> — musique 🎵, logistique fiable &amp; digital 🚀, tout ça dans le même univers 🌍.{" "}
+                  <span className="font-semibold text-foreground">Passionné de RAP 🎤</span> · musique 🎵, logistique fiable &amp; digital 🚀, tout ça dans le même univers 🌍.{" "}
                   <span className="text-purple-400 font-medium">Tu veux écouter du bon rap ? 😂 Reste ici, on s'amusera aussi 😎🎶</span>
                 </p>
               </div>

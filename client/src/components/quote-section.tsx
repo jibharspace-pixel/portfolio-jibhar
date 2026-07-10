@@ -19,8 +19,8 @@ export function QuoteSection() {
           <div className="h-0.5 w-10 bg-primary rounded-full mx-auto mb-3" />
           <p className="text-muted-foreground text-sm sm:text-base max-w-lg mx-auto leading-relaxed">
             {lang === "fr"
-              ? "Décrivez votre besoin en quelques lignes — je vous réponds sous 24h avec une proposition adaptée."
-              : "Describe your need in a few lines — I'll reply within 24h with a tailored proposal."}
+              ? "Décrivez votre besoin en quelques lignes, je vous réponds sous 24h avec une proposition adaptée."
+              : "Describe your need in a few lines, I'll reply within 24h with a tailored proposal."}
           </p>
         </ScrollReveal>
 

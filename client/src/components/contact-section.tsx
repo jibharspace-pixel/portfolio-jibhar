@@ -100,7 +100,7 @@ export function ContactSection() {
       value: "apdzoviz.mychariow.shop",
       href: info.chariow ?? "https://apdzoviz.mychariow.shop",
       Icon: () => <ChariowIcon className="w-6 h-6" />,
-      description: lang === "fr" ? "Boutique digitale — produits & templates" : "Digital store — products & templates",
+      description: lang === "fr" ? "Boutique digitale : produits & templates" : "Digital store: products & templates",
       primary: false,
       bg: "bg-[#FAFAE8] border-2 border-[#e8e8cc]",
       hoverBorder: "hover:border-yellow-400/60",

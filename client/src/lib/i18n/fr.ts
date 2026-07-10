@@ -39,7 +39,7 @@ export const fr = {
       },
       {
         title: "Développement Web & Applications",
-        description: "Applications web modernes, performantes et scalables — du frontend React au backend Rust, clé en main.",
+        description: "Applications web modernes, performantes et scalables - du frontend React au backend Rust, clé en main.",
         features: ["React.js / TypeScript", "API REST (Rust / Node.js)", "Bases de données (PostgreSQL)", "Déploiement & hébergement"],
       },
       {
@@ -80,28 +80,28 @@ export const fr = {
   about: {
     badge: "À propos",
     title: "Qui suis-je ?",
-    quote: "Logisticien de terrain, développeur par passion — j'interviens là où la tech rencontre le réel.",
+    quote: "Logisticien de terrain, développeur par passion - j'interviens là où la tech rencontre le réel.",
     bio1: "Diplômé en Logistique & Transports de l'Institut National Polytechnique Félix Houphouët-Boigny (INPHB), j'ai fait mes armes sur le terrain : planification transport chez Nestlé CI, expéditions internationales chez BIA Group, gestion de parc auto chez PC Plus Group, et optimisation du stockage conteneurs à Abidjan Terminal.",
     bio2: "Aujourd'hui indépendant, j'interviens sur deux fronts : Tech & Digital (sites web, solutions data, IA, automatisation Excel/VBA) et Logistique (inventaire, planification, mise en relation stockage temporaire).",
-    bio3: "Je lance RemoX — une plateforme conçue pour digitaliser et connecter les acteurs de l'assistance routière — et BabiRide, solution de covoiturage bientôt sur le store.",
+    bio3: "Je lance RemoX, une plateforme conçue pour digitaliser et connecter les acteurs de l'assistance routière, et BabiRide, solution de covoiturage bientôt sur le store.",
     bio2Bold: "Tech & Digital",
     journeyTitle: "Parcours professionnel",
     academicTitle: "Formation académique",
     academicDate: "2021 – 2024",
-    academicDegree: "Diplôme de Technicien Supérieur — Logistique & Transports",
-    academicSchool: "Institut National Polytechnique Félix Houphouët-Boigny (INP-HB) / ESCAE — Abidjan, Côte d'Ivoire",
+    academicDegree: "Diplôme de Technicien Supérieur - Logistique & Transports",
+    academicSchool: "Institut National Polytechnique Félix Houphouët-Boigny (INP-HB) / ESCAE - Abidjan, Côte d'Ivoire",
     statsLabels: { projects: "Projets", clients: "Entreprises", years: "Années exp." },
     timeline: [
       {
-        period: "Jan 2026 — Présent",
+        period: "Jan 2026 - Présent",
         title: "CEO & Fondateur",
-        org: "RemoX — Abidjan, Côte d'Ivoire",
-        desc: "Création et direction de RemoX — une plateforme conçue pour digitaliser et connecter les acteurs de l'assistance routière. Conception du produit, développement de la stratégie commerciale, gestion des opérations et coordination des équipes.",
+        org: "RemoX - Abidjan, Côte d'Ivoire",
+        desc: "Création et direction de RemoX, une plateforme conçue pour digitaliser et connecter les acteurs de l'assistance routière. Conception du produit, développement de la stratégie commerciale, gestion des opérations et coordination des équipes.",
       },
       {
-        period: "Déc 2025 — Présent",
+        period: "Déc 2025 - Présent",
         title: "Travailleur Indépendant · Freelance",
-        org: "Missions freelance — Abidjan, Côte d'Ivoire",
+        org: "Missions freelance - Abidjan, Côte d'Ivoire",
         desc: "Analyse de données (Power BI, Excel), conception de sites web et d'applications IA sécurisées, vibe coding & prototypage rapide (MVP en 50 min), automatisation et maintenance Excel, création de chatbots personnalisés. Projets propres : OUKAMI (IA aide médicale & collecte de fonds) et plateforme de restitution de cartes d'identité perdues.",
       },
       {
@@ -135,7 +135,7 @@ export const fr = {
       { label: "Impact réel", desc: "Des solutions qui résolvent de vrais problèmes terrain." },
       { label: "Engagement communautaire", desc: "Contribuer à des projets à impact positif pour la communauté." },
     ],
-    rapNote: "Passionné de RAP 🎤 — musique 🎵, logistique fiable & digital 🚀, tout ça dans le même univers 🌍. Tu veux écouter du bon rap ? Reste ici, on s'amusera aussi 😎🎶",
+    rapNote: "Passionné de RAP 🎤 - musique 🎵, logistique fiable & digital 🚀, tout ça dans le même univers 🌍. Tu veux écouter du bon rap ? Reste ici, on s'amusera aussi 😎🎶",
   },
   contact: {
     badge: "Contact",
@@ -196,7 +196,7 @@ export const fr = {
   resources: {
     badge: "Gratuit",
     title: "Ressources Gratuites",
-    subtitle: "Templates Excel, dashboards Power BI, guides PDF et macros VBA — téléchargeables gratuitement.",
+    subtitle: "Templates Excel, dashboards Power BI, guides PDF et macros VBA - téléchargeables gratuitement.",
     resources: "ressources",
     downloads: "téléchargements",
     downloadBtn: "Télécharger",

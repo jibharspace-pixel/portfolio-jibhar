@@ -39,7 +39,7 @@ export const en = {
       },
       {
         title: "Web Development & Applications",
-        description: "Modern, performant and scalable web applications — from React frontend to Rust backend, turnkey.",
+        description: "Modern, performant and scalable web applications - from React frontend to Rust backend, turnkey.",
         features: ["React.js / TypeScript", "REST API (Rust / Node.js)", "Databases (PostgreSQL)", "Deployment & hosting"],
       },
       {
@@ -88,12 +88,12 @@ export const en = {
     journeyTitle: "Journey",
     academicTitle: "Academic background",
     academicDate: "June 2024",
-    academicDegree: "INPHB — Supply Chain Bachelor",
+    academicDegree: "INPHB - Supply Chain Bachelor",
     academicSchool: "Institut Félix Houphouët-Boigny",
     statsLabels: { projects: "Projects", clients: "Clients", years: "Years" },
     timeline: [
       {
-        period: "2024 — Present",
+        period: "2024 - Present",
         title: "Freelance Logistics & Data Analyst",
         org: "Nexalion Digital Store",
         desc: "Design of custom digital solutions: Power BI dashboards, React applications, VBA automation and AI integration.",
@@ -101,11 +101,11 @@ export const en = {
       {
         period: "2024",
         title: "Supply Chain Bachelor",
-        org: "INPHB — National Polytechnic Institute",
+        org: "INPHB - National Polytechnic Institute",
         desc: "Félix Houphouët-Boigny, Côte d'Ivoire. Specialisation in logistics flow management, inventory optimisation and performance analysis.",
       },
       {
-        period: "2021 — 2024",
+        period: "2021 - 2024",
         title: "Self-taught training",
         org: "Development & Data",
         desc: "Intensive learning of React, TypeScript, Power BI, SQL, Python and AI tools. Building concrete projects for real clients.",
@@ -177,7 +177,7 @@ export const en = {
   resources: {
     badge: "Free",
     title: "Free Resources",
-    subtitle: "Excel templates, Power BI dashboards, PDF guides and VBA macros — free to download.",
+    subtitle: "Excel templates, Power BI dashboards, PDF guides and VBA macros - free to download.",
     resources: "resources",
     downloads: "downloads",
     downloadBtn: "Download",

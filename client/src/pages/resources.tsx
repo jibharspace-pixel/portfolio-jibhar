@@ -209,7 +209,7 @@ export default function Resources() {
                   Bientôt disponible
                 </h3>
                 <p className="text-sm text-muted-foreground max-w-sm leading-relaxed">
-                  Des templates Excel, dashboards Power BI, guides PDF et macros VBA arrivent très prochainement — gratuitement.
+                  Des templates Excel, dashboards Power BI, guides PDF et macros VBA arrivent très prochainement, gratuitement.
                 </p>
                 <div className="flex items-center gap-2 mt-5 px-4 py-2 rounded-full border border-primary/20 bg-primary/5">
                   <span className="relative flex w-2 h-2">

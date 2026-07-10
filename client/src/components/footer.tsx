@@ -22,7 +22,7 @@ export function Footer() {
   const linkedin = contact?.linkedin ?? "https://linkedin.com/in/kroman-jibhar-samuel";
   const whatsapp = contact?.whatsapp ?? "+225 0700000000";
   const github   = contact?.github   ?? "https://github.com/kromanjibhar";
-  const tagline  = content?.footer_tagline ?? "Je conçois des solutions digitales sur mesure — dashboards, apps web et automatisations — pour transformer vos données en décisions.";
+  const tagline  = content?.footer_tagline ?? "Je conçois des solutions digitales sur mesure : dashboards, apps web et automatisations, pour transformer vos données en décisions.";
 
   const socialLinks = [
     { label: "LinkedIn",  icon: Linkedin,       href: linkedin,              color: "hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/40" },
