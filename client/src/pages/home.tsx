@@ -12,6 +12,23 @@ export default function Home() {
       <Navigation />
       <main>
         <HeroSection />
+
+        {/* Tagline strip */}
+        <div className="relative bg-primary overflow-hidden py-5">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between gap-6">
+            <p className="font-sans font-black text-[1.4rem] sm:text-[1.8rem] lg:text-[2.2rem] tracking-tight text-white uppercase leading-none select-none">
+              Logisticien &amp; Entrepreneur Tech
+            </p>
+            <div className="hidden sm:flex items-center gap-2 shrink-0">
+              <span className="w-2 h-2 rounded-full bg-white/40" />
+              <span className="w-2 h-2 rounded-full bg-white/25" />
+              <span className="w-2 h-2 rounded-full bg-white/12" />
+            </div>
+          </div>
+          {/* Subtle bottom shadow */}
+          <div className="absolute inset-x-0 bottom-0 h-px bg-black/10" />
+        </div>
+
         <ServicesStrip />
         <AboutPreview />
         <ProjectsPreviewSection />
