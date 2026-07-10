@@ -85,7 +85,7 @@ export function Navigation() {
               KJS
             </motion.div>
             <span className="hidden md:block font-serif font-semibold text-foreground tracking-tight text-[14px]">
-              Kroman Jibhar Samuel
+              Kroman Samuel
             </span>
           </Link>
 
