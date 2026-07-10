@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { GraduationCap, ExternalLink, ArrowRight, Music2, Briefcase, Zap } from "lucide-react";
+import { GraduationCap, ExternalLink, ArrowRight, Music2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,16 @@ export function AboutSection() {
   const isDark = theme === "dark";
   const { data: siteContent } = useQuery<SiteContent>({ queryKey: ["/api/site-content"] });
   const quote = siteContent?.about_quote || t.about.quote;
-  const [photoMode, setPhotoMode] = useState<"pro" | "street">("pro");
+  const photos = [
+    { src: profileImagePro,     caption: "Mode professionnel" },
+    { src: profileImageStreet,  caption: "Mode street · Décontracté" },
+  ];
+  const [photoIdx, setPhotoIdx] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => setPhotoIdx((i) => (i + 1) % photos.length), 4000);
+    return () => clearInterval(timer);
+  }, [photos.length]);
 
   return (
     <section id="apropos" className="py-20 lg:py-28 relative overflow-hidden" data-testid="section-about">
@@ -116,97 +125,58 @@ export function AboutSection() {
           {/* ── Right: Photo + values ──────────────── */}
           <div className="lg:col-span-2 space-y-5 order-1 lg:order-2">
             <ScrollReveal direction="right">
-
-              {/* Photo mode switcher */}
-              <div className="flex gap-2 mb-4">
-                <button
-                  type="button"
-                  onClick={() => setPhotoMode("pro")}
-                  className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold border transition-all duration-200 ${
-                    photoMode === "pro"
-                      ? "bg-primary text-white border-primary shadow-sm shadow-primary/20"
-                      : `border-border/60 text-muted-foreground hover:border-primary/40 ${isDark ? "hover:bg-primary/5" : "hover:bg-primary/3"}`
-                  }`}
-                >
-                  <Briefcase className="w-3 h-3" />
-                  Mode Pro
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setPhotoMode("street")}
-                  className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold border transition-all duration-200 ${
-                    photoMode === "street"
-                      ? "bg-amber-500 text-white border-amber-500 shadow-sm shadow-amber-500/20"
-                      : `border-border/60 text-muted-foreground hover:border-amber-500/40 ${isDark ? "hover:bg-amber-500/5" : "hover:bg-amber-50"}`
-                  }`}
-                >
-                  <Zap className="w-3 h-3" />
-                  Mode Street
-                </button>
-              </div>
-
-              {/* Profile photo with editorial accent */}
+              {/* Auto-carousel photo */}
               <div className="relative max-w-xs mx-auto lg:max-w-none">
-                {/* Editorial circle accent — inspired by INKY */}
-                <motion.div
-                  animate={{ scale: photoMode === "street" ? 1.05 : 1 }}
-                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  className={`about-photo-circle absolute -right-6 top-6 w-[72%] h-[72%] rounded-full pointer-events-none transition-colors duration-500 ${
-                    photoMode === "street"
-                      ? isDark ? "bg-amber-400/12" : "bg-amber-400/18"
-                      : isDark ? "bg-primary/10" : "bg-primary/12"
-                  }`}
-                />
-
-                {/* Second offset accent dot */}
-                <div className={`absolute -left-3 bottom-12 w-8 h-8 rounded-full pointer-events-none transition-colors duration-500 ${
-                  photoMode === "street"
-                    ? isDark ? "bg-amber-500/20" : "bg-amber-400/25"
-                    : isDark ? "bg-blue-400/20" : "bg-blue-400/25"
-                }`} />
-
-                {/* Glow blur */}
-                <div className={`absolute -inset-4 rounded-3xl pointer-events-none transition-colors duration-500 ${
-                  photoMode === "street"
-                    ? isDark ? "bg-amber-500/5" : "bg-amber-400/4"
-                    : isDark ? "bg-primary/5" : "bg-primary/4"
-                }`} style={{ filter: "blur(24px)" }} />
+                {/* Editorial circle accent */}
+                <div className={`about-photo-circle absolute -right-6 top-6 w-[72%] h-[72%] rounded-full pointer-events-none ${isDark ? "bg-primary/10" : "bg-primary/12"}`} />
+                <div className={`absolute -left-3 bottom-12 w-8 h-8 rounded-full pointer-events-none ${isDark ? "bg-blue-400/20" : "bg-blue-400/25"}`} />
 
                 {/* Frame */}
-                <div className={`relative rounded-2xl overflow-hidden border shadow-xl aspect-[4/5] z-10 transition-all duration-300 ${
-                  photoMode === "street"
-                    ? isDark ? "border-amber-500/25 shadow-amber-900/30" : "border-amber-400/30 shadow-amber-100"
-                    : "border-border/60"
-                }`}>
+                <div className="relative rounded-2xl overflow-hidden border border-border/60 shadow-xl aspect-[4/5] z-10">
                   <AnimatePresence mode="wait">
                     <motion.img
-                      key={photoMode}
+                      key={photoIdx}
                       initial={{ opacity: 0, scale: 1.04 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.96 }}
-                      transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
-                      src={photoMode === "pro" ? profileImagePro : profileImageStreet}
+                      exit={{ opacity: 0, scale: 0.97 }}
+                      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                      src={photos[photoIdx].src}
                       alt="Kroman Jibhar Samuel"
                       className="w-full h-full object-cover object-top"
                       data-testid="img-about-profile"
                     />
                   </AnimatePresence>
 
-                  {/* Caption overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 pt-8 pb-3 px-3 bg-gradient-to-t from-black/65 via-black/20 to-transparent pointer-events-none">
-                    <span className={`inline-flex items-center gap-1.5 text-[11px] font-bold text-white px-2.5 py-1 rounded-full backdrop-blur-sm ${
-                      photoMode === "street" ? "bg-amber-500/70" : "bg-primary/70"
-                    }`}>
-                      {photoMode === "pro" ? "✦ Mode Professionnel" : "✦ Mode Street · Décontracté"}
-                    </span>
+                  {/* Gradient + caption subtle */}
+                  <div className="absolute bottom-0 left-0 right-0 pt-10 pb-3 px-4 bg-gradient-to-t from-black/55 to-transparent pointer-events-none">
+                    <AnimatePresence mode="wait">
+                      <motion.p
+                        key={photoIdx}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.35, ease: "easeOut" }}
+                        className="text-[11px] font-medium text-white/70 tracking-wide"
+                      >
+                        {photos[photoIdx].caption}
+                      </motion.p>
+                    </AnimatePresence>
                   </div>
 
                   {/* Top accent line */}
-                  <div className={`absolute inset-x-0 top-0 h-[2px] pointer-events-none ${
-                    photoMode === "street"
-                      ? "bg-gradient-to-r from-amber-400 to-orange-400"
-                      : "bg-gradient-to-r from-primary to-blue-400"
-                  }`} />
+                  <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-primary to-blue-400 pointer-events-none" />
+
+                  {/* Dot indicators */}
+                  <div className="absolute bottom-3 right-3 flex gap-1.5 pointer-events-none">
+                    {photos.map((_, i) => (
+                      <span
+                        key={i}
+                        className={`block rounded-full transition-all duration-400 ${
+                          i === photoIdx ? "w-4 h-1.5 bg-white/90" : "w-1.5 h-1.5 bg-white/30"
+                        }`}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             </ScrollReveal>
@@ -271,7 +241,7 @@ export function AboutSection() {
                 </div>
                 <p className="text-[12px] text-muted-foreground leading-relaxed">
                   <span className="font-semibold text-foreground">Passionné de RAP 🎤</span> — musique 🎵, logistique fiable &amp; digital 🚀, tout ça dans le même univers 🌍.{" "}
-                  <span className="text-purple-400 font-medium">Tu veux écouter du bon rap ? Reste ici, on s'amusera aussi 😎🎶</span>
+                  <span className="text-purple-400 font-medium">Tu veux écouter du bon rap ? 😂 Reste ici, on s'amusera aussi 😎🎶</span>
                 </p>
               </div>
             </ScrollReveal>
