@@ -4,13 +4,6 @@ import { motion } from "framer-motion";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import profileImage from "@assets/Jibhar-photo.jpeg";
 
-const stats = [
-  { value: "10+", label: "Projets réalisés" },
-  { value: "5+",  label: "Clients satisfaits" },
-  { value: "3+",  label: "Années d'expérience" },
-  { value: "24/7", label: "Disponible remote" },
-];
-
 export function AboutPreview() {
   return (
     <section className="relative bg-[hsl(210,20%,98%)] dark:bg-[hsl(222,20%,7%)] border-t border-border/40 overflow-hidden">
@@ -33,22 +26,22 @@ export function AboutPreview() {
               {/* Massive mixed headline */}
               <div className="leading-[0.88] tracking-tight select-none">
                 <span
-                  className="block font-serif font-black italic text-foreground dark:text-foreground"
-                  style={{ fontSize: "clamp(3.2rem, 8vw, 7rem)" }}
+                  className="block font-serif italic text-foreground/50 dark:text-foreground/40"
+                  style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.8rem)" }}
+                >
+                  Hey je suis
+                </span>
+                <span
+                  className="block font-serif font-black italic text-foreground dark:text-foreground mt-2"
+                  style={{ fontSize: "clamp(2.8rem, 7vw, 6rem)" }}
                 >
                   Logisticien
                 </span>
                 <span
-                  className="block font-serif font-black text-primary"
-                  style={{ fontSize: "clamp(3.2rem, 8vw, 7rem)" }}
+                  className="block font-sans font-black uppercase text-primary"
+                  style={{ fontSize: "clamp(2rem, 5vw, 4.5rem)", letterSpacing: "-0.02em" }}
                 >
-                  &amp; Dev
-                </span>
-                <span
-                  className="block font-sans font-black uppercase text-foreground/90 dark:text-foreground/85"
-                  style={{ fontSize: "clamp(2.6rem, 6.5vw, 5.8rem)", letterSpacing: "-0.02em" }}
-                >
-                  Full-Stack
+                  &amp; Entrepreneur Tech
                 </span>
               </div>
 
@@ -90,41 +83,16 @@ export function AboutPreview() {
                 </Link>
                 <Link href="/apropos">
                   <span className="text-sm font-medium text-primary hover:opacity-70 transition-opacity cursor-pointer">
-                    En savoir plus →
+                    En savoir plus sur moi →
                   </span>
                 </Link>
               </div>
             </div>
           </ScrollReveal>
 
-          {/* ── Right: Stats + Photo ──────────────────── */}
+          {/* ── Right: Photo ──────────────────────────── */}
           <ScrollReveal direction="right" delay={100}>
             <div className="flex gap-6 lg:gap-8 items-stretch">
-
-              {/* Stats column */}
-              <div className="flex flex-col justify-center gap-8 shrink-0 py-2">
-                {stats.map((s, i) => (
-                  <motion.div
-                    key={s.label}
-                    initial={{ opacity: 0, x: -12 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 + 0.2, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="cursor-default"
-                  >
-                    <p className="font-serif font-black text-[2.2rem] leading-none text-foreground tracking-tight">
-                      {s.value}
-                    </p>
-                    <p className="text-[11px] text-muted-foreground/60 mt-1 font-mono uppercase tracking-widest whitespace-nowrap">
-                      {s.label}
-                    </p>
-                    {/* Subtle divider */}
-                    {i < stats.length - 1 && (
-                      <div className="h-px w-10 bg-border mt-3" />
-                    )}
-                  </motion.div>
-                ))}
-              </div>
 
               {/* Photo */}
               <div className="flex-1 relative">
