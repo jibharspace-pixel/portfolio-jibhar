@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { useLanguage } from "@/lib/language-context";
 import { useTheme } from "@/components/theme-provider";
+import profileImageMain   from "@assets/Jibhar-photo.jpeg";
 import profileImagePro    from "@assets/Jibhar-pro.jpeg";
 import profileImageStreet from "@assets/Jibhar-street.jpeg";
 
@@ -22,6 +23,7 @@ export function AboutSection() {
   const { data: siteContent } = useQuery<SiteContent>({ queryKey: ["/api/site-content"] });
   const quote = siteContent?.about_quote || t.about.quote;
   const photos = [
+    { src: profileImageMain,   caption: "" },
     { src: profileImagePro,    caption: "" },
     { src: profileImageStreet, caption: "Décontracté" },
   ];
