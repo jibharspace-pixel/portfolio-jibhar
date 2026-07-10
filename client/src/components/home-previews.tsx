@@ -133,7 +133,7 @@ export function ProjectsPreviewSection() {
         </div>
       </div>
 
-      <ProjectDialog project={selected} onClose={() => setSelected(null)} />
+      <ProjectDialog project={selected} projects={preview} onClose={() => setSelected(null)} onSelect={setSelected} />
     </section>
   );
 }

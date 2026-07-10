@@ -96,7 +96,9 @@ export function ProjectsSection() {
 
       <ProjectDialog
         project={selectedProject}
+        projects={filtered ?? []}
         onClose={() => setSelectedProject(null)}
+        onSelect={setSelectedProject}
       />
     </section>
   );

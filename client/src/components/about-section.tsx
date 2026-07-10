@@ -1,11 +1,18 @@
-import { GraduationCap, ExternalLink, ArrowRight, Music2 } from "lucide-react";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { GraduationCap, ExternalLink, ArrowRight, Music2, Briefcase, Zap } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { useLanguage } from "@/lib/language-context";
-import profileImage from "@assets/WhatsApp_Image_2025-12-18_à_11.19.30_7d050f19_1766058148816.jpg";
+import { useTheme } from "@/components/theme-provider";
+import profileImagePro from "@assets/WhatsApp_Image_2025-12-18_à_11.19.30_7d050f19_1766058148816.jpg";
+// Ajoute ces deux fichiers dans attached_assets/ puis décommente les lignes ci-dessous :
+// import profileImagePro    from "@assets/jibhar_pro.jpg";    // costume, lunettes dorées
+// import profileImageStreet from "@assets/jibhar_street.jpg"; // t-shirt vert, casquette, Apple Watch
+const profileImageStreet = profileImagePro; // placeholder
 
 interface SiteContent { hero_description: string; hero_highlights: string[]; about_quote: string; }
 
@@ -13,8 +20,11 @@ const TIMELINE_COLORS = ["bg-primary", "bg-blue-400", "bg-purple-400", "bg-emera
 
 export function AboutSection() {
   const { t } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   const { data: siteContent } = useQuery<SiteContent>({ queryKey: ["/api/site-content"] });
   const quote = siteContent?.about_quote || t.about.quote;
+  const [photoMode, setPhotoMode] = useState<"pro" | "street">("pro");
 
   return (
     <section id="apropos" className="py-20 lg:py-28 relative overflow-hidden" data-testid="section-about">
@@ -62,16 +72,16 @@ export function AboutSection() {
                   {t.about.bio2.split(t.about.bio2Bold)[1]}
                 </p>
                 <p>
-                  {t.about.bio3.split("Nexalion Digital Store")[0]}
-                  <a href="https://apdzoviz.mychariow.shop" target="_blank" rel="noopener noreferrer" className="text-primary font-semibold underline underline-offset-2 hover:opacity-80 transition-opacity">Nexalion Digital Store</a>
-                  {t.about.bio3.split("Nexalion Digital Store")[1]}
+                  {t.about.bio3.split("RemoX")[0]}
+                  <span className="text-primary font-semibold">RemoX</span>
+                  {t.about.bio3.split("RemoX")[1]}
                 </p>
               </div>
 
               <Button variant="outline" className="border-primary/30 hover:border-primary/60 hover:bg-primary/5 font-medium text-sm transition-all mt-4" asChild>
-                <a href="https://apdzoviz.mychariow.shop" target="_blank" rel="noopener noreferrer" data-testid="link-nexalion">
+                <a href="https://remox-landing.onrender.com" target="_blank" rel="noopener noreferrer" data-testid="link-remox">
                   <ExternalLink className="w-3.5 h-3.5 mr-2" />
-                  Nexalion Digital Store
+                  RemoX — Voir la plateforme
                   <ArrowRight className="w-3.5 h-3.5 ml-2" />
                 </a>
               </Button>
@@ -86,12 +96,10 @@ export function AboutSection() {
                 {t.about.timeline.map((item, i) => (
                   <ScrollReveal key={i} delay={i * 120 + 150}>
                     <div className="flex gap-4">
-                      {/* Left timeline */}
                       <div className="flex flex-col items-center">
                         <div className={`w-3 h-3 rounded-full ${TIMELINE_COLORS[i % TIMELINE_COLORS.length]} mt-1.5 shrink-0 shadow-sm`} />
                         {i < t.about.timeline.length - 1 && <div className="w-px flex-1 bg-border/60 mt-2 mb-0 min-h-[40px]" />}
                       </div>
-                      {/* Content */}
                       <div className={`pb-6 ${i === t.about.timeline.length - 1 ? "pb-0" : ""}`}>
                         <span className="text-xs font-semibold text-primary/70 tracking-wide">{item.period}</span>
                         <h4 className="font-semibold text-sm text-foreground mt-0.5">{item.title}</h4>
@@ -108,16 +116,97 @@ export function AboutSection() {
           {/* ── Right: Photo + values ──────────────── */}
           <div className="lg:col-span-2 space-y-5 order-1 lg:order-2">
             <ScrollReveal direction="right">
-              {/* Profile photo */}
+
+              {/* Photo mode switcher */}
+              <div className="flex gap-2 mb-4">
+                <button
+                  type="button"
+                  onClick={() => setPhotoMode("pro")}
+                  className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold border transition-all duration-200 ${
+                    photoMode === "pro"
+                      ? "bg-primary text-white border-primary shadow-sm shadow-primary/20"
+                      : `border-border/60 text-muted-foreground hover:border-primary/40 ${isDark ? "hover:bg-primary/5" : "hover:bg-primary/3"}`
+                  }`}
+                >
+                  <Briefcase className="w-3 h-3" />
+                  Mode Pro
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPhotoMode("street")}
+                  className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold border transition-all duration-200 ${
+                    photoMode === "street"
+                      ? "bg-amber-500 text-white border-amber-500 shadow-sm shadow-amber-500/20"
+                      : `border-border/60 text-muted-foreground hover:border-amber-500/40 ${isDark ? "hover:bg-amber-500/5" : "hover:bg-amber-50"}`
+                  }`}
+                >
+                  <Zap className="w-3 h-3" />
+                  Mode Street
+                </button>
+              </div>
+
+              {/* Profile photo with editorial accent */}
               <div className="relative max-w-xs mx-auto lg:max-w-none">
-                <div className="absolute -inset-2 rounded-2xl bg-gradient-to-br from-primary/15 to-blue-400/8 blur-xl" />
-                <div className="relative rounded-2xl overflow-hidden border border-border/60 shadow-xl aspect-[4/3] sm:aspect-[3/4]">
-                  <img
-                    src={profileImage}
-                    alt="Kroman Jibhar Samuel"
-                    className="w-full h-full object-cover object-top"
-                    data-testid="img-about-profile"
-                  />
+                {/* Editorial circle accent — inspired by INKY */}
+                <motion.div
+                  animate={{ scale: photoMode === "street" ? 1.05 : 1 }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className={`about-photo-circle absolute -right-6 top-6 w-[72%] h-[72%] rounded-full pointer-events-none transition-colors duration-500 ${
+                    photoMode === "street"
+                      ? isDark ? "bg-amber-400/12" : "bg-amber-400/18"
+                      : isDark ? "bg-primary/10" : "bg-primary/12"
+                  }`}
+                />
+
+                {/* Second offset accent dot */}
+                <div className={`absolute -left-3 bottom-12 w-8 h-8 rounded-full pointer-events-none transition-colors duration-500 ${
+                  photoMode === "street"
+                    ? isDark ? "bg-amber-500/20" : "bg-amber-400/25"
+                    : isDark ? "bg-blue-400/20" : "bg-blue-400/25"
+                }`} />
+
+                {/* Glow blur */}
+                <div className={`absolute -inset-4 rounded-3xl pointer-events-none transition-colors duration-500 ${
+                  photoMode === "street"
+                    ? isDark ? "bg-amber-500/5" : "bg-amber-400/4"
+                    : isDark ? "bg-primary/5" : "bg-primary/4"
+                }`} style={{ filter: "blur(24px)" }} />
+
+                {/* Frame */}
+                <div className={`relative rounded-2xl overflow-hidden border shadow-xl aspect-[4/5] z-10 transition-all duration-300 ${
+                  photoMode === "street"
+                    ? isDark ? "border-amber-500/25 shadow-amber-900/30" : "border-amber-400/30 shadow-amber-100"
+                    : "border-border/60"
+                }`}>
+                  <AnimatePresence mode="wait">
+                    <motion.img
+                      key={photoMode}
+                      initial={{ opacity: 0, scale: 1.04 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.96 }}
+                      transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+                      src={photoMode === "pro" ? profileImagePro : profileImageStreet}
+                      alt="Kroman Jibhar Samuel"
+                      className="w-full h-full object-cover object-top"
+                      data-testid="img-about-profile"
+                    />
+                  </AnimatePresence>
+
+                  {/* Caption overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 pt-8 pb-3 px-3 bg-gradient-to-t from-black/65 via-black/20 to-transparent pointer-events-none">
+                    <span className={`inline-flex items-center gap-1.5 text-[11px] font-bold text-white px-2.5 py-1 rounded-full backdrop-blur-sm ${
+                      photoMode === "street" ? "bg-amber-500/70" : "bg-primary/70"
+                    }`}>
+                      {photoMode === "pro" ? "✦ Mode Professionnel" : "✦ Mode Street · Décontracté"}
+                    </span>
+                  </div>
+
+                  {/* Top accent line */}
+                  <div className={`absolute inset-x-0 top-0 h-[2px] pointer-events-none ${
+                    photoMode === "street"
+                      ? "bg-gradient-to-r from-amber-400 to-orange-400"
+                      : "bg-gradient-to-r from-primary to-blue-400"
+                  }`} />
                 </div>
               </div>
             </ScrollReveal>

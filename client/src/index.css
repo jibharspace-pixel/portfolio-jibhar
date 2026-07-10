@@ -1026,4 +1026,53 @@
     border: 1px solid rgba(255,255,255,0.07);
     background: rgba(255,255,255,0.025);
   }
+
+  /* ── About section — editorial photo circle (INKY-inspired) ── */
+  .about-photo-circle {
+    animation: pulse-circle 6s ease-in-out infinite;
+  }
+  @keyframes pulse-circle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.7; transform: scale(1.06); }
+  }
+
+  /* ── Hero — floating name plate under photo ─────────────────── */
+  .hero-nameplate {
+    background: rgba(255,255,255,0.90);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  .dark .hero-nameplate {
+    background: rgba(8,18,40,0.80);
+    border: 1px solid rgba(255,255,255,0.10);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.40);
+  }
+
+  /* ── Project dialog navigation ─────────────────────────────── */
+  .dialog-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.25);
+    color: white;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    transition: background 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
+    z-index: 10;
+  }
+  .dialog-nav-btn:hover {
+    background: rgba(0,0,0,0.50);
+    transform: translateY(-50%) scale(1.08);
+  }
+  .dialog-nav-btn--left  { left: -1.25rem; }
+  .dialog-nav-btn--right { right: -1.25rem; }
 }
