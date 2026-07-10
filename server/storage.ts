@@ -129,8 +129,9 @@ async function ensureServices() {
 
 async function ensureProjects() {
   const rows = await db.select().from(projects);
-  if (!rows.length) {
-    for (const p of DEFAULT_PROJECTS) {
+  const existingTitles = new Set(rows.map(r => r.title));
+  for (const p of DEFAULT_PROJECTS) {
+    if (!existingTitles.has(p.title)) {
       await db.insert(projects).values({
         id: randomUUID(),
         title: p.title,
