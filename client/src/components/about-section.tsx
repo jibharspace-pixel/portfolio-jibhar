@@ -1,4 +1,4 @@
-import { GraduationCap, ExternalLink, ArrowRight } from "lucide-react";
+import { GraduationCap, ExternalLink, ArrowRight, Music2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -171,6 +171,19 @@ export function AboutSection() {
                     <p className="text-[11px] text-muted-foreground leading-snug">{desc}</p>
                   </div>
                 ))}
+              </div>
+            </ScrollReveal>
+
+            {/* RAP note */}
+            <ScrollReveal direction="right" delay={300}>
+              <div className="flex items-start gap-3 rounded-xl border border-purple-500/20 bg-purple-500/5 p-4">
+                <div className="p-2 rounded-lg bg-purple-500/10 shrink-0">
+                  <Music2 className="w-4 h-4 text-purple-400" />
+                </div>
+                <p className="text-[12px] text-muted-foreground leading-relaxed">
+                  <span className="font-semibold text-foreground">Passionné de RAP</span> — musique, logistique fiable &amp; digital, tout ça dans le même univers.{" "}
+                  <span className="text-purple-400 font-medium">Tu veux écouter du bon rap ? Reste ici, on s'amusera aussi.</span>
+                </p>
               </div>
             </ScrollReveal>
           </div>

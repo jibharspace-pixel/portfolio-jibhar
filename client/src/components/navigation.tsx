@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X, Download, Globe, FileText } from "lucide-react";
+import { Menu, X, Download, Globe, FileText, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Link, useLocation } from "wouter";
@@ -182,63 +182,100 @@ export function Navigation() {
         </div>
       </nav>
 
-      {/* Mobile menu — Framer Motion */}
+      {/* Mobile menu — slide-in panel from right */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:hidden bg-white dark:bg-background border-b border-border shadow-[0_8px_32px_hsl(216,30%,50%,0.10)] overflow-hidden"
-          >
-            <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
-              {navItems.map((item, i) => (
-                <motion.div
-                  key={item.href}
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.22, delay: i * 0.04, ease: [0.16, 1, 0.3, 1] }}
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="lg:hidden fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+              onClick={() => setMobileOpen(false)}
+            />
+            {/* Panel */}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+              className="lg:hidden fixed top-0 right-0 bottom-0 z-50 w-[min(300px,85vw)] bg-background border-l border-border/60 shadow-2xl flex flex-col"
+            >
+              {/* Panel header */}
+              <div className="flex items-center justify-between px-6 h-[60px] border-b border-border/40 shrink-0">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-nexalion text-white font-serif font-bold text-xs flex items-center justify-center shadow-sm">KJS</div>
+                  <span className="font-serif font-semibold text-foreground text-[13px]">Menu</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setMobileOpen(false)}
+                  className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-muted/60 text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  <Link href={item.href}>
-                    <button
-                      type="button"
-                      className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-left transition-colors duration-150 ${
-                        isActive(item.href)
-                          ? "bg-primary/8 text-primary"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
-                      }`}
-                      data-active={isActive(item.href) ? "true" : "false"}
-                      data-testid={`link-mobile-${item.href === "/" ? "accueil" : item.href.replace("/", "")}`}
-                    >
-                      <span className={`w-1.5 h-1.5 rounded-full shrink-0 transition-all duration-200 ${isActive(item.href) ? "bg-primary scale-125" : "bg-border"}`} />
-                      <span className={isActive(item.href) ? "font-semibold" : ""}>
-                        {item.label}
-                      </span>
-                    </button>
-                  </Link>
-                </motion.div>
-              ))}
-              <div className="pt-2 mt-1 border-t border-border flex gap-2">
-                <Button
-                  className="flex-1 bg-nexalion hover:opacity-90 font-medium text-sm"
-                  data-testid="button-mobile-download-cv"
-                >
-                  <Download className="w-3.5 h-3.5 mr-2" />
-                  {t.nav.downloadCv}
-                </Button>
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Nav items */}
+              <nav className="flex-1 overflow-y-auto px-4 py-5 flex flex-col gap-1">
+                {navItems.map((item, i) => (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.2, delay: i * 0.04, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    <Link href={item.href}>
+                      <button
+                        type="button"
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-left transition-all duration-150 ${
+                          isActive(item.href)
+                            ? "bg-primary/10 text-primary border border-primary/20"
+                            : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                        }`}
+                        data-active={isActive(item.href) ? "true" : "false"}
+                        data-testid={`link-mobile-${item.href === "/" ? "accueil" : item.href.replace("/", "")}`}
+                      >
+                        <span className={`w-2 h-2 rounded-full shrink-0 transition-all duration-200 ${isActive(item.href) ? "bg-primary" : "bg-border"}`} />
+                        <span className={isActive(item.href) ? "font-semibold" : ""}>{item.label}</span>
+                        {isActive(item.href) && (
+                          <ArrowRight className="w-3.5 h-3.5 ml-auto text-primary/60" />
+                        )}
+                      </button>
+                    </Link>
+                  </motion.div>
+                ))}
+              </nav>
+
+              {/* Panel footer */}
+              <div className="px-4 pb-6 pt-4 border-t border-border/40 flex flex-col gap-2 shrink-0">
+                {cvUrl ? (
+                  <a href={cvUrl} download target="_blank" rel="noopener noreferrer" className="block">
+                    <Button className="w-full bg-nexalion hover:opacity-90 font-medium text-sm" data-testid="button-mobile-download-cv">
+                      <Download className="w-3.5 h-3.5 mr-2" />
+                      {t.nav.downloadCv}
+                    </Button>
+                  </a>
+                ) : (
+                  <Button disabled className="w-full bg-nexalion opacity-50 font-medium text-sm" data-testid="button-mobile-download-cv">
+                    <Download className="w-3.5 h-3.5 mr-2" />
+                    {t.nav.downloadCv}
+                  </Button>
+                )}
                 <button
                   type="button"
                   onClick={toggleLang}
-                  className="flex items-center gap-1.5 px-4 rounded-md border border-border/60 text-sm font-bold text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all"
+                  className="flex items-center justify-center gap-2 h-9 rounded-lg border border-border/60 text-sm font-bold text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all"
                   data-testid="button-mobile-lang-toggle"
                 >
                   <Globe className="w-3.5 h-3.5" />
-                  {lang === "fr" ? "EN" : "FR"}
+                  {lang === "fr" ? "Passer en EN" : "Switch to FR"}
                 </button>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>
