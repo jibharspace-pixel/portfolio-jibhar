@@ -155,6 +155,16 @@ async function ensureProjects() {
       });
     }
   }
+
+  // Add screenshot to Pouponnière project if it has no media yet
+  const poupo = rows.find(r => r.title.includes("Pouponnière"));
+  if (poupo) {
+    const existing = (poupo.media as MediaItem[]) ?? [];
+    if (!existing.some(m => m.url.includes("pouponniere"))) {
+      const item: MediaItem = { id: randomUUID(), url: "/uploads/pouponniere.png", media_type: "image", project_id: poupo.id };
+      await db.update(projects).set({ media: [...existing, item] }).where(eq(projects.id, poupo.id));
+    }
+  }
 }
 
 export async function initDb() {
