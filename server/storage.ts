@@ -39,7 +39,7 @@ const DEFAULT_PROJECTS = [
     description: "Plateforme de mise en relation entre automobilistes et dépanneurs remorqueurs en Côte d'Ivoire. Coordination des interventions en temps réel, partout sur le territoire.",
     problem: "En Côte d'Ivoire, les automobilistes en panne n'ont aucun moyen fiable et rapide de trouver un dépanneur disponible à proximité. Les appels téléphoniques, le bouche-à-oreille et l'attente aléatoire créent stress et perte de temps.",
     solution: "RemoX est une application web et mobile qui géolocalise les dépanneurs disponibles en temps réel, permet à l'automobiliste de lancer une demande d'intervention, de suivre l'arrivée du dépanneur sur une carte et de régler en ligne.",
-    result: "Plateforme en cours de développement. Startup fondée et en cours de déclaration officielle. Rôle : CEO & Fondateur.",
+    result: "Plateforme en cours de développement. Déclaration et immatriculation en cours. Rôle : CEO & Fondateur.",
     technologies: ["React", "TypeScript", "Node.js", "PostgreSQL", "Google Maps API", "Socket.io", "Stripe"],
     category: "app-web",
     demo_url: "https://remox-landing.onrender.com",
