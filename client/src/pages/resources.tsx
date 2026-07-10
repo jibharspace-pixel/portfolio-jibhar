@@ -204,7 +204,6 @@ export default function Resources() {
                   <div className="w-20 h-20 rounded-2xl bg-primary/8 border border-primary/20 flex items-center justify-center mx-auto">
                     <Package className="w-9 h-9 text-primary/50" />
                   </div>
-                  <span className="absolute -top-2 -right-2 text-lg">🚀</span>
                 </div>
                 <h3 className="font-serif text-2xl font-bold text-foreground mb-2">
                   Bientôt disponible
