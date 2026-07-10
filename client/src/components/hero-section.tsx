@@ -1,4 +1,4 @@
-import { ArrowRight, Mail, BarChart3, CheckCircle2, FileText, Clock, ArrowDown, Sparkles } from "lucide-react";
+import { ArrowRight, Mail, BarChart3, CheckCircle2, FileText, Clock, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
@@ -279,35 +279,6 @@ export function HeroSection() {
                 <div className="hero-photo-topline absolute inset-x-0 top-0 h-[2px] pointer-events-none" />
               </div>
 
-              {/* Floating "expertise" badge */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className={`absolute -right-6 top-12 z-20 flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-semibold shadow-lg backdrop-blur-sm ${
-                  isDark
-                    ? "bg-[rgba(6,9,18,0.85)] border-white/10 text-white/80"
-                    : "bg-white/90 border-black/8 text-foreground"
-                }`}
-              >
-                <Sparkles className="w-3.5 h-3.5 text-primary shrink-0" />
-                <span>Full-Stack & Data</span>
-              </motion.div>
-
-              {/* Floating experience badge */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 1.3, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className={`absolute -left-8 bottom-16 z-20 flex flex-col items-center justify-center w-16 h-16 rounded-2xl border shadow-lg backdrop-blur-sm ${
-                  isDark
-                    ? "bg-[rgba(6,9,18,0.85)] border-white/10"
-                    : "bg-white/90 border-black/8"
-                }`}
-              >
-                <span className={`text-[1.4rem] font-black font-serif leading-none hero-cta-primary-text`}>3+</span>
-                <span className={`text-[9px] font-mono uppercase tracking-wide mt-0.5 ${isDark ? "text-white/35" : "text-muted-foreground/60"}`}>ans exp.</span>
-              </motion.div>
             </div>
           </motion.div>
         </div>

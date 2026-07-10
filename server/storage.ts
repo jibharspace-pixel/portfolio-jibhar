@@ -33,6 +33,53 @@ const DEFAULT_SERVICES = [
   { id: "web",  title: "Développement Web", description: "Applications web modernes, performantes et adaptées.", icon: "Globe", features: ["React / TypeScript", "REST API", "PostgreSQL"] },
 ];
 
+const DEFAULT_PROJECTS = [
+  {
+    title: "RemoX",
+    description: "Plateforme de mise en relation entre automobilistes et dépanneurs remorqueurs en Côte d'Ivoire. Coordination des interventions en temps réel, partout sur le territoire.",
+    problem: "En Côte d'Ivoire, les automobilistes en panne n'ont aucun moyen fiable et rapide de trouver un dépanneur disponible à proximité. Les appels téléphoniques, le bouche-à-oreille et l'attente aléatoire créent stress et perte de temps.",
+    solution: "RemoX est une application web et mobile qui géolocalise les dépanneurs disponibles en temps réel, permet à l'automobiliste de lancer une demande d'intervention, de suivre l'arrivée du dépanneur sur une carte et de régler en ligne.",
+    result: "Plateforme en cours de développement. Startup fondée et en cours de déclaration officielle. Rôle : CEO & Co-fondateur.",
+    technologies: ["React", "TypeScript", "Node.js", "PostgreSQL", "Google Maps API", "Socket.io", "Stripe"],
+    category: "app-web",
+    demo_url: "https://remox-landing.onrender.com",
+    download_url: null as unknown as undefined,
+  },
+  {
+    title: "ILT — Ingénieurs en Logistique & Transport",
+    description: "Site web institutionnel pour une association professionnelle regroupant des ingénieurs spécialisés en logistique et transport.",
+    problem: "L'association n'avait pas de présence digitale centralisée pour valoriser ses membres, partager ses actualités et faciliter les échanges avec les partenaires.",
+    solution: "Conception et développement d'un site vitrine moderne avec pages dédiées aux membres, publications, événements, et formulaire de contact.",
+    result: "Site livré avec une interface claire, responsive et optimisée pour renforcer la crédibilité de l'association.",
+    technologies: ["React", "TypeScript", "Tailwind CSS", "Express", "PostgreSQL"],
+    category: "site-web",
+    demo_url: null as unknown as undefined,
+    download_url: null as unknown as undefined,
+  },
+  {
+    title: "Agence de Musique — Site Web",
+    description: "Site web vitrine pour une agence de musique : présentation des artistes, catalogue, actualités et gestion des demandes de booking.",
+    problem: "L'agence gérait ses artistes et ses contacts de manière informelle, sans plateforme centralisée pour présenter son catalogue et recevoir des demandes de prestation.",
+    solution: "Développement d'un site élégant et immersif mettant en valeur les artistes de l'agence, avec espace portfolio audio/vidéo et formulaire de contact dédié au booking.",
+    result: "Site livré, design identitaire fort, expérience utilisateur fluide sur mobile et desktop.",
+    technologies: ["React", "TypeScript", "Tailwind CSS", "Framer Motion"],
+    category: "site-web",
+    demo_url: null as unknown as undefined,
+    download_url: null as unknown as undefined,
+  },
+  {
+    title: "Agence de Voyage — Site Web",
+    description: "Site web pour une agence de voyage : présentation des destinations, packages, offres spéciales et système de prise de contact.",
+    problem: "L'agence souhaitait moderniser son image digitale et centraliser la présentation de ses offres pour capter de nouveaux clients en ligne.",
+    solution: "Conception d'un site vitrine attrayant avec galeries de destinations, fiches de séjours détaillées, formulaire de devis et intégration des réseaux sociaux.",
+    result: "Site responsive et visuel livré, avec un parcours utilisateur optimisé pour transformer les visiteurs en prospects qualifiés.",
+    technologies: ["React", "TypeScript", "Tailwind CSS", "Framer Motion", "Node.js"],
+    category: "site-web",
+    demo_url: null as unknown as undefined,
+    download_url: null as unknown as undefined,
+  },
+];
+
 // ─── Helper: upsert single-row tables ─────────────────────────────────────────
 
 async function ensureContactInfo() {
@@ -58,10 +105,32 @@ async function ensureServices() {
   }
 }
 
+async function ensureProjects() {
+  const rows = await db.select().from(projects);
+  if (!rows.length) {
+    for (const p of DEFAULT_PROJECTS) {
+      await db.insert(projects).values({
+        id: randomUUID(),
+        title: p.title,
+        description: p.description,
+        problem: p.problem,
+        solution: p.solution,
+        result: p.result,
+        technologies: p.technologies as unknown as string[],
+        category: p.category,
+        demo_url: p.demo_url ?? null,
+        download_url: null,
+        media: [] as unknown as MediaItem[],
+      });
+    }
+  }
+}
+
 export async function initDb() {
   await ensureContactInfo();
   await ensureSiteContent();
   await ensureServices();
+  await ensureProjects();
 }
 
 // ─── Projects ─────────────────────────────────────────────────────────────────
