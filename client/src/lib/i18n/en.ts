@@ -10,7 +10,7 @@ export const en = {
     cv: "CV",
   },
   hero: {
-    role: "Logistics professional, self-taught developer",
+    role: "Logistics professional, developer by passion",
     available: "Available · Côte d'Ivoire",
     viewProjects: "View my projects",
     contactMe: "Contact me",
@@ -39,7 +39,7 @@ export const en = {
       },
       {
         title: "Web Development & Applications",
-        description: "Modern, performant and scalable web applications - from React frontend to Rust backend, turnkey.",
+        description: "Modern, scalable web applications - from React frontend to Rust backend, turnkey.",
         features: ["React.js / TypeScript", "REST API (Rust / Node.js)", "Databases (PostgreSQL)", "Deployment & hosting"],
       },
       {
@@ -80,17 +80,17 @@ export const en = {
   about: {
     badge: "About",
     title: "Who am I?",
-    quote: "A determined self-taught developer, I turn complexity into simple and effective solutions.",
-    bio1: "Graduate of the Institut National Polytechnique Félix Houphouët-Boigny (INPHB) with a Bachelor's degree in Supply Chain. This solid logistics training hasn't stopped me from exploring and nurturing my passion for technology.",
-    bio2: "I design digital solutions based on automation and web application development. I also specialise in data analysis using Power BI, SQL, Excel and Power Pivot.",
-    bio3: "I also share my digital resources and tools through Nexalion Digital Store, my online shop built for professionals who want to move faster.",
-    bio2Bold: "data analysis",
-    journeyTitle: "Journey",
+    quote: "Logistics professional, developer by passion - I work where tech meets the real world.",
+    bio1: "Graduate in Logistics & Transport from the Institut National Polytechnique Félix Houphouët-Boigny (INPHB), I gained hands-on experience in the field: transport planning at Nestlé CI, international shipments at BIA Group, fleet management at PC Plus Group, and container storage optimisation at Abidjan Terminal.",
+    bio2: "Now independent, I work on two fronts: Tech & Digital (websites, data solutions, AI, Excel/VBA automation) and Logistics (inventory, planning, temporary storage connections).",
+    bio3: "I am launching RemoX, a platform designed to digitalise and connect roadside assistance operators, and BabiRide, a ridesharing solution coming soon to the app store.",
+    bio2Bold: "Tech & Digital",
+    journeyTitle: "Professional journey",
     academicTitle: "Academic background",
     academicDate: "2021 – 2024",
     academicDegree: "Higher Technician Diploma - Logistics & Transport",
     academicSchool: "Institut National Polytechnique Félix Houphouët-Boigny (INP-HB) / ESCAE - Abidjan, Côte d'Ivoire",
-    statsLabels: { projects: "Projects", clients: "Clients", years: "Years" },
+    statsLabels: { projects: "Projects", clients: "Companies", years: "Years exp." },
     timeline: [
       {
         period: "Jul 2026 - Present",
@@ -108,13 +108,13 @@ export const en = {
         period: "Dec 2025 - Present",
         title: "Independent Freelancer",
         org: "Freelance missions - Abidjan, Côte d'Ivoire",
-        desc: "Data analysis (Power BI, Excel), web and AI application development, rapid prototyping, Excel automation, custom chatbots. Own projects: OUKAMI (medical AI & fundraising) and a lost ID card recovery platform.",
+        desc: "Data analysis (Power BI, Excel), web and AI application development, rapid prototyping (MVP in 50 min), Excel automation, custom chatbots. Own projects: OUKAMI (medical AI & fundraising) and a lost ID card recovery platform.",
       },
       {
         period: "Apr - Nov 2025",
         title: "Transport Officer",
         org: "NESTLÉ CI",
-        desc: "Transport planning for local deliveries and inter-site transfers. Transport cost compliance verification. Stock and pallet inventory tracking. Procurement and pallet management across multiple sites. Power BI dashboards for transport data and cost analysis.",
+        desc: "Transport planning for local deliveries and inter-site transfers. Transport cost compliance verification. Stock and pallet inventory tracking. Procurement and pallet management across multiple sites (Factory & Distribution Center). Power BI dashboards for transport data and cost analysis.",
       },
       {
         period: "Mar - Apr 2025",
@@ -138,9 +138,10 @@ export const en = {
     values: [
       { label: "Rigour", desc: "Every detail matters for a flawless result." },
       { label: "Adaptability", desc: "I adapt to your stack and constraints." },
-      { label: "Fast delivery", desc: "Operational solutions without unnecessary delays." },
-      { label: "Communication", desc: "Transparent on progress at every step." },
+      { label: "Real impact", desc: "Solutions that solve real on-the-ground problems." },
+      { label: "Community engagement", desc: "Contributing to projects with a positive impact for the community." },
     ],
+    rapNote: "Passionate about RAP 🎤 - music 🎵, reliable logistics & digital 🚀, all in the same universe 🌍. Want to hear some good rap? Stay here, we'll have fun too 😎🎶",
   },
   contact: {
     badge: "Contact",
@@ -165,7 +166,7 @@ export const en = {
     errorLoading: "Unable to load contact information.",
   },
   footer: {
-    role: "Logistics professional, self-taught developer",
+    role: "Logistics professional, developer by passion",
     navTitle: "Navigation",
     contactTitle: "Contact",
     stackTitle: "Stack",
