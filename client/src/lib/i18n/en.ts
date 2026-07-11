@@ -96,7 +96,7 @@ export const en = {
         period: "Jul 2026 - Present",
         title: "Associate",
         org: "Rehoboth Sther Inc. - Abidjan, Côte d'Ivoire",
-        desc: "Associate at Rehoboth Sther Inc., a company specialising in digital and technology solutions.",
+        desc: "Associate at Rehoboth Sther Inc., a company specialising in digital, technology and logistics solutions.",
       },
       {
         period: "Jan 2026 - Present",
