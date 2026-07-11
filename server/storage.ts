@@ -156,22 +156,25 @@ async function ensureProjects() {
     }
   }
 
+  // Re-fetch after potential inserts so media migrations find all projects
+  const allRows = await db.select().from(projects);
+
   // Add screenshot to Pouponnière project if it has no media yet
-  const poupo = rows.find(r => r.title.includes("Pouponnière"));
+  const poupo = allRows.find(r => r.title.includes("Pouponnière"));
   if (poupo) {
     const existing = (poupo.media as MediaItem[]) ?? [];
     if (!existing.some(m => m.url.includes("pouponniere"))) {
-      const item: MediaItem = { id: randomUUID(), url: "/uploads/pouponniere.png", media_type: "image", project_id: poupo.id };
+      const item: MediaItem = { id: randomUUID(), url: "/pouponniere.png", media_type: "image", project_id: poupo.id };
       await db.update(projects).set({ media: [...existing, item] }).where(eq(projects.id, poupo.id));
     }
   }
 
   // Add hero image to RemoX project if not already present
-  const remox = rows.find(r => r.title === "RemoX");
+  const remox = allRows.find(r => r.title === "RemoX");
   if (remox) {
     const existing = (remox.media as MediaItem[]) ?? [];
     if (!existing.some(m => m.url.includes("remoxhero"))) {
-      const item: MediaItem = { id: randomUUID(), url: "/uploads/remoxhero.png", media_type: "image", project_id: remox.id };
+      const item: MediaItem = { id: randomUUID(), url: "/remoxhero.png", media_type: "image", project_id: remox.id };
       await db.update(projects).set({ media: [...existing, item] }).where(eq(projects.id, remox.id));
     }
   }
