@@ -95,8 +95,8 @@ export const fr = {
       {
         period: "Juil 2026 - Présent",
         title: "Associé",
-        org: "Rsinc Digital SARL - Abidjan, Côte d'Ivoire",
-        desc: "Associé au sein de Rsinc Digital SARL, société spécialisée dans les solutions digitales et technologiques.",
+        org: "Rehoboth Sther Inc. - Abidjan, Côte d'Ivoire",
+        desc: "Associé au sein de Rehoboth Sther Inc., société spécialisée dans les solutions digitales et technologiques.",
       },
       {
         period: "Jan 2026 - Présent",

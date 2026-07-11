@@ -95,8 +95,8 @@ export const en = {
       {
         period: "Jul 2026 - Present",
         title: "Associate",
-        org: "Rsinc Digital SARL - Abidjan, Côte d'Ivoire",
-        desc: "Associate at Rsinc Digital SARL, a company specialising in digital and technology solutions.",
+        org: "Rehoboth Sther Inc. - Abidjan, Côte d'Ivoire",
+        desc: "Associate at Rehoboth Sther Inc., a company specialising in digital and technology solutions.",
       },
       {
         period: "Jan 2026 - Present",
