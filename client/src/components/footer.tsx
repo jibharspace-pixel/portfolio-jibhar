@@ -103,6 +103,12 @@ export function Footer() {
                   <ExternalLink className="w-3 h-3" />
                 </a>
               </li>
+              <li>
+                <a href="https://rsincdigital.online/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5">
+                  Rehoboth Sther Inc.
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </li>
               <li className="text-sm text-muted-foreground">Abidjan, Côte d'Ivoire</li>
               <li className="text-sm text-muted-foreground flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
