@@ -178,6 +178,26 @@ async function ensureProjects() {
       await db.update(projects).set({ media: [...existing, item] }).where(eq(projects.id, remox.id));
     }
   }
+
+  // Add AbidjPlug image to Agence de Musique project
+  const musique = allRows.find(r => r.title.includes("Musique"));
+  if (musique) {
+    const existing = (musique.media as MediaItem[]) ?? [];
+    if (!existing.some(m => m.url.includes("AbidjPlug"))) {
+      const item: MediaItem = { id: randomUUID(), url: "/AbidjPlug.png", media_type: "image", project_id: musique.id };
+      await db.update(projects).set({ media: [...existing, item] }).where(eq(projects.id, musique.id));
+    }
+  }
+
+  // Add ilt2 image to ILT project
+  const ilt = allRows.find(r => r.title.includes("ILT"));
+  if (ilt) {
+    const existing = (ilt.media as MediaItem[]) ?? [];
+    if (!existing.some(m => m.url.includes("ilt2"))) {
+      const item: MediaItem = { id: randomUUID(), url: "/ilt2.png", media_type: "image", project_id: ilt.id };
+      await db.update(projects).set({ media: [...existing, item] }).where(eq(projects.id, ilt.id));
+    }
+  }
 }
 
 export async function initDb() {
