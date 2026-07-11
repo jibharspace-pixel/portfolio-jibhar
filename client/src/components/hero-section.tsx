@@ -76,14 +76,13 @@ export function HeroSection() {
             <motion.div variants={itemVariants}>
               <div className="flex items-center gap-3">
                 <div className={`w-6 h-px ${isDark ? "bg-white/20" : "bg-foreground/20"}`} />
-                <p className={`font-serif italic text-[1.45rem] sm:text-[1.65rem] font-medium tracking-wide ${isDark ? "text-white/55" : "text-foreground/55"}`}>
+                <p className={`font-serif italic text-[1.45rem] sm:text-[1.65rem] font-medium tracking-wide flex flex-wrap gap-x-[0.28em] ${isDark ? "text-white/55" : "text-foreground/55"}`}>
                   {"Bienvenue dans mon univers, je suis Kroman Samuel".split(" ").map((word, i) => (
                     <motion.span
                       key={i}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.4, delay: 0.1 + i * 0.07, ease: [0.16, 1, 0.3, 1] }}
-                      className="inline-block mr-[0.28em]"
                     >
                       {word}
                     </motion.span>
