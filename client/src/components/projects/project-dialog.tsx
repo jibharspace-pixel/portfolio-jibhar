@@ -54,7 +54,7 @@ export function ProjectDialog({ project, projects, onClose, onSelect }: Props) {
 
   return (
     <Dialog open={!!project} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[92vh] overflow-hidden p-0 gap-0 [&>button]:hidden flex flex-col">
+      <DialogContent className="max-w-3xl h-[92vh] overflow-hidden p-0 gap-0 [&>button]:hidden flex flex-col">
         {project && (() => {
           const Icon = CATEGORY_ICONS[project.category] ?? BarChart3;
           const style = CATEGORY_STYLES[project.category] ?? DEFAULT_STYLE;
@@ -132,7 +132,7 @@ export function ProjectDialog({ project, projects, onClose, onSelect }: Props) {
                 </div>
 
                 {/* Scrollable content */}
-                <div className="flex-1 overflow-y-auto p-6 pt-5 space-y-5">
+                <div className="flex-1 min-h-0 overflow-y-auto p-6 pt-5 space-y-5">
                   {/* Title row */}
                   <div>
                     <div className="flex items-center gap-2 mb-2">
