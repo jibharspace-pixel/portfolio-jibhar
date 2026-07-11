@@ -198,6 +198,16 @@ async function ensureProjects() {
       await db.update(projects).set({ media: [...existing, item] }).where(eq(projects.id, ilt.id));
     }
   }
+
+  // Add capchina image to Capchina Travel project
+  const capchina = allRows.find(r => r.title.includes("Capchina"));
+  if (capchina) {
+    const existing = (capchina.media as MediaItem[]) ?? [];
+    if (!existing.some(m => m.url.includes("capchina"))) {
+      const item: MediaItem = { id: randomUUID(), url: "/capchina.png", media_type: "image", project_id: capchina.id };
+      await db.update(projects).set({ media: [...existing, item] }).where(eq(projects.id, capchina.id));
+    }
+  }
 }
 
 export async function initDb() {
