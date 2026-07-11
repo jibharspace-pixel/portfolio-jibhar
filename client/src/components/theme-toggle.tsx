@@ -22,10 +22,9 @@ export function ThemeToggle() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.18 }}
-            className="flex items-center gap-1.5"
+            className="flex items-center"
           >
             <Sun className="w-3.5 h-3.5 shrink-0" />
-            <span className="hidden sm:inline">Clair</span>
           </motion.span>
         ) : (
           <motion.span
@@ -34,10 +33,9 @@ export function ThemeToggle() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.18 }}
-            className="flex items-center gap-1.5"
+            className="flex items-center"
           >
             <Moon className="w-3.5 h-3.5 shrink-0" />
-            <span className="hidden sm:inline">Sombre</span>
           </motion.span>
         )}
       </AnimatePresence>
