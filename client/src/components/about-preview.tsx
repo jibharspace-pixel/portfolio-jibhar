@@ -18,21 +18,10 @@ export function AboutPreview() {
           <ScrollReveal direction="left">
             <div className="space-y-6">
 
-              {/* Intro line */}
-              <p className="font-serif italic text-foreground/50 text-[1.05rem] tracking-wide">
-                Hey, je suis
-              </p>
-
               {/* Massive mixed headline */}
               <div className="leading-[0.88] tracking-tight select-none">
                 <span
-                  className="block font-serif italic text-foreground/50 dark:text-foreground/40"
-                  style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.8rem)" }}
-                >
-                  Hey je suis
-                </span>
-                <span
-                  className="block font-serif font-black italic text-foreground dark:text-foreground mt-2"
+                  className="block font-serif font-black italic text-foreground dark:text-foreground"
                   style={{ fontSize: "clamp(2.8rem, 7vw, 6rem)" }}
                 >
                   Logisticien
