@@ -87,9 +87,12 @@ export const en = {
     bio2Bold: "data analysis",
     journeyTitle: "Journey",
     academicTitle: "Academic background",
-    academicDate: "June 2024",
-    academicDegree: "INPHB - Supply Chain Bachelor",
-    academicSchool: "Institut Félix Houphouët-Boigny",
+    academicDate: "2021 – 2024",
+    academicDegree: "Higher Technician Diploma - Logistics & Transport",
+    academicSchool: "Institut National Polytechnique Félix Houphouët-Boigny (INP-HB) / ESCAE - Abidjan, Côte d'Ivoire",
+    academicDate2: "In progress",
+    academicDegree2: "Bachelor's Degree in Logistics & Transport",
+    academicSchool2: "Institut National Polytechnique Félix Houphouët-Boigny (INP-HB) - Yamoussoukro, Côte d'Ivoire",
     statsLabels: { projects: "Projects", clients: "Clients", years: "Years" },
     timeline: [
       {

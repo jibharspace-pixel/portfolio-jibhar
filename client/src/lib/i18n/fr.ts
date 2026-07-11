@@ -90,6 +90,9 @@ export const fr = {
     academicDate: "2021 – 2024",
     academicDegree: "Diplôme de Technicien Supérieur - Logistique & Transports",
     academicSchool: "Institut National Polytechnique Félix Houphouët-Boigny (INP-HB) / ESCAE - Abidjan, Côte d'Ivoire",
+    academicDate2: "En cours",
+    academicDegree2: "Licence en Logistique et Transports",
+    academicSchool2: "Institut National Polytechnique Félix Houphouët-Boigny (INP-HB) - Yamoussoukro, Côte d'Ivoire",
     statsLabels: { projects: "Projets", clients: "Entreprises", years: "Années exp." },
     timeline: [
       {
