@@ -165,6 +165,16 @@ async function ensureProjects() {
       await db.update(projects).set({ media: [...existing, item] }).where(eq(projects.id, poupo.id));
     }
   }
+
+  // Add hero image to RemoX project if not already present
+  const remox = rows.find(r => r.title === "RemoX");
+  if (remox) {
+    const existing = (remox.media as MediaItem[]) ?? [];
+    if (!existing.some(m => m.url.includes("remoxhero"))) {
+      const item: MediaItem = { id: randomUUID(), url: "/uploads/remoxhero.png", media_type: "image", project_id: remox.id };
+      await db.update(projects).set({ media: [...existing, item] }).where(eq(projects.id, remox.id));
+    }
+  }
 }
 
 export async function initDb() {
