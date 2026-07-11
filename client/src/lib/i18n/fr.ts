@@ -93,6 +93,12 @@ export const fr = {
     statsLabels: { projects: "Projets", clients: "Entreprises", years: "Années exp." },
     timeline: [
       {
+        period: "Juil 2026 - Présent",
+        title: "Associé",
+        org: "Rsinc Digital SARL - Abidjan, Côte d'Ivoire",
+        desc: "Associé au sein de Rsinc Digital SARL, société spécialisée dans les solutions digitales et technologiques.",
+      },
+      {
         period: "Jan 2026 - Présent",
         title: "CEO & Fondateur",
         org: "RemoX - Abidjan, Côte d'Ivoire",
