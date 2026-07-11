@@ -208,6 +208,21 @@ async function ensureProjects() {
       await db.update(projects).set({ media: [...existing, item] }).where(eq(projects.id, capchina.id));
     }
   }
+
+  // Fix old /uploads/ URLs → /public root for pouponniere and remox
+  for (const row of allRows) {
+    const media = (row.media as MediaItem[]) ?? [];
+    const fixed = media.map(m => m.url.startsWith("/uploads/") ? { ...m, url: m.url.replace("/uploads/", "/") } : m);
+    if (JSON.stringify(fixed) !== JSON.stringify(media)) {
+      await db.update(projects).set({ media: fixed }).where(eq(projects.id, row.id));
+    }
+  }
+
+  // Remove duplicate "Agence de Voyage — Site Web" (not Capchina)
+  const duplicate = allRows.find(r => r.title === "Agence de Voyage — Site Web");
+  if (duplicate) {
+    await db.delete(projects).where(eq(projects.id, duplicate.id));
+  }
 }
 
 export async function initDb() {
