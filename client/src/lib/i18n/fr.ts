@@ -83,7 +83,7 @@ export const fr = {
     quote: "Logisticien de terrain, développeur par passion - j'interviens là où la tech rencontre le réel.",
     bio1: "Diplômé en Logistique & Transports de l'Institut National Polytechnique Félix Houphouët-Boigny (INPHB), j'ai fait mes armes sur le terrain : planification transport chez Nestlé CI, expéditions internationales chez BIA Group, gestion de parc auto chez PC Plus Group, et optimisation du stockage conteneurs à Abidjan Terminal.",
     bio2: "Aujourd'hui indépendant, j'interviens sur deux fronts : Tech & Digital (sites web, solutions data, IA, automatisation Excel/VBA) et Logistique (inventaire, planification, mise en relation stockage temporaire).",
-    bio3: "Je lance RemoX, une plateforme conçue pour digitaliser et connecter les acteurs de l'assistance routière, et BabiRide, solution de covoiturage bientôt sur le store.",
+    bio3: "Je lance RemoX, une plateforme conçue pour digitaliser et connecter les acteurs de l'assistance routière.",
     bio2Bold: "Tech & Digital",
     journeyTitle: "Parcours professionnel",
     academicTitle: "Formation académique",

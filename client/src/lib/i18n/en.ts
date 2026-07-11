@@ -83,7 +83,7 @@ export const en = {
     quote: "Logistics professional, developer by passion - I work where tech meets the real world.",
     bio1: "Graduate in Logistics & Transport from the Institut National Polytechnique Félix Houphouët-Boigny (INPHB), I gained hands-on experience in the field: transport planning at Nestlé CI, international shipments at BIA Group, fleet management at PC Plus Group, and container storage optimisation at Abidjan Terminal.",
     bio2: "Now independent, I work on two fronts: Tech & Digital (websites, data solutions, AI, Excel/VBA automation) and Logistics (inventory, planning, temporary storage connections).",
-    bio3: "I am launching RemoX, a platform designed to digitalise and connect roadside assistance operators, and BabiRide, a ridesharing solution coming soon to the app store.",
+    bio3: "I am launching RemoX, a platform designed to digitalise and connect roadside assistance operators.",
     bio2Bold: "Tech & Digital",
     journeyTitle: "Professional journey",
     academicTitle: "Academic background",
