@@ -245,40 +245,23 @@ export function AboutSection() {
               </div>
             </ScrollReveal>
 
-            {/* Formation cards */}
+            {/* Formation card */}
             <ScrollReveal direction="right" delay={180}>
-              <div className="space-y-2.5">
-                <Card className="border border-border/60 shadow-sm">
-                  <CardContent className="p-4 flex items-start gap-3">
-                    <div className="p-2.5 rounded-xl bg-primary/10 text-primary shrink-0">
-                      <GraduationCap className="w-5 h-5" />
+              <Card className="border border-border/60 shadow-sm">
+                <CardContent className="p-4 flex items-start gap-3">
+                  <div className="p-2.5 rounded-xl bg-primary/10 text-primary shrink-0">
+                    <GraduationCap className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <h3 className="font-semibold text-sm">{t.about.academicTitle}</h3>
+                      <Badge variant="secondary" className="text-[10px] rounded-full px-2">{t.about.academicDate}</Badge>
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2 mb-0.5">
-                        <h3 className="font-semibold text-sm">{t.about.academicTitle}</h3>
-                        <Badge variant="secondary" className="text-[10px] rounded-full px-2">{t.about.academicDate}</Badge>
-                      </div>
-                      <p className="text-sm font-medium text-foreground">{t.about.academicDegree}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">{t.about.academicSchool}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-                <Card className="border border-border/60 shadow-sm">
-                  <CardContent className="p-4 flex items-start gap-3">
-                    <div className="p-2.5 rounded-xl bg-primary/10 text-primary shrink-0">
-                      <GraduationCap className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2 mb-0.5">
-                        <h3 className="font-semibold text-sm">{t.about.academicTitle}</h3>
-                        <Badge variant="secondary" className="text-[10px] rounded-full px-2">{(t.about as any).academicDate2}</Badge>
-                      </div>
-                      <p className="text-sm font-medium text-foreground">{(t.about as any).academicDegree2}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">{(t.about as any).academicSchool2}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+                    <p className="text-sm font-medium text-foreground">{t.about.academicDegree}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{t.about.academicSchool}</p>
+                  </div>
+                </CardContent>
+              </Card>
             </ScrollReveal>
 
             {/* Values */}
