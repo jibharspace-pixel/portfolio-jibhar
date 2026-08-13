@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import {
   BarChart3, Image as ImageIcon, Play,
   ChevronLeft, ChevronRight, Layers, Eye,
@@ -20,12 +20,16 @@ export function CardMediaCarousel({ project, onOpenDialog, viewLabel }: Props) {
   const media = project.media ?? [];
   const count = media.length;
 
-  const navigate = useCallback((dir: 1 | -1, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const step = useCallback((dir: 1 | -1) => {
     setSlideClass(dir === 1 ? "media-slide-right" : "media-slide-left");
     setIdx((i) => (i + dir + count) % count);
     setTimeout(() => setSlideClass(""), 300);
   }, [count]);
+
+  const navigate = useCallback((dir: 1 | -1, e: React.MouseEvent) => {
+    e.stopPropagation();
+    step(dir);
+  }, [step]);
 
   const goTo = useCallback((i: number, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -33,6 +37,50 @@ export function CardMediaCarousel({ project, onOpenDialog, viewLabel }: Props) {
     setIdx(i);
     setTimeout(() => setSlideClass(""), 300);
   }, [idx]);
+
+  // ── Drag / swipe ──────────────────────────────────────────────────────────
+  const SWIPE_THRESHOLD = 50;
+  const dragStart = useRef<{ x: number; y: number } | null>(null);
+  const didDrag = useRef(false);
+  const [dragX, setDragX] = useState(0);
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (count < 2) return;
+    dragStart.current = { x: e.clientX, y: e.clientY };
+    didDrag.current = false;
+  };
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!dragStart.current) return;
+    const dx = e.clientX - dragStart.current.x;
+    const dy = e.clientY - dragStart.current.y;
+    // Only claim the gesture once it is clearly horizontal, so vertical page
+    // scrolling on touch devices keeps working.
+    if (!didDrag.current && Math.abs(dx) > 6 && Math.abs(dx) > Math.abs(dy)) {
+      didDrag.current = true;
+      e.currentTarget.setPointerCapture(e.pointerId);
+    }
+    if (didDrag.current) setDragX(dx);
+  };
+
+  const onPointerUp = (e: React.PointerEvent) => {
+    if (!dragStart.current) return;
+    const dx = e.clientX - dragStart.current.x;
+    dragStart.current = null;
+    setDragX(0);
+    if (didDrag.current && Math.abs(dx) >= SWIPE_THRESHOLD) {
+      step(dx < 0 ? 1 : -1);
+    }
+  };
+
+  // A drag must not also open the dialog.
+  const handleClick = () => {
+    if (didDrag.current) {
+      didDrag.current = false;
+      return;
+    }
+    onOpenDialog();
+  };
 
   if (count === 0) {
     return (
@@ -60,14 +108,25 @@ export function CardMediaCarousel({ project, onOpenDialog, viewLabel }: Props) {
 
   return (
     <div
-      className="relative w-full aspect-video overflow-hidden bg-black border-b border-border/40 group/carousel cursor-pointer"
-      onClick={onOpenDialog}
+      className={`relative w-full aspect-video overflow-hidden bg-black border-b border-border/40 group/carousel touch-pan-y select-none ${
+        count > 1 ? (dragX !== 0 ? "cursor-grabbing" : "cursor-grab") : "cursor-pointer"
+      }`}
+      onClick={handleClick}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
     >
-      <div key={`${project.id}-${idx}`} className={`w-full h-full ${slideClass}`}>
+      <div
+        key={`${project.id}-${idx}`}
+        className={`w-full h-full ${slideClass}`}
+        style={dragX !== 0 ? { transform: `translateX(${dragX}px)` } : undefined}
+      >
         {current.media_type === "image" ? (
           <img
             src={current.url}
             alt={project.title}
+            draggable={false}
             className="w-full h-full object-cover transition-transform duration-500 group-hover/carousel:scale-[1.03]"
           />
         ) : (
