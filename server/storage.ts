@@ -53,7 +53,7 @@ const DEFAULT_PROJECTS = [
     result: "Site livré avec une interface claire, responsive et optimisée pour renforcer la crédibilité de l'association.",
     technologies: ["React", "TypeScript", "Tailwind CSS", "Express", "PostgreSQL"],
     category: "site-web",
-    demo_url: null as unknown as undefined,
+    demo_url: "https://unelilt.onrender.com/",
     download_url: null as unknown as undefined,
   },
   {
@@ -64,7 +64,7 @@ const DEFAULT_PROJECTS = [
     result: "Site livré, design identitaire fort, expérience utilisateur fluide sur mobile et desktop.",
     technologies: ["React", "TypeScript", "Tailwind CSS", "Framer Motion"],
     category: "site-web",
-    demo_url: null as unknown as undefined,
+    demo_url: "https://www.abidjanplug.com",
     download_url: null as unknown as undefined,
   },
   {
@@ -189,6 +189,11 @@ async function ensureProjects() {
     }
   }
 
+  // Add live site URL to Agence de Musique project
+  if (musique && !musique.demo_url) {
+    await db.update(projects).set({ demo_url: "https://www.abidjanplug.com" }).where(eq(projects.id, musique.id));
+  }
+
   // Add ilt2 image to ILT project
   const ilt = allRows.find(r => r.title.includes("ILT"));
   if (ilt) {
@@ -197,6 +202,11 @@ async function ensureProjects() {
       const item: MediaItem = { id: randomUUID(), url: "/ilt2.png", media_type: "image", project_id: ilt.id };
       await db.update(projects).set({ media: [...existing, item] }).where(eq(projects.id, ilt.id));
     }
+  }
+
+  // Add live site URL to ILT project
+  if (ilt && !ilt.demo_url) {
+    await db.update(projects).set({ demo_url: "https://unelilt.onrender.com/" }).where(eq(projects.id, ilt.id));
   }
 
   // Add capchina image to Capchina Travel project
