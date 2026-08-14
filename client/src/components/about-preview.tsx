@@ -1,9 +1,14 @@
+import { useState } from "react";
 import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { ScrollReveal } from "@/components/scroll-reveal";
+import { ContactDialog } from "@/components/contact-dialog";
+import profileImage from "@assets/Jibhar-costume.jpeg";
 
 export function AboutPreview() {
+  const [contactOpen, setContactOpen] = useState(false);
+
   return (
     <section className="relative bg-[hsl(210,20%,98%)] dark:bg-[hsl(222,20%,7%)] border-t border-border/40 overflow-hidden">
 
@@ -11,9 +16,9 @@ export function AboutPreview() {
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-24">
-        <div className="max-w-3xl">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
 
-          {/* ── Big editorial typography ───────── */}
+          {/* ── Left: Big editorial typography ───────── */}
           <ScrollReveal direction="left">
             <div className="space-y-6">
 
@@ -34,7 +39,7 @@ export function AboutPreview() {
               </div>
 
               {/* Description */}
-              <p className="text-muted-foreground leading-relaxed text-[0.95rem] max-w-[560px] pt-2">
+              <p className="text-muted-foreground leading-relaxed text-[0.95rem] max-w-[400px] pt-2">
                 Diplômé de l'INPHB en Logistique &amp; Transports, je bâtis des solutions digitales
                 pour simplifier les opérations, maîtriser les flux et connecter les bonnes ressources.
               </p>
@@ -59,16 +64,17 @@ export function AboutPreview() {
 
               {/* CTA */}
               <div className="pt-2 flex items-center gap-4">
-                <Link href="/contact">
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-foreground text-background text-sm font-semibold cursor-pointer hover:bg-foreground/85 transition-colors"
-                  >
-                    Me contacter
-                    <ArrowRight className="w-4 h-4" />
-                  </motion.div>
-                </Link>
+                <motion.button
+                  type="button"
+                  onClick={() => setContactOpen(true)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-foreground text-background text-sm font-semibold cursor-pointer hover:bg-foreground/85 transition-colors"
+                  data-testid="button-contact-preview"
+                >
+                  Me contacter
+                  <ArrowRight className="w-4 h-4" />
+                </motion.button>
                 <Link href="/apropos">
                   <span className="text-sm font-medium text-primary hover:opacity-70 transition-opacity cursor-pointer">
                     En savoir plus sur moi →
@@ -77,8 +83,30 @@ export function AboutPreview() {
               </div>
             </div>
           </ScrollReveal>
+
+          {/* ── Right: Photo ──────────────────────────── */}
+          <ScrollReveal direction="right" delay={100}>
+            <div className="relative">
+              {/* Decorative accent */}
+              <div className="absolute -right-4 -top-4 w-24 h-24 rounded-full bg-primary/8 blur-2xl pointer-events-none" />
+
+              <div className="relative rounded-2xl overflow-hidden border border-border/60 shadow-lg min-h-[360px] lg:min-h-[440px]">
+                <img
+                  src={profileImage}
+                  alt="Kroman Jibhar Samuel"
+                  className="w-full h-full object-cover object-top absolute inset-0"
+                />
+                {/* Gradient overlay */}
+                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent" />
+                {/* Top accent */}
+                <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-primary to-blue-400" />
+              </div>
+            </div>
+          </ScrollReveal>
         </div>
       </div>
+
+      <ContactDialog open={contactOpen} onOpenChange={setContactOpen} />
     </section>
   );
 }

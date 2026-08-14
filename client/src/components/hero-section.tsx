@@ -1,11 +1,13 @@
+import { useState } from "react";
 import { ArrowRight, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/lib/language-context";
 import { useTheme } from "@/components/theme-provider";
+import { ContactDialog } from "@/components/contact-dialog";
 import { motion } from "framer-motion";
-import profileImage from "@assets/WhatsApp_Image_2025-12-18_à_11.19.30_7d050f19_1766058148816.jpg";
+import profileImage from "@assets/Jibhar-hero.jpg";
 
 interface SiteContent {
   hero_description: string;
@@ -27,6 +29,7 @@ export function HeroSection() {
   const isDark = theme === "dark";
   const { data: content } = useQuery<SiteContent>({ queryKey: ["/api/site-content"] });
   const description = content?.hero_description ?? defaultDescription;
+  const [contactOpen, setContactOpen] = useState(false);
 
   const bg = isDark
     ? "bg-gradient-to-br from-[#060912] via-[#080c1a] to-[#060b18]"
@@ -142,19 +145,18 @@ export function HeroSection() {
                   </Button>
                 </motion.div>
               </Link>
-              <Link href="/contact">
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className={`flex items-center gap-2 font-semibold text-sm px-7 w-full sm:w-auto ${isDark ? "hero-outline-btn-dark" : ""}`}
-                    data-testid="button-contact-me"
-                  >
-                    <Mail className="w-4 h-4" />
-                    {t.hero.contactMe}
-                  </Button>
-                </motion.div>
-              </Link>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={() => setContactOpen(true)}
+                  className={`flex items-center gap-2 font-semibold text-sm px-7 w-full sm:w-auto ${isDark ? "hero-outline-btn-dark" : ""}`}
+                  data-testid="button-contact-me"
+                >
+                  <Mail className="w-4 h-4" />
+                  {t.hero.contactMe}
+                </Button>
+              </motion.div>
             </motion.div>
           </motion.div>
 
@@ -225,6 +227,8 @@ export function HeroSection() {
           />
         </svg>
       </div>
+
+      <ContactDialog open={contactOpen} onOpenChange={setContactOpen} />
     </section>
   );
 }
