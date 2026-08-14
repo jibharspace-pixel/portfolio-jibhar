@@ -3,7 +3,8 @@
     "allow": [
       "PowerShell(Start-Process powershell -ArgumentList \"-NoExit\", \"-Command\", \"cd 'c:\\\\Users\\\\HP\\\\Downloads\\\\portfolio-jibhar'; npm run dev\")",
       "Bash(rm \"c:/Users/HP/Downloads/portfolio-jibhar/client/src/lib/i18n.ts\")",
-      "Bash(npm outdated *)"
+      "Bash(npm outdated *)",
+      "PowerShell(winget install --id GitHub.cli --accept-source-agreements --accept-package-agreements --disable-interactivity 2>&1)"
     ],
     "additionalDirectories": [
       "c:\\Users\\HP\\Downloads\\portfolio-jibhar\\client\\src\\lib"
