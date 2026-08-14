@@ -8,8 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { useLanguage } from "@/lib/language-context";
 import { useTheme } from "@/components/theme-provider";
-import profileImageMain   from "@assets/Jibhar-photo.jpeg";
-import profileImageStreet from "@assets/Jibhar-street.jpeg";
+// TODO: reactiver la 2e photo en deposant attached_assets/Jibhar-plage.jpeg
+import profileImageCostume from "@assets/Jibhar-costume.jpeg";
 
 interface SiteContent { hero_description: string; hero_highlights: string[]; about_quote: string; }
 
@@ -25,8 +25,7 @@ export function AboutSection() {
   const quote = siteContent?.about_quote || t.about.quote;
 
   const photos = [
-    { src: profileImageMain,   caption: "" },
-    { src: profileImageStreet, caption: "" },
+    { src: profileImageCostume, caption: "" },
   ];
   const [photoIdx, setPhotoIdx] = useState(0);
 
