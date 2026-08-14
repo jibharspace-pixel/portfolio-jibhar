@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Navigation } from "@/components/navigation";
+import { EmailCapture } from "@/components/email-capture";
 import { Footer } from "@/components/footer";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { useLanguage } from "@/lib/language-context";
@@ -235,6 +236,10 @@ export default function Resources() {
               ))}
             </div>
           )}
+
+          <div className="max-w-2xl mx-auto mt-14">
+            <EmailCapture source="resources" />
+          </div>
         </section>
       </main>
 

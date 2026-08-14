@@ -1,6 +1,18 @@
 import type { Express, Request, Response } from "express";
+import rateLimit from "express-rate-limit";
 import { checkAdmin } from "../helpers";
 import * as storage from "../storage";
+
+// Endpoint public : on plafonne pour eviter qu'il serve a inonder la table.
+const subscribeLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Trop de tentatives, réessayez dans quelques minutes." },
+});
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export function registerContactRoutes(app: Express): void {
   app.get("/api/contact", async (_req, res) => {
@@ -67,6 +79,35 @@ export function registerContactRoutes(app: Express): void {
   app.delete("/api/admin/messages/:id", async (req: Request, res: Response) => {
     if (!checkAdmin(req)) return res.sendStatus(401);
     await storage.deleteMessage(req.params.id);
+    res.sendStatus(204);
+  });
+
+  // ── Subscribers (capture email contre ressources gratuites) ──
+  app.post("/api/subscribe", subscribeLimiter, async (req: Request, res: Response) => {
+    const { email, source, consent_text } = req.body ?? {};
+    if (!email?.trim() || !EMAIL_RE.test(email.trim())) {
+      return res.status(400).json({ error: "Adresse email invalide." });
+    }
+    const ip = req.headers["x-forwarded-for"]?.toString() ?? req.socket.remoteAddress;
+    const sub = await storage.createSubscriber({
+      email: email.trim(),
+      source: (source ?? "site").toString().slice(0, 40),
+      consent_text: (consent_text ?? "").toString().slice(0, 500),
+      ip,
+    });
+    // "already" reste interne : ne pas reveler qui est deja inscrit.
+    res.json({ success: true });
+    void sub;
+  });
+
+  app.get("/api/admin/subscribers", async (req: Request, res: Response) => {
+    if (!checkAdmin(req)) return res.sendStatus(401);
+    res.json(await storage.getSubscribers());
+  });
+
+  app.delete("/api/admin/subscribers/:id", async (req: Request, res: Response) => {
+    if (!checkAdmin(req)) return res.sendStatus(401);
+    await storage.deleteSubscriber(req.params.id);
     res.sendStatus(204);
   });
 

@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   BookOpen, ArrowDownToLine, Image as ImageIcon,
   TrendingUp, Briefcase, Package, MessageSquare, Trash2, Eye, Loader2,
+  Mail, Download,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +13,10 @@ import type { AdminStats, BlogPost, FreeFile, Project } from "@shared/schema";
 interface ContactMessage {
   id: string; name: string; email: string; subject: string;
   message: string; created_at: string; read: boolean;
+}
+
+interface Subscriber {
+  id: string; email: string; source: string; created_at: string;
 }
 
 export function DashboardSection({ password }: { password: string }) {
@@ -38,6 +43,33 @@ export function DashboardSection({ password }: { password: string }) {
     mutationFn: (id: string) => API.del(`/api/admin/messages/${id}`, password),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["/api/admin/messages"] }),
   });
+
+  const { data: subscribers } = useQuery<Subscriber[]>({
+    queryKey: ["/api/admin/subscribers"],
+    queryFn:  () => API.get("/api/admin/subscribers", password),
+    refetchInterval: 30000,
+  });
+
+  const deleteSub = useMutation({
+    mutationFn: (id: string) => API.del(`/api/admin/subscribers/${id}`, password),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["/api/admin/subscribers"] }),
+  });
+
+  const exportCsv = () => {
+    if (!subscribers?.length) return;
+    const rows = [
+      ["email", "source", "date"],
+      ...subscribers.map(s => [s.email, s.source, new Date(s.created_at).toISOString()]),
+    ];
+    // Guillemets doubles echappes, sinon une virgule dans un champ casse le CSV.
+    const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const url = URL.createObjectURL(new Blob([`﻿${csv}`], { type: "text/csv;charset=utf-8" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `emails-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const unread = messages?.filter(m => !m.read).length ?? 0;
 
@@ -191,6 +223,60 @@ export function DashboardSection({ password }: { password: string }) {
                       </Button>
                     </div>
                   </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Subscribers panel */}
+      <Card className="border border-border/60">
+        <CardContent className="p-5">
+          <div className="flex items-center justify-between gap-3 mb-4">
+            <p className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <Mail className="w-4 h-4 text-primary" />
+              Emails collectés
+              {subscribers?.length ? (
+                <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-primary text-white">
+                  {subscribers.length}
+                </span>
+              ) : null}
+            </p>
+            {!!subscribers?.length && (
+              <Button size="sm" variant="outline" className="h-7 text-xs" onClick={exportCsv}>
+                <Download className="w-3.5 h-3.5 mr-1.5" />
+                Exporter CSV
+              </Button>
+            )}
+          </div>
+
+          {!subscribers?.length ? (
+            <p className="text-xs text-muted-foreground text-center py-6">
+              Aucun email collecté pour l'instant. Le formulaire est en bas de la page Ressources.
+            </p>
+          ) : (
+            <div className="space-y-1.5 max-h-80 overflow-y-auto">
+              {subscribers.map(s => (
+                <div
+                  key={s.id}
+                  className="flex items-center justify-between gap-3 rounded-lg border border-border/40 px-3 py-2"
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm text-foreground truncate">{s.email}</p>
+                    <p className="text-[11px] text-muted-foreground/60">
+                      {s.source} · {new Date(s.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
+                    </p>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 w-7 p-0 text-muted-foreground hover:text-red-500 shrink-0"
+                    onClick={() => deleteSub.mutate(s.id)}
+                    title="Supprimer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
                 </div>
               ))}
             </div>

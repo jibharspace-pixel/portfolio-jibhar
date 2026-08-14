@@ -94,6 +94,17 @@ export const contact_messages = pgTable("contact_messages", {
   created_at: timestamp("created_at").notNull().defaultNow(),
 });
 
+export const subscribers = pgTable("subscribers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: text("email").notNull().unique(),
+  // D'ou vient l'inscription : "resources", "footer", "cv"...
+  source: text("source").notNull().default("site"),
+  // Trace du consentement explicite, pour pouvoir le prouver
+  consent_text: text("consent_text").notNull().default(""),
+  ip: text("ip"),
+  created_at: timestamp("created_at").notNull().defaultNow(),
+});
+
 export const cv_downloads = pgTable("cv_downloads", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   ip: text("ip"),

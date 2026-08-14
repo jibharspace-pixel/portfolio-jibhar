@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 import { db } from "./database";
 import {
   projects, blog_posts, free_files, services, contact_info,
-  site_content, contact_messages, cv_downloads,
+  site_content, contact_messages, cv_downloads, subscribers,
 } from "../shared/schema";
 import type { Project, BlogPost, FreeFile, Service, ContactInfo, MediaItem } from "../shared/schema";
 
@@ -473,6 +473,35 @@ export async function markMessageRead(id: string) {
 
 export async function deleteMessage(id: string) {
   await db.delete(contact_messages).where(eq(contact_messages.id, id));
+}
+
+// ─── Subscribers ──────────────────────────────────────────────────────────────
+
+export async function getSubscribers() {
+  const rows = await db.select().from(subscribers).orderBy(desc(subscribers.created_at));
+  return rows.map(r => ({ ...r, created_at: r.created_at.toISOString() }));
+}
+
+/** Idempotent : une adresse deja inscrite ne cree pas de doublon. */
+export async function createSubscriber(data: { email: string; source: string; consent_text: string; ip?: string }) {
+  const email = data.email.trim().toLowerCase();
+  const [existing] = await db.select().from(subscribers).where(eq(subscribers.email, email));
+  if (existing) return { ...existing, created_at: existing.created_at.toISOString(), already: true };
+
+  const id = randomUUID();
+  await db.insert(subscribers).values({
+    id,
+    email,
+    source: data.source,
+    consent_text: data.consent_text,
+    ip: data.ip ?? null,
+  });
+  const [row] = await db.select().from(subscribers).where(eq(subscribers.id, id));
+  return { ...row, created_at: row.created_at.toISOString(), already: false };
+}
+
+export async function deleteSubscriber(id: string) {
+  await db.delete(subscribers).where(eq(subscribers.id, id));
 }
 
 // ─── CV Downloads tracking ────────────────────────────────────────────────────
