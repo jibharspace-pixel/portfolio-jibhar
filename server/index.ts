@@ -5,6 +5,25 @@ import { serveStatic } from "./static";
 import { createServer } from "http";
 import { initDb } from "./storage";
 
+// Print a compact, readable report instead of letting Node dump the whole
+// bundle source line, which drowns the actual message in the deploy logs.
+function reportFatal(kind: string, err: unknown) {
+  const e = err as { message?: string; code?: string; detail?: string; hint?: string; stack?: string };
+  console.error(`\n=== ${kind} ===`);
+  console.error(`message: ${e?.message ?? String(err)}`);
+  if (e?.code) console.error(`code   : ${e.code}`);
+  if (e?.detail) console.error(`detail : ${e.detail}`);
+  if (e?.hint) console.error(`hint   : ${e.hint}`);
+  if (e?.stack) console.error(e.stack.split("\n").slice(0, 8).join("\n"));
+  console.error("=== end ===\n");
+}
+
+process.on("unhandledRejection", (err) => reportFatal("UNHANDLED REJECTION", err));
+process.on("uncaughtException", (err) => {
+  reportFatal("UNCAUGHT EXCEPTION", err);
+  process.exit(1);
+});
+
 const app = express();
 const httpServer = createServer(app);
 

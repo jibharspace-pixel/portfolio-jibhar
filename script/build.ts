@@ -55,7 +55,12 @@ async function buildAll() {
     define: {
       "process.env.NODE_ENV": '"production"',
     },
-    minify: true,
+    // Server bundle stays unminified: when Node reports an uncaught error it
+    // prints the whole source line, and a minified bundle is one giant line
+    // that buries the actual message. Sourcemaps map traces back to the .ts.
+    minify: false,
+    sourcemap: "inline",
+    keepNames: true,
     external: externals,
     logLevel: "info",
   });
