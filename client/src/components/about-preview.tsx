@@ -1,13 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { ContactDialog } from "@/components/contact-dialog";
-import profileImage from "@assets/Jibhar-costume.jpeg";
+import { PROFILE_PHOTOS, PHOTO_ROTATION_MS } from "@/lib/profile-photos";
 
 export function AboutPreview() {
   const [contactOpen, setContactOpen] = useState(false);
+  const [photoIdx, setPhotoIdx] = useState(0);
+
+  useEffect(() => {
+    if (PROFILE_PHOTOS.length < 2) return;
+    const timer = setInterval(
+      () => setPhotoIdx((i) => (i + 1) % PROFILE_PHOTOS.length),
+      PHOTO_ROTATION_MS,
+    );
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <section className="relative bg-[hsl(210,20%,98%)] dark:bg-[hsl(222,20%,7%)] border-t border-border/40 overflow-hidden">
@@ -92,7 +102,7 @@ export function AboutPreview() {
 
               <div className="relative rounded-2xl overflow-hidden border border-border/60 shadow-lg min-h-[360px] lg:min-h-[440px]">
                 <img
-                  src={profileImage}
+                  src={PROFILE_PHOTOS[photoIdx]}
                   alt="Kroman Jibhar Samuel"
                   className="w-full h-full object-cover object-top absolute inset-0"
                 />

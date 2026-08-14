@@ -8,8 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ScrollReveal } from "@/components/scroll-reveal";
 import { useLanguage } from "@/lib/language-context";
 import { useTheme } from "@/components/theme-provider";
-// TODO: reactiver la 2e photo en deposant attached_assets/Jibhar-plage.jpeg
-import profileImageCostume from "@assets/Jibhar-costume.jpeg";
+import { PROFILE_PHOTOS, PHOTO_ROTATION_MS } from "@/lib/profile-photos";
 
 interface SiteContent { hero_description: string; hero_highlights: string[]; about_quote: string; }
 
@@ -24,13 +23,12 @@ export function AboutSection() {
   const { data: siteContent } = useQuery<SiteContent>({ queryKey: ["/api/site-content"] });
   const quote = siteContent?.about_quote || t.about.quote;
 
-  const photos = [
-    { src: profileImageCostume, caption: "" },
-  ];
+  const photos = PROFILE_PHOTOS.map((src) => ({ src, caption: "" }));
   const [photoIdx, setPhotoIdx] = useState(0);
 
   useEffect(() => {
-    const timer = setInterval(() => setPhotoIdx((i) => (i + 1) % photos.length), 4000);
+    if (photos.length < 2) return;
+    const timer = setInterval(() => setPhotoIdx((i) => (i + 1) % photos.length), PHOTO_ROTATION_MS);
     return () => clearInterval(timer);
   }, [photos.length]);
 
