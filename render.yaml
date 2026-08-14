@@ -2,7 +2,7 @@ services:
   - type: web
     name: portfolio-jibhar
     env: node
-    buildCommand: npm run build
+    buildCommand: npm run build && npm run db:push -- --force
     startCommand: npm run start
     branch: main
     autoDeploy: true

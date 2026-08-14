@@ -75,9 +75,19 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Initialize database (create default rows if empty)
+  // Initialize database (create default rows if empty).
+  // Never let this kill the process: an unhandled rejection here prints the
+  // whole minified bundle line and buries the actual Postgres message.
   if (process.env.DATABASE_URL) {
-    await initDb();
+    try {
+      await initDb();
+    } catch (err) {
+      const e = err as { message?: string; code?: string; detail?: string; hint?: string };
+      log(`initDb failed [${e.code ?? "no-code"}]: ${e.message ?? String(err)}`, "startup");
+      if (e.detail) log(`detail: ${e.detail}`, "startup");
+      if (e.hint) log(`hint: ${e.hint}`, "startup");
+      log("Server starts anyway; run 'npm run db:push' if the tables are missing.", "startup");
+    }
   }
 
   await registerRoutes(httpServer, app);
