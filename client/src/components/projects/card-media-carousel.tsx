@@ -178,12 +178,13 @@ export function CardMediaCarousel({ project, onOpenDialog, viewLabel }: Props) {
         </div>
       )}
 
-      <span className={`absolute top-2.5 left-2.5 flex items-center gap-1.5 text-[10px] px-2 py-0.5 rounded-full font-semibold backdrop-blur-sm shadow-sm z-10 ${
-        current.media_type === "image" ? "bg-white/88 text-blue-700" : "bg-white/88 text-purple-700"
-      }`}>
-        {current.media_type === "image" ? <ImageIcon className="w-2.5 h-2.5" /> : <Play className="w-2.5 h-2.5" />}
-        {count > 1 ? `${idx + 1} / ${count}` : (current.media_type === "image" ? "Photo" : "Vidéo")}
-      </span>
+      {/* Compteur seulement : l'etiquette "Photo"/"Video" n'apportait rien */}
+      {count > 1 && (
+        <span className="absolute top-2.5 left-2.5 flex items-center gap-1.5 text-[10px] px-2 py-0.5 rounded-full font-semibold backdrop-blur-sm shadow-sm z-10 bg-white/88 text-blue-700">
+          {current.media_type === "image" ? <ImageIcon className="w-2.5 h-2.5" /> : <Play className="w-2.5 h-2.5" />}
+          {`${idx + 1} / ${count}`}
+        </span>
+      )}
 
       <div className="absolute inset-0 bg-black/0 group-hover/carousel:bg-black/10 transition-all duration-200 pointer-events-none z-10" />
     </div>

@@ -46,6 +46,17 @@ const DEFAULT_PROJECTS = [
     download_url: null as unknown as undefined,
   },
   {
+    title: "Club Promo GSC — INP-HB",
+    description: "Site web du Club Promo GSC (Gestion de la Supply Chain) de l'INP-HB Yamoussoukro : présentation du club, activités, réseau alumni, actualités et appel aux dons.",
+    problem: "Le club n'avait pas de vitrine en ligne pour fédérer ses membres, valoriser ses activités et garder le lien avec les alumni dispersés après leur sortie d'école.",
+    solution: "Site vitrine avec des espaces dédiés aux activités, à la communauté, au réseau alumni et aux actualités, un formulaire de contact et un appel aux dons mis en avant.",
+    result: "Site en ligne avec une identité visuelle affirmée et les chiffres clés du club mis en avant dès la page d'accueil.",
+    technologies: ["React", "TypeScript", "Tailwind CSS", "Framer Motion"],
+    category: "site-web",
+    demo_url: "https://gsc-inphb.onrender.com/",
+    download_url: null as unknown as undefined,
+  },
+  {
     title: "ILT — Ingénieurs en Logistique & Transport",
     description: "Site web institutionnel pour une association professionnelle regroupant des ingénieurs spécialisés en logistique et transport.",
     problem: "L'association n'avait pas de présence digitale centralisée pour valoriser ses membres, partager ses actualités et faciliter les échanges avec les partenaires.",
@@ -207,6 +218,19 @@ async function ensureProjects() {
   // Add live site URL to ILT project
   if (ilt && !ilt.demo_url) {
     await db.update(projects).set({ demo_url: "https://unelilt.onrender.com/" }).where(eq(projects.id, ilt.id));
+  }
+
+  // Add GSC project (site + capture) to existing databases
+  const gsc = allRows.find(r => r.title.includes("Club Promo GSC"));
+  if (gsc) {
+    const existing = (gsc.media as MediaItem[]) ?? [];
+    if (!existing.some(m => m.url.includes("gsc-inphb"))) {
+      const item: MediaItem = { id: randomUUID(), url: "/gsc-inphb.png", filename: "gsc-inphb.png", media_type: "image", project_id: gsc.id };
+      await db.update(projects).set({ media: [...existing, item] }).where(eq(projects.id, gsc.id));
+    }
+    if (!gsc.demo_url) {
+      await db.update(projects).set({ demo_url: "https://gsc-inphb.onrender.com/" }).where(eq(projects.id, gsc.id));
+    }
   }
 
   // Add capchina image to Capchina Travel project
